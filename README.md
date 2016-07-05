@@ -1,5 +1,7 @@
 # Aurelia-Keycloak
 
+INITIAL, UNTESTED, DO NOT USE
+
 An authentication plugin based on KeyCloak ('keycloak.org') for Aurelia applications.
 
 ## Get Started
