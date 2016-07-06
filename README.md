@@ -49,7 +49,7 @@ Then, construct a login button within your code to call the keycloak login funct
 
 ```javascript
 import {inject} from 'aurelia-framework';
-import {Keycloak} from 'aurelia-keycloak';
+import {Keycloak} from 'waynepennington/aurelia-keycloak';
 
 @inject(Keycloak)
 export class ViewModel {
