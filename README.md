@@ -6,12 +6,12 @@ An authentication plugin based on KeyCloak ('keycloak.org') for Aurelia applicat
 
 ## Get Started
 
-* Install Aurelia-Keycloak
-Until this plugin is registered with jspm, install this way.
+* Install Aurelia-Keycloak:
+For now and until this plugin is registered with jspm, install this way.
 ```bash
-jspm install github: waynepennington/aurelia-keycloak
+jspm install github:waynepennington/aurelia-keycloak
 ```
-Copy aurelia-keycloak.js to your application's ../jspm_packages/github/waynepennington/ directory.
+Copy aurelia-keycloak.js (from this GITHUB /dist directory) to your application's ../jspm_packages/github/waynepennington/ directory.
 Rename this copied file 'aurelia-keycloak@master.js'
 
 * Add keycloak configuration:
