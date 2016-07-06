@@ -1,32 +1,49 @@
 # Aurelia-Keycloak
 
-INITIAL, UNTESTED, DO NOT USE
+INITIAL, UNTESTED, DO NOT USE IN PRODUCTION. 
 
 An authentication plugin based on KeyCloak ('keycloak.org') for Aurelia applications.
 
 ## Get Started
 
 * Install Aurelia-Keycloak
-
+Until this plugin is registered with jspm, install this way.
 ```bash
-jspm install aurelia-keycloak
+jspm install github: waynepennington/aurelia-keycloak
 ```
+Copy aurelia-keycloak.js to your application's ../jspm_packages/github/waynepennington/ directory.
+Rename this copied file 'aurelia-keycloak@master.js'
+
+* Add keycloak configuration:
+Follow Keycloak directions for creating a keycloak.json configuration file.  Put this file in the same directory as your application's index.html file.
 
 * Add plugin to your app's main.js:
-
+This example will immediately cause the login screen to appear.   
 ```javascript
 export function configure(aurelia) {
     aurelia.use
         .standardConfiguration()
         .developmentLogging()
-        .plugin('aurelia-keycloak', (keycloak) => {
-            keycloak
+        .plugin('waynepennington/aurelia-keycloak', (keycloak)=>  keycloak.init({ onLoad: 'login-required' }))
         };
 
     aurelia.start().then(a => a.setRoot());
 }
 ```
 
+To defer login, use the following:
+```javascript
+export function configure(aurelia) {
+    aurelia.use
+        .standardConfiguration()
+        .developmentLogging()
+        .plugin('waynepennington/aurelia-keycloak')
+        };
+
+    aurelia.start().then(a => a.setRoot());
+}
+```
+Then, construct a login button within your code to call the keycloak login function.
 
 **Using with your ViewModel:**
 
@@ -42,7 +59,7 @@ export class ViewModel {
             }
 }
 ```
-
+See keycloak API and the example js-console for the many examples using its functionality.
 
 ## API
 
