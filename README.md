@@ -124,12 +124,3 @@ To run the unit tests (there are none currently), please make sure you follow th
   ```shell
   karma start
   ```
-
-
-
-
-[badge-npm-image]: https://img.shields.io/npm/v/aurelia-configuration.svg?style=flat-square
-[badge-npm-ref]: https://www.npmjs.com/package/aurelia-configuration
-[badge-gitter-image]: https://badges.gitter.im/Vheissu/Aurelia-Configuration.svg
-[badge-gitter-ref]: https://gitter.im/Vheissu/Aurelia-Configuration?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-
