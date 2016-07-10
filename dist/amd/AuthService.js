@@ -16,7 +16,7 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
         }
 
         AuthService.prototype.configure = function configure(config) {
-            instance(config.install);
+            keycloak(config.install);
             if (typeof config.initOption !== 'undefined') {
                 keycloak.init(config.initOptions);
             }

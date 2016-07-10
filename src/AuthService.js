@@ -6,7 +6,7 @@ export class AuthService {
     }
          
     configure(config){
-        instance(config.install);
+        keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
             keycloak.init(config.initOptions);
         }
