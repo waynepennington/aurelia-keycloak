@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['./keycloak'], function (_export, _context) {
+System.register(['keycloak'], function (_export, _context) {
     "use strict";
 
     var keycloak, AuthService;
@@ -20,9 +20,9 @@ System.register(['./keycloak'], function (_export, _context) {
                 AuthService.prototype.configure = function configure(config) {
                     var installURL;
 
-                    var auth = new Keycloak(config.install);
+                    var keycloak = new Keycloak(config.install);
                     if (typeof config.initOption !== 'undefined') {
-                        this.auth.init(config.initOptions);
+                        this.keycloak.init(config.initOptions);
                     }
                 };
 

@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthService = undefined;
 
-var _keycloak = require('./keycloak');
+var _keycloak = require('keycloak');
 
 
 
@@ -17,9 +17,9 @@ var AuthService = exports.AuthService = function () {
     AuthService.prototype.configure = function configure(config) {
         var installURL;
 
-        var auth = new Keycloak(config.install);
+        var keycloak = new Keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
-            this.auth.init(config.initOptions);
+            this.keycloak.init(config.initOptions);
         }
     };
 

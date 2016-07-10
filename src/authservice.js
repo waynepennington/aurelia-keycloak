@@ -1,4 +1,4 @@
-import {keycloak} from './keycloak';
+import {keycloak} from 'keycloak';
 
 export class AuthService {
 
@@ -10,9 +10,9 @@ export class AuthService {
         //     installURL = config.install;           
         // }
         // let keycloak = new Keycloak(installURL);
-        let auth = new Keycloak(config.install);
+        let keycloak = new Keycloak(config.install);
         if ( typeof config.initOption !== 'undefined'){
-            this.auth.init(config.initOptions);
+            this.keycloak.init(config.initOptions);
         }
     }
 }

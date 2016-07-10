@@ -1,4 +1,4 @@
-define(['exports', './keycloak'], function (exports, _keycloak) {
+define(['exports', 'keycloak'], function (exports, _keycloak) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -16,9 +16,9 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
         AuthService.prototype.configure = function configure(config) {
             var installURL;
 
-            var auth = new Keycloak(config.install);
+            var keycloak = new Keycloak(config.install);
             if (typeof config.initOption !== 'undefined') {
-                this.auth.init(config.initOptions);
+                this.keycloak.init(config.initOptions);
             }
         };
 
