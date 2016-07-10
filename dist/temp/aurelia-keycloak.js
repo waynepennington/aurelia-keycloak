@@ -3,8 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.AuthService = undefined;
+
+var _dec, _class;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+var _aureliaFramework = require('aurelia-framework');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1136,17 +1141,19 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     }
 })(window);
 
-var AuthService = exports.AuthService = function () {
-    function AuthService() {
+var AuthService = exports.AuthService = (_dec = (0, _aureliaFramework.inject)(keycloak), _dec(_class = function () {
+    function AuthService(kc) {
         _classCallCheck(this, AuthService);
+
+        var keycloak = kc.Keycloak;
     }
 
     AuthService.prototype.configure = function configure(config) {
-        var keycloak = new Keycloak(config.install);
+        var keycloak = Keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
             keycloak.init(config.initOptions);
         }
     };
 
     return AuthService;
-}();
+}()) || _class);
