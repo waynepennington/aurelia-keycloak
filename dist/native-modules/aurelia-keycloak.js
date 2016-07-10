@@ -7,4 +7,4 @@ export function configure(aurelia, config) {
         instance.init(config.initOptions);
     }
 }
-export { Keycloak };
+export { keycloak };

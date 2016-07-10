@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Keycloak = undefined;
+exports.keycloak = undefined;
 exports.configure = configure;
 
 var _keycloak = require('./keycloak');
@@ -15,4 +15,4 @@ function configure(aurelia, config) {
         instance.init(config.initOptions);
     }
 }
-exports.Keycloak = Keycloak;
+exports.keycloak = _keycloak.keycloak;

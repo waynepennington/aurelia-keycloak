@@ -4,7 +4,7 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.Keycloak = undefined;
+    exports.keycloak = undefined;
     exports.configure = configure;
     function configure(aurelia, config) {
         var instance = aurelia.container.get(_keycloak.keycloak);
@@ -13,5 +13,5 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
             instance.init(config.initOptions);
         }
     }
-    exports.Keycloak = Keycloak;
+    exports.keycloak = _keycloak.keycloak;
 });

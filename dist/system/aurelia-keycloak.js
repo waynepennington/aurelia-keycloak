@@ -19,7 +19,7 @@ System.register(['./keycloak'], function (_export, _context) {
 
             _export('configure', configure);
 
-            _export('Keycloak', Keycloak);
+            _export('keycloak', keycloak);
         }
     };
 });
