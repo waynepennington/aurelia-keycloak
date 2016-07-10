@@ -9,8 +9,6 @@ var _class;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-exports.configure = configure;
-
 var _aureliaFramework = require('aurelia-framework');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1166,10 +1164,3 @@ var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = f
 
     return AuthService;
 }()) || _class;
-
-function configure(aurelia, config) {
-    var instance = aurelia.container.get(AuthService);
-    instance.configure(config);
-}
-
-exports.AuthService = AuthService;
