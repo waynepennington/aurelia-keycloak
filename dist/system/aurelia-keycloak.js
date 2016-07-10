@@ -10,7 +10,7 @@ System.register(['./keycloak'], function (_export, _context) {
         }],
         execute: function () {
             function configure(aurelia, config) {
-                var instance = aurelia.container.get(keycloak);
+                var instance = aurelia.container.get(Keycloak);
                 instance(config.install);
                 if (typeof config.initOption !== 'undefined') {
                     instance.init(config.initOptions);
