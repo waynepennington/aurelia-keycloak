@@ -3,26 +3,28 @@
 System.register(['./keycloak'], function (_export, _context) {
     "use strict";
 
-    var Keycloak, AuthService;
+    var keycloak, AuthService;
 
     
 
     return {
         setters: [function (_keycloak) {
-            Keycloak = _keycloak.Keycloak;
+            keycloak = _keycloak.keycloak;
         }],
         execute: function () {
             _export('AuthService', AuthService = function () {
-                function AuthService(Keycloak) {
+                function AuthService() {
                     
-
-                    this.keycloak = Keycloak;
                 }
 
+                AuthService.init = function init() {
+                    this.Auth = new Keycloak();
+                };
+
                 AuthService.prototype.configure = function configure(config) {
-                    this.keycloak.loadConfig(config.install);
+                    this.Auth.loadConfig(config.install);
                     if (typeof config.initOption !== 'undefined') {
-                        this.keycloak.init(config.initOptions);
+                        this.Auth.init(config.initOptions);
                     }
                 };
 

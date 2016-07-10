@@ -1,4 +1,4 @@
 export declare class AuthService {
-  constructor(Keycloak?: any);
+  static init(): any;
   configure(config?: any): any;
 }

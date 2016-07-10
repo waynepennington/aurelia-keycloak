@@ -1169,14 +1169,14 @@
 })( window );
 
 export class AuthService {
-    constructor(Keycloak){
-        this.keycloak = Keycloak;
+    static init () {
+        this.Auth = new Keycloak();
     }
          
     configure(config){
-        this.keycloak.loadConfig(config.install);
+        this.Auth.loadConfig(config.install);
         if (typeof config.initOption !== 'undefined') {
-            this.keycloak.init(config.initOptions);
+            this.Auth.init(config.initOptions);
         }
     }
 }
