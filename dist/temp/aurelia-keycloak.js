@@ -1144,7 +1144,7 @@ var AuthService = exports.AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(config) {
-        this.keycloak(config.install);
+        this.keycloak.loadConfig(config.install);
         if (typeof config.initOption !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }
