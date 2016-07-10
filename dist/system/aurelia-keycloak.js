@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['keycloak'], function (_export, _context) {
+System.register(['/keycloak'], function (_export, _context) {
     "use strict";
 
     var keycloak;
@@ -10,8 +10,7 @@ System.register(['keycloak'], function (_export, _context) {
         }],
         execute: function () {
             function configure(aurelia, config) {
-                var instance = aurelia.container.get(keycloak);
-                instance(config.install);
+                var instance = new Keycloak(config.install);
                 if (typeof config.initOption !== 'undefined') {
                     instance.init(config.initOptions);
                 }
