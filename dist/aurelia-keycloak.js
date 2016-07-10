@@ -1170,7 +1170,6 @@ import {noView} from 'aurelia-framework';
 })( window );
 
 export class AuthService {
-    keycloak = null;
 
     configure(config){
         var installURL;
@@ -1179,7 +1178,7 @@ export class AuthService {
         }else{
             installURL = config.install;           
         }
-        this.keycloak = new Keycloak(installURL);
+        let keycloak = new Keycloak(installURL);
         
         if ( typeof config.initOption !== 'undefined'){
             this.keycloak.init(config.initOptions);
