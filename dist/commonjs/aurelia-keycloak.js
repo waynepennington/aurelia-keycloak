@@ -10,7 +10,7 @@ var _AuthService = require('./AuthService');
 
 function configure(aurelia, config) {
     var instance = aurelia.container.get(_AuthService.AuthService);
-    instance(config);
+    instance.configure(config);
 }
 
 exports.AuthService = _AuthService.AuthService;

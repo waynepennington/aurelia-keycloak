@@ -8,7 +8,7 @@ define(['exports', './AuthService'], function (exports, _AuthService) {
     exports.configure = configure;
     function configure(aurelia, config) {
         var instance = aurelia.container.get(_AuthService.AuthService);
-        instance(config);
+        instance.configure(config);
     }
 
     exports.AuthService = _AuthService.AuthService;

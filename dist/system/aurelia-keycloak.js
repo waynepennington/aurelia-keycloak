@@ -11,7 +11,7 @@ System.register(['./AuthService'], function (_export, _context) {
         execute: function () {
             function configure(aurelia, config) {
                 var instance = aurelia.container.get(AuthService);
-                instance(config);
+                instance.configure(config);
             }
 
             _export('configure', configure);
