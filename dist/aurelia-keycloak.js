@@ -1,4 +1,3 @@
-import {noView} from 'aurelia-framework';
 
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates
@@ -1173,15 +1172,15 @@ export class AuthService {
 
     configure(config){
         var installURL;
-        if ( typeof config.install == 'undefined'){
-            installURL = 'keycloak.json';
-        }else{
-            installURL = config.install;           
-        }
-        let keycloak = new Keycloak(installURL);
-        
+        // if ( typeof config.install == 'undefined'){
+        //     installURL = 'keycloak.json';
+        // }else{
+        //     installURL = config.install;           
+        // }
+        // let keycloak = new Keycloak(installURL);
+        let auth = new Keycloak(config.install);
         if ( typeof config.initOption !== 'undefined'){
-            this.keycloak.init(config.initOptions);
+            this.auth.init(config.initOptions);
         }
     }
 }

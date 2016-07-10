@@ -1,17 +1,15 @@
 'use strict';
 
-System.register(['./keycloak', 'aurelia-framework'], function (_export, _context) {
+System.register(['./keycloak'], function (_export, _context) {
     "use strict";
 
-    var keycloak, noView, AuthService;
+    var keycloak, AuthService;
 
     
 
     return {
         setters: [function (_keycloak) {
             keycloak = _keycloak.keycloak;
-        }, function (_aureliaFramework) {
-            noView = _aureliaFramework.noView;
         }],
         execute: function () {
             _export('AuthService', AuthService = function () {
@@ -21,15 +19,10 @@ System.register(['./keycloak', 'aurelia-framework'], function (_export, _context
 
                 AuthService.prototype.configure = function configure(config) {
                     var installURL;
-                    if (typeof config.install == 'undefined') {
-                        installURL = 'keycloak.json';
-                    } else {
-                        installURL = config.install;
-                    }
-                    var keycloak = new Keycloak(installURL);
 
+                    var auth = new Keycloak(config.install);
                     if (typeof config.initOption !== 'undefined') {
-                        this.keycloak.init(config.initOptions);
+                        this.auth.init(config.initOptions);
                     }
                 };
 

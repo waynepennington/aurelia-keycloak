@@ -7,8 +7,6 @@ exports.AuthService = undefined;
 
 var _keycloak = require('./keycloak');
 
-var _aureliaFramework = require('aurelia-framework');
-
 
 
 var AuthService = exports.AuthService = function () {
@@ -18,15 +16,10 @@ var AuthService = exports.AuthService = function () {
 
     AuthService.prototype.configure = function configure(config) {
         var installURL;
-        if (typeof config.install == 'undefined') {
-            installURL = 'keycloak.json';
-        } else {
-            installURL = config.install;
-        }
-        var keycloak = new Keycloak(installURL);
 
+        var auth = new Keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
-            this.keycloak.init(config.initOptions);
+            this.auth.init(config.initOptions);
         }
     };
 
