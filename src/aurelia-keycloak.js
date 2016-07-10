@@ -1,7 +1,7 @@
-import {Keycloak} from './keycloak';
+import {keycloak} from './keycloak';
 
 export function configure(aurelia, config) {
-    let instance = aurelia.container.get(Keycloak);
+    let instance = aurelia.container.get(keycloak);
     instance(config.install);
     if (typeof config.initOption !== 'undefined') {
         instance.init(config.initOptions);

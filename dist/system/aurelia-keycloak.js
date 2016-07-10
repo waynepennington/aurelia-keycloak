@@ -3,14 +3,14 @@
 System.register(['./keycloak'], function (_export, _context) {
     "use strict";
 
-    var Keycloak;
+    var keycloak;
     return {
         setters: [function (_keycloak) {
-            Keycloak = _keycloak.Keycloak;
+            keycloak = _keycloak.keycloak;
         }],
         execute: function () {
             function configure(aurelia, config) {
-                var instance = aurelia.container.get(Keycloak);
+                var instance = aurelia.container.get(keycloak);
                 instance(config.install);
                 if (typeof config.initOption !== 'undefined') {
                     instance.init(config.initOptions);

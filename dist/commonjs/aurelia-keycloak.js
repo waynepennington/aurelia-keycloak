@@ -9,10 +9,10 @@ exports.configure = configure;
 var _keycloak = require('./keycloak');
 
 function configure(aurelia, config) {
-    var instance = aurelia.container.get(_keycloak.Keycloak);
+    var instance = aurelia.container.get(_keycloak.keycloak);
     instance(config.install);
     if (typeof config.initOption !== 'undefined') {
         instance.init(config.initOptions);
     }
 }
-exports.Keycloak = _keycloak.Keycloak;
+exports.Keycloak = Keycloak;
