@@ -10,9 +10,9 @@ export var AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(config) {
-        keycloak(config.install);
+        this.keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
-            keycloak.init(config.initOptions);
+            this.keycloak.init(config.initOptions);
         }
     };
 
