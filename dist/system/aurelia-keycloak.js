@@ -15,6 +15,8 @@ System.register(['/AuthService'], function (_export, _context) {
             }
 
             _export('configure', configure);
+
+            _export('AuthServie', AuthServie);
         }
     };
 });

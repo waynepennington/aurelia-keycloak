@@ -4,3 +4,5 @@ export function configure(aurelia, config) {
     let instance = aurelia.container.get(AuthService);
     instance(config);
 }
+
+export { AuthServie };
