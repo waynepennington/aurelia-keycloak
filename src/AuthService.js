@@ -1,14 +1,12 @@
-import {keycloak} from './keycloak';
-import {inject} from 'aurelia-framework';
+import {Keycloak} from './keycloak';
 
-@inject(keycloak)
 export class AuthService {
-    constructor(kc){
-        let keycloak = kc.Keycloak;
+    constructor(Keycloak){
+        let keycloak = Keycloak;
     }
          
     configure(config){
-        let keycloak = Keycloak(config.install);
+        instance(config.install);
         if (typeof config.initOption !== 'undefined') {
             keycloak.init(config.initOptions);
         }

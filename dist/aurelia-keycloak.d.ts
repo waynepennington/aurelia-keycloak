@@ -1,7 +1,4 @@
-import {
-  inject
-} from 'aurelia-framework';
 export declare class AuthService {
-  constructor(kc?: any);
+  constructor(Keycloak?: any);
   configure(config?: any): any;
 }

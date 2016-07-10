@@ -1,4 +1,3 @@
-import {inject} from 'aurelia-framework';
 
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates
@@ -1169,14 +1168,13 @@ import {inject} from 'aurelia-framework';
     }
 })( window );
 
-@inject(keycloak)
 export class AuthService {
-    constructor(kc){
-        let keycloak = kc.Keycloak;
+    constructor(Keycloak){
+        let keycloak = Keycloak;
     }
          
     configure(config){
-        let keycloak = Keycloak(config.install);
+        instance(config.install);
         if (typeof config.initOption !== 'undefined') {
             keycloak.init(config.initOptions);
         }
