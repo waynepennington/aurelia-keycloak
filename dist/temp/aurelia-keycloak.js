@@ -3,11 +3,17 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.AuthService = undefined;
+
+var _class;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 exports.configure = configure;
 
+var _aureliaFramework = require('aurelia-framework');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 (function (window, undefined) {
 
@@ -1137,13 +1143,33 @@ exports.configure = configure;
     }
 })(window);
 
-function configure(aurelia, configCallback) {
-    var keycloak = aurelia.container.get(Keycloak);
+var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
+    function AuthService(config) {
+        _classCallCheck(this, AuthService);
 
-    if (configCallback !== undefined && typeof configCallback === 'function') {
-        configCallback(keycloak);
+        this.keycloak = null;
     }
-    aurelia.globalResources('./aurelia-keycloak');
+
+    AuthService.prototype.configure = function configure(config) {
+        var installURL;
+        if (typeof config.install == 'undefined') {
+            installURL = 'keycloak.json';
+        } else {
+            installURL = config.install;
+        }
+        this.keycloak = Keycloak(installURL);
+
+        if (typeof config.initOption !== 'undefined') {
+            this.keycloak.init(config.initOptions);
+        }
+    };
+
+    return AuthService;
+}()) || _class;
+
+function configure(aurelia, config) {
+    var instance = aurelia.container.get(AuthService);
+    instance.configure(config);
 }
 
-exports.Keycloak = Keycloak;
+exports.AuthService = AuthService;

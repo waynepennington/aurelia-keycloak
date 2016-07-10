@@ -1,3 +1,4 @@
+import {noView} from 'aurelia-framework';
 
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates
@@ -1168,13 +1169,61 @@
     }
 })( window );
 
-export function configure(aurelia, configCallback) {
-  let keycloak = aurelia.container.get(Keycloak);
-
-  if (configCallback !== undefined && typeof(configCallback) === 'function') {
-      configCallback(keycloak);
-  }
-  aurelia.globalResources('./aurelia-keycloak');
+@noView
+export class AuthService {
+    constructor(config){
+        this.keycloak = null;
+      }
+      configure(config){
+        var installURL;
+        if ( typeof config.install == 'undefined'){
+            installURL = 'keycloak.json';
+        }else{
+            installURL = config.install;           
+        }
+        this.keycloak = Keycloak(installURL);
+        
+        if ( typeof config.initOption !== 'undefined'){
+            this.keycloak.init(config.initOptions);
+        }
+      }
 }
 
-export {Keycloak}
+
+////export class Config {
+//    constructor(){
+//        this.keycloak = null;
+//    }
+//    newKeycloak(config){
+//        this.keycloak = new Keycloak();
+//    }
+//    init(initOptions){
+//        this.keycloak.init(initOptions);
+//        return this;
+//    }
+//    get(){
+//        return this.keycloak;
+//    }
+//    }
+
+//var authservice;
+export function configure(aurelia, config) {
+    let instance = aurelia.container.get(AuthService);
+    instance.configure(config);
+    
+//authservice = new AuthService(config);
+//aurelia.globalName('./aurelia-keycloak/aurelia-keycloak','aurelia-keycloak');
+//aurelia.container.registerSingleton('AuthService', authservice);
+}
+
+export {AuthService}
+        
+// aurelia.container.registerSingleton('keycloak', Keycloak);
+//keycloak(config.install);
+//let keycloak = aurelia.container.get(Keycloak);
+//export function configure(aurelia, configCallback) {
+//            let keycloak = new Keycloak();
+//            aurelia.container.registerSingleton('keycloak',keycloak);
+//                configCallback(keycloak);
+//        }
+
