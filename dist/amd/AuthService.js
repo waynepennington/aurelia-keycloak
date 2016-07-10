@@ -12,7 +12,7 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
         function AuthService(Keycloak) {
             
 
-            var keycloak = Keycloak;
+            this.keycloak = Keycloak;
         }
 
         AuthService.prototype.configure = function configure(config) {

@@ -1140,7 +1140,7 @@ var AuthService = exports.AuthService = function () {
     function AuthService(Keycloak) {
         _classCallCheck(this, AuthService);
 
-        var keycloak = Keycloak;
+        this.keycloak = Keycloak;
     }
 
     AuthService.prototype.configure = function configure(config) {

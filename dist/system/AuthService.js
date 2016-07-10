@@ -16,7 +16,7 @@ System.register(['./keycloak'], function (_export, _context) {
                 function AuthService(Keycloak) {
                     
 
-                    var keycloak = Keycloak;
+                    this.keycloak = Keycloak;
                 }
 
                 AuthService.prototype.configure = function configure(config) {

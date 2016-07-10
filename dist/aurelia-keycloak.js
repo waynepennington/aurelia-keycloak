@@ -1170,7 +1170,7 @@
 
 export class AuthService {
     constructor(Keycloak){
-        let keycloak = Keycloak;
+        this.keycloak = Keycloak;
     }
          
     configure(config){

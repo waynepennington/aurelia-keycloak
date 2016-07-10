@@ -2,7 +2,7 @@ import { Keycloak } from './keycloak';
 
 export let AuthService = class AuthService {
     constructor(Keycloak) {
-        let keycloak = Keycloak;
+        this.keycloak = Keycloak;
     }
 
     configure(config) {
