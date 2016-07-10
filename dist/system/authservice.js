@@ -15,7 +15,7 @@ System.register(['./keycloak', 'aurelia-framework'], function (_export, _context
         }],
         execute: function () {
             _export('AuthService', AuthService = function () {
-                function AuthService(config) {
+                function AuthService() {
                     
 
                     this.keycloak = null;
@@ -28,7 +28,7 @@ System.register(['./keycloak', 'aurelia-framework'], function (_export, _context
                     } else {
                         installURL = config.install;
                     }
-                    this.keycloak = Keycloak(installURL);
+                    this.keycloak = new Keycloak(installURL);
 
                     if (typeof config.initOption !== 'undefined') {
                         this.keycloak.init(config.initOptions);

@@ -10,6 +10,5 @@ define(['exports', './authservice'], function (exports, _authservice) {
         var instance = aurelia.container.get(_authservice.AuthService);
         instance.configure(config);
     }
-
     exports.AuthService = _authservice.AuthService;
 });

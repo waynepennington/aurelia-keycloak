@@ -12,5 +12,4 @@ function configure(aurelia, config) {
     var instance = aurelia.container.get(_authservice.AuthService);
     instance.configure(config);
 }
-
 exports.AuthService = _authservice.AuthService;

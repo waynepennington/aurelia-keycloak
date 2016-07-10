@@ -2,6 +2,6 @@ import {
   noView
 } from 'aurelia-framework';
 export declare class AuthService {
-  constructor(config?: any);
+  keycloak: any;
   configure(config?: any): any;
 }

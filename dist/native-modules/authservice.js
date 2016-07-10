@@ -4,7 +4,7 @@ import { keycloak } from './keycloak';
 import { noView } from 'aurelia-framework';
 
 export var AuthService = function () {
-    function AuthService(config) {
+    function AuthService() {
         
 
         this.keycloak = null;
@@ -17,7 +17,7 @@ export var AuthService = function () {
         } else {
             installURL = config.install;
         }
-        this.keycloak = Keycloak(installURL);
+        this.keycloak = new Keycloak(installURL);
 
         if (typeof config.initOption !== 'undefined') {
             this.keycloak.init(config.initOptions);

@@ -9,7 +9,7 @@ define(['exports', './keycloak', 'aurelia-framework'], function (exports, _keycl
     
 
     var AuthService = exports.AuthService = function () {
-        function AuthService(config) {
+        function AuthService() {
             
 
             this.keycloak = null;
@@ -22,7 +22,7 @@ define(['exports', './keycloak', 'aurelia-framework'], function (exports, _keycl
             } else {
                 installURL = config.install;
             }
-            this.keycloak = Keycloak(installURL);
+            this.keycloak = new Keycloak(installURL);
 
             if (typeof config.initOption !== 'undefined') {
                 this.keycloak.init(config.initOptions);
