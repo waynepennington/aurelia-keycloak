@@ -1,6 +1,6 @@
 {
   "name": "aurelia-keycloak",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An Aurelia plugin for adding Keycloak authentication to your application.",
   "keywords": [
     "aurelia",
