@@ -24,7 +24,7 @@ var paths = {
     sort: true
 };
 
-paths.ignore = ['aurelia-configuration.js'];
+paths.ignore = ['aurelia-keycloak.js'];
 paths.files = [
     paths.source
 ];
