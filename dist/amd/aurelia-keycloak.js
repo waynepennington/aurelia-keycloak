@@ -1,4 +1,4 @@
-define(['exports', './keycloak'], function (exports, _keycloak) {
+define(['exports', 'keycloak'], function (exports, _keycloak) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -7,7 +7,7 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
     exports.keycloak = undefined;
     exports.configure = configure;
     function configure(aurelia, config) {
-        var instance = aurelia.container.get(Keycloak);
+        var instance = aurelia.container.get(_keycloak.keycloak);
         instance(config.install);
         if (typeof config.initOption !== 'undefined') {
             instance.init(config.initOptions);
