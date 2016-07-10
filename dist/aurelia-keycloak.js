@@ -1170,9 +1170,9 @@
 
 export class AuthService {
     configure(config){
-        this.keycloak = new Keycloak(config.install);
+        let keycloak = new Keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
-            this.keycloak.init(config.initOptions);
+            keycloak.init(config.initOptions);
         }
     }
 }

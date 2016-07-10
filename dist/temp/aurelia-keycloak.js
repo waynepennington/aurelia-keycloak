@@ -1142,9 +1142,9 @@ var AuthService = exports.AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(config) {
-        this.keycloak = new Keycloak(config.install);
+        var keycloak = new Keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
-            this.keycloak.init(config.initOptions);
+            keycloak.init(config.initOptions);
         }
     };
 
