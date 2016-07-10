@@ -1,4 +1,3 @@
-import {keycloak} from 'keycloak';
 
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates

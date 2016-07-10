@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['keycloak'], function (_export, _context) {
+System.register(['./keycloak'], function (_export, _context) {
     "use strict";
 
     var keycloak, AuthService;
