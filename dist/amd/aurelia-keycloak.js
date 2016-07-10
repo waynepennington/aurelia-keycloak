@@ -1,14 +1,17 @@
-define(['exports', './authservice'], function (exports, _authservice) {
+define(['exports', './keycloak'], function (exports, _keycloak) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.AuthService = undefined;
+    exports.Keycloak = undefined;
     exports.configure = configure;
     function configure(aurelia, config) {
-        var instance = aurelia.container.get(_authservice.AuthService);
-        instance.configure(config);
+        var instance = aurelia.container.get(_keycloak.Keycloak);
+        instance(config.install);
+        if (typeof config.initOption !== 'undefined') {
+            instance.init(config.initOptions);
+        }
     }
-    exports.AuthService = _authservice.AuthService;
+    exports.Keycloak = _keycloak.Keycloak;
 });

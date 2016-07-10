@@ -1,12 +1,6 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 (function (window, undefined) {
 
@@ -1135,20 +1129,3 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
     }
 })(window);
-
-var AuthService = exports.AuthService = function () {
-    function AuthService() {
-        _classCallCheck(this, AuthService);
-    }
-
-    AuthService.prototype.configure = function configure(config) {
-        var installURL;
-
-        var authK = new Keycloak(config.install);
-        if (typeof config.initOption !== 'undefined') {
-            authk.init(config.initOptions);
-        }
-    };
-
-    return AuthService;
-}();
