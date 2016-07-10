@@ -5,15 +5,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthService = undefined;
 
-var _class;
-
 var _keycloak = require('./keycloak');
 
 var _aureliaFramework = require('aurelia-framework');
 
 
 
-var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
+var AuthService = exports.AuthService = function () {
     function AuthService(config) {
         
 
@@ -27,7 +25,7 @@ var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = f
         } else {
             installURL = config.install;
         }
-        this.keycloak = Keycloak(installURL);
+        this.keycloak = (0, _keycloak.Keycloak)(installURL);
 
         if (typeof config.initOption !== 'undefined') {
             this.keycloak.init(config.initOptions);
@@ -35,4 +33,4 @@ var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = f
     };
 
     return AuthService;
-}()) || _class;
+}();

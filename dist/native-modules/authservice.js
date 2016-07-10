@@ -1,11 +1,9 @@
-var _class;
 
 
-
-import { keycloak } from './keycloak';
+import { Keycloak } from './keycloak';
 import { noView } from 'aurelia-framework';
 
-export var AuthService = noView(_class = function () {
+export var AuthService = function () {
     function AuthService(config) {
         
 
@@ -27,4 +25,4 @@ export var AuthService = noView(_class = function () {
     };
 
     return AuthService;
-}()) || _class;
+}();

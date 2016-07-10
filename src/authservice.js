@@ -1,7 +1,6 @@
-import {keycloak} from './keycloak';
+import {Keycloak} from './keycloak';
 import {noView} from 'aurelia-framework';
 
-@noView
 export class AuthService {
     constructor(config){
         this.keycloak = null;

@@ -1169,7 +1169,6 @@ import {noView} from 'aurelia-framework';
     }
 })( window );
 
-@noView
 export class AuthService {
     constructor(config){
         this.keycloak = null;

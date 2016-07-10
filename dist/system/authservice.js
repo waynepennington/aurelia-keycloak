@@ -3,18 +3,18 @@
 System.register(['./keycloak', 'aurelia-framework'], function (_export, _context) {
     "use strict";
 
-    var keycloak, noView, _class, AuthService;
+    var Keycloak, noView, AuthService;
 
     
 
     return {
         setters: [function (_keycloak) {
-            keycloak = _keycloak.keycloak;
+            Keycloak = _keycloak.Keycloak;
         }, function (_aureliaFramework) {
             noView = _aureliaFramework.noView;
         }],
         execute: function () {
-            _export('AuthService', AuthService = noView(_class = function () {
+            _export('AuthService', AuthService = function () {
                 function AuthService(config) {
                     
 
@@ -36,7 +36,7 @@ System.register(['./keycloak', 'aurelia-framework'], function (_export, _context
                 };
 
                 return AuthService;
-            }()) || _class);
+            }());
 
             _export('AuthService', AuthService);
         }
