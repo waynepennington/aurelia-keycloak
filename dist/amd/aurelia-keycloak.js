@@ -1,4 +1,4 @@
-define(['exports', '/AuthService'], function (exports, _AuthService) {
+define(['exports', './AuthService'], function (exports, _AuthService) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {

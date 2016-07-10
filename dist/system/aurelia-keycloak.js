@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['/AuthService'], function (_export, _context) {
+System.register(['./AuthService'], function (_export, _context) {
     "use strict";
 
     var AuthService;

@@ -1,4 +1,4 @@
-import { AuthService } from '/AuthService';
+import { AuthService } from './AuthService';
 
 export function configure(aurelia, config) {
     var instance = aurelia.container.get(AuthService);
