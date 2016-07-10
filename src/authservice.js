@@ -1,4 +1,4 @@
-import {Keycloak} from './keycloak';
+import {keycloak} from './keycloak';
 import {noView} from 'aurelia-framework';
 
 export class AuthService {
