@@ -4,12 +4,12 @@ define(['exports', '/AuthService'], function (exports, _AuthService) {
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.AuthServie = undefined;
+    exports.AuthService = undefined;
     exports.configure = configure;
     function configure(aurelia, config) {
         var instance = aurelia.container.get(_AuthService.AuthService);
         instance(config);
     }
 
-    exports.AuthServie = AuthServie;
+    exports.AuthService = _AuthService.AuthService;
 });

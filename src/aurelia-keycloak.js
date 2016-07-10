@@ -5,4 +5,4 @@ export function configure(aurelia, config) {
     instance(config);
 }
 
-export {AuthServie}
+export {AuthService}
