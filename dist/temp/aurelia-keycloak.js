@@ -1141,15 +1141,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     }
 })(window);
 
-var AuthService = exports.AuthService = (_dec = (0, _aureliaFramework.inject)(Keycloak), _dec(_class = function () {
-    function AuthService(keycloak) {
+var AuthService = exports.AuthService = (_dec = (0, _aureliaFramework.inject)(keycloak, _aureliaFramework.LogManager), _dec(_class = function () {
+    function AuthService(kc, LogManager) {
         _classCallCheck(this, AuthService);
 
-        this.Keycloak = keycloak;
+        var logger = LogManager.getLogger('AuthService');
+        logger.debug("GOT THIS FAR");
+        var keycloak = kc;
     }
 
     AuthService.prototype.configure = function configure(config) {
-        this.Keycloak = Keycloak(config.install);
+        var Keycloak = kc.Keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
             this.Keycloak.init(config.initOptions);
         }

@@ -1,4 +1,4 @@
-import {inject} from 'aurelia-framework';
+import {LogManager,inject} from 'aurelia-framework';
 
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates
@@ -1169,13 +1169,15 @@ import {inject} from 'aurelia-framework';
     }
 })( window );
 
-@inject(Keycloak)
+@inject(keycloak, LogManager)
 export class AuthService { 
-    constructor(keycloak){
-        this.Keycloak = keycloak;
+    constructor(kc,LogManager){
+        let logger = LogManager.getLogger('AuthService');
+        logger.debug("GOT THIS FAR");
+        let keycloak = kc;
     }        
     configure(config){
-        this.Keycloak = Keycloak(config.install);
+        let Keycloak = kc.Keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
             this.Keycloak.init(config.initOptions);
         }

@@ -10,15 +10,17 @@ define(['exports', './keycloak', 'aurelia-framework'], function (exports, _keycl
 
     var _dec, _class;
 
-    var AuthService = exports.AuthService = (_dec = (0, _aureliaFramework.inject)(_keycloak.Keycloak), _dec(_class = function () {
-        function AuthService(keycloak) {
+    var AuthService = exports.AuthService = (_dec = (0, _aureliaFramework.inject)(_keycloak.keycloak, _aureliaFramework.LogManager), _dec(_class = function () {
+        function AuthService(kc, LogManager) {
             
 
-            this.Keycloak = keycloak;
+            var logger = LogManager.getLogger('AuthService');
+            logger.debug("GOT THIS FAR");
+            var keycloak = kc;
         }
 
         AuthService.prototype.configure = function configure(config) {
-            this.Keycloak = (0, _keycloak.Keycloak)(config.install);
+            var Keycloak = kc.Keycloak(config.install);
             if (typeof config.initOption !== 'undefined') {
                 this.Keycloak.init(config.initOptions);
             }
