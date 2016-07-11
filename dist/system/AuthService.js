@@ -15,19 +15,22 @@ System.register(['./keycloak', 'aurelia-framework'], function (_export, _context
             inject = _aureliaFramework.inject;
         }],
         execute: function () {
-            _export('AuthService', AuthService = (_dec = inject(keycloak, LogManager), _dec(_class = function () {
-                function AuthService(kc, LogManager) {
+            _export('AuthService', AuthService = (_dec = inject(LogManager), _dec(_class = function () {
+                AuthService.init = function init() {
+                    var keycloak = new Keycloak();
+                };
+
+                function AuthService(LogManager) {
                     
 
                     var logger = LogManager.getLogger('AuthService');
                     logger.debug("GOT THIS FAR");
-                    var keycloak = kc;
                 }
 
                 AuthService.prototype.configure = function configure(config) {
-                    var Keycloak = kc.Keycloak(config.install);
+                    keycloak(config.install);
                     if (typeof config.initOption !== 'undefined') {
-                        this.Keycloak.init(config.initOptions);
+                        this.keycloak.init(config.initOptions);
                     }
                 };
 

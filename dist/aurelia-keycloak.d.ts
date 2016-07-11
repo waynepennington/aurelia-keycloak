@@ -3,6 +3,7 @@ import {
   inject
 } from 'aurelia-framework';
 export declare class AuthService {
-  constructor(kc?: any, LogManager?: any);
+  static init(): any;
+  constructor(LogManager?: any);
   configure(config?: any): any;
 }
