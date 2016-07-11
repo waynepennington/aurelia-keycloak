@@ -1,20 +1,18 @@
 
 
-import { keycloak } from './keycloak';
+import { Keycloak } from './keycloak';
 
 export var AuthService = function () {
     function AuthService() {
         
+
+        this.Keycloak = Keycloak;
     }
 
-    AuthService.init = function init() {
-        this.Auth = new Keycloak();
-    };
-
     AuthService.prototype.configure = function configure(config) {
-        this.Auth.loadConfig(config.install);
+        this.Keycloak.loadConfig(config.install);
         if (typeof config.initOption !== 'undefined') {
-            this.Auth.init(config.initOptions);
+            this.Keycloak.init(config.initOptions);
         }
     };
 

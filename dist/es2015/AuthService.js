@@ -1,14 +1,14 @@
-import { keycloak } from './keycloak';
+import { Keycloak } from './keycloak';
 
 export let AuthService = class AuthService {
-    static init() {
-        this.Auth = new Keycloak();
+    constructor() {
+        this.Keycloak = Keycloak;
     }
 
     configure(config) {
-        this.Auth.loadConfig(config.install);
+        this.Keycloak.loadConfig(config.install);
         if (typeof config.initOption !== 'undefined') {
-            this.Auth.init(config.initOptions);
+            this.Keycloak.init(config.initOptions);
         }
     }
 };
