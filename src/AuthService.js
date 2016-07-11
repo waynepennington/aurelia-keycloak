@@ -1,13 +1,8 @@
 import {keycloak} from './keycloak';
-import {LogManager} from 'aurelia-framework';
-import {inject} from 'aurelia-framework';
 
-@inject(keycloak, LogManager)
 export class AuthService { 
-    constructor(kc, LogManager){
-        let logger = LogManager.getLogger('AuthService');
-        console.log("GOT THIS FAR");
-        let keycloak = new kc.Keycloak();
+    constructor(keycloak){
+        let keycloak = keycloak;
     }        
     configure(config){
         keycloak(config.install);
