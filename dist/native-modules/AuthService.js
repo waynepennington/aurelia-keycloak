@@ -1,10 +1,15 @@
+var _dec, _class;
+
 
 
 import { Keycloak } from './keycloak';
+import { inject } from 'aurelia-framework';
 
-export var AuthService = function () {
-    function AuthService() {
+export var AuthService = (_dec = inject(Keycloak), _dec(_class = function () {
+    function AuthService(keycloak) {
         
+
+        this.Keycloak = keycloak;
     }
 
     AuthService.prototype.configure = function configure(config) {
@@ -15,4 +20,4 @@ export var AuthService = function () {
     };
 
     return AuthService;
-}();
+}()) || _class);
