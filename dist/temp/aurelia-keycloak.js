@@ -1139,12 +1139,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var AuthService = exports.AuthService = function () {
     function AuthService() {
         _classCallCheck(this, AuthService);
-
-        this.Keycloak = Keycloak;
     }
 
     AuthService.prototype.configure = function configure(config) {
-        this.Keycloak.loadConfig(config.install);
+        this.Keycloak = new Keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
             this.Keycloak.init(config.initOptions);
         }

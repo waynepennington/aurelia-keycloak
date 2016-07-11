@@ -1168,13 +1168,9 @@
     }
 })( window );
 
-export class AuthService {
-    constructor () {
-        this.Keycloak = Keycloak;
-    }
-         
+export class AuthService {         
     configure(config){
-        this.Keycloak.loadConfig(config.install);
+        this.Keycloak = new Keycloak(config.install);
         if (typeof config.initOption !== 'undefined') {
             this.Keycloak.init(config.initOptions);
         }

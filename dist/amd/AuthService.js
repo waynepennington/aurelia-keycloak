@@ -11,12 +11,10 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
     var AuthService = exports.AuthService = function () {
         function AuthService() {
             
-
-            this.Keycloak = _keycloak.Keycloak;
         }
 
         AuthService.prototype.configure = function configure(config) {
-            this.Keycloak.loadConfig(config.install);
+            this.Keycloak = new _keycloak.Keycloak(config.install);
             if (typeof config.initOption !== 'undefined') {
                 this.Keycloak.init(config.initOptions);
             }
