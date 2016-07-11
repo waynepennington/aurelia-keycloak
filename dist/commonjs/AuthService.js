@@ -15,7 +15,7 @@ var AuthService = exports.AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(config) {
-        this.Keycloak = new _keycloak.Keycloak(config.install);
+        this.Keycloak = (0, _keycloak.Keycloak)(config.install);
         if (typeof config.initOption !== 'undefined') {
             this.Keycloak.init(config.initOptions);
         }
