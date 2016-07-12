@@ -17,11 +17,11 @@ System.register(['./keycloak'], function (_export, _context) {
                     
 
                     this.Keycloak = null;
-                    this.loadKeycloakScript();
-                    console.log('INFO keycloak.js loaded');
                 }
 
                 AuthService.prototype.configure = function configure(config) {
+                    this.loadKeycloakScript();
+                    console.log('INFO keycloak.js loaded');
                     this.Keycloak = new Keycloak(config.install);
                     console.log('INFO Keycloak authentication client installation configuration loaded');
                     if (typeof config.initOptions !== 'undefined') {

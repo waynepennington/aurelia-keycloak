@@ -3,10 +3,10 @@ import { keycloak } from './keycloak';
 export let AuthService = class AuthService {
     constructor() {
         this.Keycloak = null;
-        this.loadKeycloakScript();
-        console.log('INFO keycloak.js loaded');
     }
     configure(config) {
+        this.loadKeycloakScript();
+        console.log('INFO keycloak.js loaded');
         this.Keycloak = new Keycloak(config.install);
         console.log('INFO Keycloak authentication client installation configuration loaded');
         if (typeof config.initOptions !== 'undefined') {
