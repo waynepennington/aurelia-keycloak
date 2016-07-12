@@ -7,8 +7,6 @@ exports.AuthService = undefined;
 
 var _keycloak = require('./keycloak');
 
-var _aureliaFramework = require('aurelia-framework');
-
 
 
 var AuthService = exports.AuthService = function () {

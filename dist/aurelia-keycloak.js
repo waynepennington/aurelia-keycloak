@@ -1,4 +1,3 @@
-import {inject} from 'aurelia-framework';
 
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates
@@ -1172,9 +1171,10 @@ import {inject} from 'aurelia-framework';
 export class AuthService { 
     constructor(){
         this.Keycloak = null;
+        // this.loadKeycloakScript();
     }
     configure(config){
-        // this.loadKeycloakScript();
+        
         // Keycloak = window.Keycloak;
         // if (window.Keycloak === undefined){
         //     console.log('window.Keycloak not defined');

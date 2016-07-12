@@ -1,12 +1,12 @@
 import {keycloak} from './keycloak';
-import {inject} from 'aurelia-framework';
 
 export class AuthService { 
     constructor(){
         this.Keycloak = null;
+        // this.loadKeycloakScript();
     }
     configure(config){
-        // this.loadKeycloakScript();
+        
         // Keycloak = window.Keycloak;
         // if (window.Keycloak === undefined){
         //     console.log('window.Keycloak not defined');
