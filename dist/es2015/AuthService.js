@@ -1,5 +1,3 @@
-import { keycloak } from './keycloak';
-
 export let AuthService = class AuthService {
     constructor() {
         this.Keycloak = null;

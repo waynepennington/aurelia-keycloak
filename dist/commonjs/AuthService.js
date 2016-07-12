@@ -3,9 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthService = undefined;
-
-var _keycloak = require('./keycloak');
 
 
 

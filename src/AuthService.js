@@ -1,5 +1,3 @@
-import {keycloak} from './keycloak';  
-
 export class AuthService { 
     // static init(){
     //     this.Keycloak = null;

@@ -1,7 +1,5 @@
 
 
-import { keycloak } from './keycloak';
-
 export var AuthService = function () {
     function AuthService() {
         
