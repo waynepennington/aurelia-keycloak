@@ -31,7 +31,8 @@ export class AuthService {
             script.type = 'text/javascript';
             script.async = false;
             script.defer = false;
-            script.src = './jspm_packages/github/waynepennington/aurelia-keycloak@master/keycloak.js';
+            script.src = './src/keycloak.js';
+            //script.src = './jspm_packages/github/waynepennington/aurelia-keycloak@master/keycloak.js';
             document.body.appendChild(script);
         }    
     }
