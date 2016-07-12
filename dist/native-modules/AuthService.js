@@ -10,9 +10,7 @@ export var AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(config) {
-        this.loadKeycloakScript();
-
-        this.Keycloak = new Keycloak(config.install);
+        this.Keycloak = new window.Keycloak(config.install);
         console.log('INFO Keycloak authentication client installation configuration loaded');
         if (typeof config.initOptions !== 'undefined') {
             this.Keycloak.init(config.initOptions);
