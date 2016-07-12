@@ -1,8 +1,6 @@
-import {
-  LogManager,
-  inject
-} from 'aurelia-framework';
 export declare class AuthService {
-  constructor(kc?: any, LogManager?: any);
+  static init(): any;
+  constructor();
   configure(config?: any): any;
+  loadKeycloakScript(): any;
 }

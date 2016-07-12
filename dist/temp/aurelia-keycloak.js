@@ -3,13 +3,8 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthService = undefined;
-
-var _dec, _class;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _aureliaFramework = require('aurelia-framework');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1141,21 +1136,39 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     }
 })(window);
 
-var AuthService = exports.AuthService = (_dec = (0, _aureliaFramework.inject)(keycloak, _aureliaFramework.LogManager), _dec(_class = function () {
-    function AuthService(kc, LogManager) {
+var AuthService = exports.AuthService = function () {
+    AuthService.init = function init() {
+        this.Keycloak = null;
+    };
+
+    function AuthService() {
         _classCallCheck(this, AuthService);
 
-        var logger = LogManager.getLogger('AuthService');
-        console.log("GOT THIS FAR");
-        var keycloak = new kc.Keycloak();
+        this.loadKeycloakScript();
+        console.log('INFO keycloak.js loaded');
     }
 
     AuthService.prototype.configure = function configure(config) {
-        keycloak(config.install);
-        if (typeof config.initOption !== 'undefined') {
-            this.keycloak.init(config.initOptions);
+        this.Keycloak = new Keycloak(config.install);
+        console.log('INFO Keycloak authentication client installation configuration loaded');
+        if (typeof config.initOptions !== 'undefined') {
+            this.Keycloak.init(config.initOptions);
+            console.log('INFO Keycloak initialization options loaded');
+            console.log('INFO ' + config.initOptions);
+        }
+    };
+
+    AuthService.prototype.loadKeycloakScript = function loadKeycloakScript() {
+        if (window.Keycloak === undefined) {
+            var script = document.createElement('script');
+
+            script.type = 'text/javascript';
+            script.async = false;
+            script.defer = false;
+            script.src = './dist/aurelia-keycloak/keycloak.js';
+            document.body.appendChild(script);
         }
     };
 
     return AuthService;
-}()) || _class);
+}();

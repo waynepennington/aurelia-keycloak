@@ -1,19 +1,31 @@
-var _dec, _class;
-
 import { keycloak } from './keycloak';
-import { LogManager } from 'aurelia-framework';
-import { inject } from 'aurelia-framework';
 
-export let AuthService = (_dec = inject(keycloak, LogManager), _dec(_class = class AuthService {
-    constructor(kc, LogManager) {
-        let logger = LogManager.getLogger('AuthService');
-        console.log("GOT THIS FAR");
-        let keycloak = new kc.Keycloak();
+export let AuthService = class AuthService {
+    static init() {
+        this.Keycloak = null;
+    }
+    constructor() {
+        this.loadKeycloakScript();
+        console.log('INFO keycloak.js loaded');
     }
     configure(config) {
-        keycloak(config.install);
-        if (typeof config.initOption !== 'undefined') {
-            this.keycloak.init(config.initOptions);
+        this.Keycloak = new Keycloak(config.install);
+        console.log('INFO Keycloak authentication client installation configuration loaded');
+        if (typeof config.initOptions !== 'undefined') {
+            this.Keycloak.init(config.initOptions);
+            console.log('INFO Keycloak initialization options loaded');
+            console.log('INFO ' + config.initOptions);
         }
     }
-}) || _class);
+    loadKeycloakScript() {
+        if (window.Keycloak === undefined) {
+            let script = document.createElement('script');
+
+            script.type = 'text/javascript';
+            script.async = false;
+            script.defer = false;
+            script.src = `./dist/aurelia-keycloak/keycloak.js`;
+            document.body.appendChild(script);
+        }
+    }
+};
