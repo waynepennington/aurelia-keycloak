@@ -1,5 +1,5 @@
 export declare class AuthService {
   constructor();
   configure(config?: any): any;
-  loadKeycloakScript(): any;
+  keycloak(config?: any): any;
 }
