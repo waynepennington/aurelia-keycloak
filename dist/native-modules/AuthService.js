@@ -3,13 +3,10 @@
 import { keycloak } from './keycloak';
 
 export var AuthService = function () {
-    AuthService.init = function init() {
-        this.Keycloak = null;
-    };
-
     function AuthService() {
         
 
+        this.Keycloak = null;
         this.loadKeycloakScript();
         console.log('INFO keycloak.js loaded');
     }

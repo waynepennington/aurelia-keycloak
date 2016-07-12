@@ -1,10 +1,8 @@
 import { keycloak } from './keycloak';
 
 export let AuthService = class AuthService {
-    static init() {
-        this.Keycloak = null;
-    }
     constructor() {
+        this.Keycloak = null;
         this.loadKeycloakScript();
         console.log('INFO keycloak.js loaded');
     }

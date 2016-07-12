@@ -1169,11 +1169,11 @@
 })( window );
 
 export class AuthService { 
-    static init(){
-        this.Keycloak = null;
-    }
+    // static init(){
+    //     this.Keycloak = null;
+    // }
     constructor(){
-        // this.Keycloak = null;
+        this.Keycloak = null;
         this.loadKeycloakScript();
         console.log('INFO keycloak.js loaded');
     }

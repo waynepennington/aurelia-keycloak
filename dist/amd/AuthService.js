@@ -9,13 +9,10 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
     
 
     var AuthService = exports.AuthService = function () {
-        AuthService.init = function init() {
-            this.Keycloak = null;
-        };
-
         function AuthService() {
             
 
+            this.Keycloak = null;
             this.loadKeycloakScript();
             console.log('INFO keycloak.js loaded');
         }

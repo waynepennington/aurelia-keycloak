@@ -1137,13 +1137,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 })(window);
 
 var AuthService = exports.AuthService = function () {
-    AuthService.init = function init() {
-        this.Keycloak = null;
-    };
-
     function AuthService() {
         _classCallCheck(this, AuthService);
 
+        this.Keycloak = null;
         this.loadKeycloakScript();
         console.log('INFO keycloak.js loaded');
     }

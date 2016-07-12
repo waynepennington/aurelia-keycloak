@@ -13,13 +13,10 @@ System.register(['./keycloak'], function (_export, _context) {
         }],
         execute: function () {
             _export('AuthService', AuthService = function () {
-                AuthService.init = function init() {
-                    this.Keycloak = null;
-                };
-
                 function AuthService() {
                     
 
+                    this.Keycloak = null;
                     this.loadKeycloakScript();
                     console.log('INFO keycloak.js loaded');
                 }

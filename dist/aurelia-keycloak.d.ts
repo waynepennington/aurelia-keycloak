@@ -1,5 +1,8 @@
 export declare class AuthService {
-  static init(): any;
+  
+  // static init(){
+  //     this.Keycloak = null;
+  // }
   constructor();
   configure(config?: any): any;
   loadKeycloakScript(): any;
