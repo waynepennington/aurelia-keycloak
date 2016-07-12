@@ -1,10 +1,9 @@
-define(['exports', './keycloak'], function (exports, _keycloak) {
+define(['exports'], function (exports) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.AuthService = undefined;
 
     var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
         return typeof obj;
@@ -22,7 +21,9 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
         }
 
         AuthService.prototype.configure = function configure(config) {
-            console.log('INFO keycloak type of ' + (typeof _keycloak.keycloak === 'undefined' ? 'undefined' : _typeof(_keycloak.keycloak)));
+            this.loadKeycloakScript();
+
+            console.log('INFO window.Keycloak type of ' + _typeof(Window.Keycloak));
             this.Keycloak = new window.Keycloak(config.install);
             console.log('INFO Keycloak authentication client installation configuration loaded');
             if (typeof config.initOptions !== 'undefined') {

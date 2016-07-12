@@ -2,8 +2,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-import { keycloak } from './keycloak';
-
 export var AuthService = function () {
     function AuthService() {
         
@@ -12,7 +10,9 @@ export var AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(config) {
-        console.log('INFO keycloak type of ' + (typeof keycloak === 'undefined' ? 'undefined' : _typeof(keycloak)));
+        this.loadKeycloakScript();
+
+        console.log('INFO window.Keycloak type of ' + _typeof(Window.Keycloak));
         this.Keycloak = new window.Keycloak(config.install);
         console.log('INFO Keycloak authentication client installation configuration loaded');
         if (typeof config.initOptions !== 'undefined') {

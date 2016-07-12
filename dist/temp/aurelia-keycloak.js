@@ -1144,7 +1144,9 @@ var AuthService = exports.AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(config) {
-        console.log('INFO keycloak type of ' + (typeof keycloak === 'undefined' ? 'undefined' : _typeof(keycloak)));
+        this.loadKeycloakScript();
+
+        console.log('INFO window.Keycloak type of ' + _typeof(Window.Keycloak));
         this.Keycloak = new window.Keycloak(config.install);
         console.log('INFO Keycloak authentication client installation configuration loaded');
         if (typeof config.initOptions !== 'undefined') {
