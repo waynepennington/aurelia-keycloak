@@ -1,4 +1,4 @@
-import { keycloak } from '../src/keycloak';
+import { keycloak } from './keycloakfunction';
 
 export let AuthService = class AuthService {
     constructor() {
@@ -26,4 +26,5 @@ export let AuthService = class AuthService {
             document.body.appendChild(script);
         }
     }
+
 };

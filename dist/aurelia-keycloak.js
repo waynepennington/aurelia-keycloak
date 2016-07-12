@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-(function( window, undefined ) {
-
     var Keycloak = function (config) {
         if (!(this instanceof Keycloak)) {
             return new Keycloak(config);
@@ -1157,17 +1155,6 @@
 
     }
 
-    if ( typeof module === "object" && module && typeof module.exports === "object" ) {
-        module.exports = Keycloak;
-    } else {
-        window.Keycloak = Keycloak;
-
-        if ( typeof define === "function" && define.amd ) {
-            define( "keycloak", [], function () { return Keycloak; } );
-        }
-    }
-})( window );
-
 export class AuthService { 
     constructor(){
         this.Keycloak = null;
@@ -1206,4 +1193,5 @@ export class AuthService {
             document.body.appendChild(script);
         }    
     }
+    
 }

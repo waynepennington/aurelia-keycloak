@@ -1,4 +1,4 @@
-define(['exports', '../src/keycloak'], function (exports, _keycloak) {
+define(['exports', './keycloakfunction'], function (exports, _keycloakfunction) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {

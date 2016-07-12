@@ -1,4 +1,4 @@
-import {keycloak} from '../src/keycloak';
+import {keycloak} from './keycloakfunction';
 
 export class AuthService { 
     constructor(){
@@ -38,4 +38,5 @@ export class AuthService {
             document.body.appendChild(script);
         }    
     }
+    
 }
