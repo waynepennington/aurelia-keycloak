@@ -13,6 +13,7 @@ System.register(['./AuthService'], function (_export, _context) {
                 var instance = aurelia.container.get(AuthService);
                 instance.configure(config);
                 console.log('INFO AuthService configured');
+                aurelia.globalResources('./aurelia-keycloak');
             }
 
             _export('configure', configure);

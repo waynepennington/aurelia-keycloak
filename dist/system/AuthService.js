@@ -1,14 +1,16 @@
 'use strict';
 
-System.register([], function (_export, _context) {
+System.register(['./keycloak'], function (_export, _context) {
     "use strict";
 
-    var AuthService;
+    var keycloak, AuthService;
 
     
 
     return {
-        setters: [],
+        setters: [function (_keycloak) {
+            keycloak = _keycloak.keycloak;
+        }],
         execute: function () {
             _export('AuthService', AuthService = function () {
                 function AuthService() {
@@ -18,14 +20,6 @@ System.register([], function (_export, _context) {
                 }
 
                 AuthService.prototype.configure = function configure(config) {
-                    this.loadKeycloakScript();
-                    Keycloak = window.Keycloak;
-                    if (window.Keycloak === undefined) {
-                        console.log('window.Keycloak not defined');
-                    } else {
-                        console.log('window.Keycloak is defined');
-                    }
-                    console.log('INFO keycloak.js API loaded');
                     this.Keycloak = new Keycloak(config.install);
                     console.log('INFO Keycloak authentication client installation configuration loaded');
                     if (typeof config.initOptions !== 'undefined') {

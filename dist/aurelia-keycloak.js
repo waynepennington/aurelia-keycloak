@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 
 (function( window, undefined ) {
 
@@ -1173,15 +1173,15 @@ export class AuthService {
         this.Keycloak = null;
     }
     configure(config){
-        this.loadKeycloakScript();
-        Keycloak = window.Keycloak;
-        if (window.Keycloak === undefined){
-            console.log('window.Keycloak not defined');
-            }
-            else{
-            console.log('window.Keycloak is defined');
-            }
-        console.log('INFO keycloak.js API loaded');
+        // this.loadKeycloakScript();
+        // Keycloak = window.Keycloak;
+        // if (window.Keycloak === undefined){
+        //     console.log('window.Keycloak not defined');
+        //     }
+        //     else{
+        //     console.log('window.Keycloak is defined');
+        //     }
+        // console.log('INFO keycloak.js API loaded');
         this.Keycloak = new Keycloak(config.install);
         console.log('INFO Keycloak authentication client installation configuration loaded');
         if (typeof config.initOptions !== 'undefined') {
