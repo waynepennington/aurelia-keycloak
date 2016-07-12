@@ -5,6 +5,7 @@ export let AuthService = class AuthService {
         this.Keycloak = null;
     }
     configure(config) {
+        console.log('INFO window.Keycloak type of ' + typeof window.Keycloak);
         this.Keycloak = new window.Keycloak(config.install);
         console.log('INFO Keycloak authentication client installation configuration loaded');
         if (typeof config.initOptions !== 'undefined') {
