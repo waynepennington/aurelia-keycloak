@@ -22,7 +22,7 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
         }
 
         AuthService.prototype.configure = function configure(config) {
-            console.log('INFO window.Keycloak type of ' + _typeof(window.Keycloak));
+            console.log('INFO keycloak type of ' + (typeof _keycloak.keycloak === 'undefined' ? 'undefined' : _typeof(_keycloak.keycloak)));
             this.Keycloak = new window.Keycloak(config.install);
             console.log('INFO Keycloak authentication client installation configuration loaded');
             if (typeof config.initOptions !== 'undefined') {

@@ -1185,7 +1185,7 @@ export class AuthService {
         //     }
         // console.log('INFO keycloak.js API loaded');
         // this.Keycloak = new Keycloak(config.install);
-        console.log('INFO window.Keycloak type of ' + typeof window.Keycloak);
+        console.log('INFO keycloak type of ' + typeof keycloak);
         this.Keycloak = new window.Keycloak(config.install);
         console.log('INFO Keycloak authentication client installation configuration loaded');
         if (typeof config.initOptions !== 'undefined') {
