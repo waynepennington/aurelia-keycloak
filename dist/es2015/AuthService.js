@@ -1,4 +1,5 @@
 import { keycloak } from './keycloak';
+import { inject } from 'aurelia-framework';
 
 export let AuthService = class AuthService {
     constructor() {

@@ -1,6 +1,7 @@
 
 
 import { keycloak } from './keycloak';
+import { inject } from 'aurelia-framework';
 
 export var AuthService = function () {
     function AuthService() {

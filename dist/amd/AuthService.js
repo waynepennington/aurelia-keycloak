@@ -1,4 +1,4 @@
-define(['exports', './keycloak'], function (exports, _keycloak) {
+define(['exports', './keycloak', 'aurelia-framework'], function (exports, _keycloak, _aureliaFramework) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {

@@ -1,3 +1,4 @@
+import {inject} from 'aurelia-framework';
 
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates
