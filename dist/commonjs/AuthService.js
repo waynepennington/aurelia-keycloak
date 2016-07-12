@@ -38,7 +38,7 @@ var AuthService = exports.AuthService = function () {
             script.type = 'text/javascript';
             script.async = false;
             script.defer = false;
-            script.src = './dist/aurelia-keycloak/keycloak.js';
+            script.src = './keycloak.js';
             document.body.appendChild(script);
         }
     };
