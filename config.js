@@ -44,19 +44,19 @@ System.config({
     },
     "npm:aurelia-dependency-injection@1.0.0-beta.1.2.3": {
       "aurelia-logging": "npm:aurelia-logging@1.0.0-beta.1.2.1",
-      "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1.2.1",
+      "aurelia-metadata": "npm:aurelia-metadata@1.0.0-rc.1.0.1",
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.2.2"
     },
     "npm:aurelia-loader-default@1.0.0-beta.1.2.2": {
       "aurelia-loader": "npm:aurelia-loader@1.0.0-beta.1.2.0",
-      "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1.2.1",
+      "aurelia-metadata": "npm:aurelia-metadata@1.0.0-rc.1.0.1",
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.2.2"
     },
     "npm:aurelia-loader@1.0.0-beta.1.2.0": {
-      "aurelia-metadata": "npm:aurelia-metadata@1.0.0-beta.1.2.1",
+      "aurelia-metadata": "npm:aurelia-metadata@1.0.0-rc.1.0.1",
       "aurelia-path": "npm:aurelia-path@1.0.0-beta.1.2.2"
     },
-    "npm:aurelia-metadata@1.0.0-beta.1.2.1": {
+    "npm:aurelia-metadata@1.0.0-rc.1.0.1": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0-beta.1.2.2"
     },
     "npm:babel-runtime@5.8.38": {
