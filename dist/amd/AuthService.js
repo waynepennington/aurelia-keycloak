@@ -16,6 +16,8 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
         }
 
         AuthService.prototype.configure = function configure(config) {
+            this.loadKeycloakScript();
+
             this.Keycloak = new Keycloak(config.install);
             console.log('INFO Keycloak authentication client installation configuration loaded');
             if (typeof config.initOptions !== 'undefined') {
