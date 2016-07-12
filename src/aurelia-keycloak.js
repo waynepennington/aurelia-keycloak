@@ -6,4 +6,4 @@ export function configure(aurelia, config) {
     console.log('INFO AuthService configured');
 }
 
-export {AuthService}
+export {AuthService}  
