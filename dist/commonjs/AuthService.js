@@ -15,7 +15,7 @@ var AuthService = exports.AuthService = function () {
 
     AuthService.prototype.configure = function configure(config) {
         this.loadKeycloakScript();
-        Keycloak = Window.Keycloak;
+        Keycloak = window.Keycloak;
         console.log('INFO keycloak.js API loaded');
         this.Keycloak = new Keycloak(config.install);
         console.log('INFO Keycloak authentication client installation configuration loaded');
