@@ -1,12 +1,12 @@
+import { keycloak } from '../src/keycloak';
+
 export let AuthService = class AuthService {
     constructor() {
         this.Keycloak = null;
     }
     configure(config) {
-        this.loadKeycloakScript();
+        this.Keycloak = new Keycloak(config.install);
 
-        console.log('INFO window.Keycloak type of ' + typeof window.Keycloak);
-        this.Keycloak = new window.Keycloak(config.install);
         console.log('INFO Keycloak authentication client installation configuration loaded');
         if (typeof config.initOptions !== 'undefined') {
             this.Keycloak.init(config.initOptions);

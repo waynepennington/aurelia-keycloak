@@ -1,21 +1,17 @@
 'use strict';
 
-System.register([], function (_export, _context) {
+System.register(['../src/keycloak'], function (_export, _context) {
     "use strict";
 
-    var _typeof, AuthService;
+    var keycloak, AuthService;
 
     
 
     return {
-        setters: [],
+        setters: [function (_srcKeycloak) {
+            keycloak = _srcKeycloak.keycloak;
+        }],
         execute: function () {
-            _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-                return typeof obj;
-            } : function (obj) {
-                return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-            };
-
             _export('AuthService', AuthService = function () {
                 function AuthService() {
                     
@@ -24,10 +20,8 @@ System.register([], function (_export, _context) {
                 }
 
                 AuthService.prototype.configure = function configure(config) {
-                    this.loadKeycloakScript();
+                    this.Keycloak = new Keycloak(config.install);
 
-                    console.log('INFO window.Keycloak type of ' + _typeof(window.Keycloak));
-                    this.Keycloak = new window.Keycloak(config.install);
                     console.log('INFO Keycloak authentication client installation configuration loaded');
                     if (typeof config.initOptions !== 'undefined') {
                         this.Keycloak.init(config.initOptions);
