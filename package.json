@@ -14,7 +14,7 @@
   },
   "license": "MIT",
   "author": "Wayne Pennington <waynep.pennington@gmail.com>",
-  "main": "dist/commonjs/index.js",
+  "main": "dist/commonjs/aurelia-keycloak.js",
   "typings": "dist/aurelia-keycloak.d.ts",
   "repository": {
     "type": "git",
