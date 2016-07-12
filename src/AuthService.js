@@ -1,7 +1,4 @@
 export class AuthService { 
-    // static init(){
-    //     this.Keycloak = null;
-    // }
     constructor(){
         this.Keycloak = null;
     }
