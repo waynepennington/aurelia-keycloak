@@ -10,19 +10,12 @@ System.register([], function (_export, _context) {
     return {
         setters: [],
         execute: function () {
-            function configure(aurelia, config) {
-                var instance = aurelia.container.get(AuthService);
-                instance.configure(config);
-                aurelia.globalResources('./aurelia-keycloak');
-            }
-
-            _export('configure', configure);
-
             _export('AuthService', AuthService = function () {
                 function AuthService() {
                     
 
-                    this.Keycloak = importKeycloak();
+                    this.Keycloak;
+                    importKeycloak();
                 }
 
                 AuthService.prototype.configure = function configure(config) {

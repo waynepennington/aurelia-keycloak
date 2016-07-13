@@ -1,15 +1,11 @@
 
 
-export function configure(aurelia, config) {
-    var instance = aurelia.container.get(AuthService);
-    instance.configure(config);
-    aurelia.globalResources('./aurelia-keycloak');
-}
 export var AuthService = function () {
     function AuthService() {
         
 
-        this.Keycloak = importKeycloak();
+        this.Keycloak;
+        importKeycloak();
     }
 
     AuthService.prototype.configure = function configure(config) {

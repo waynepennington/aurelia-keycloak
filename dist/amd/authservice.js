@@ -4,21 +4,15 @@ define(['exports'], function (exports) {
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.configure = configure;
 
     
-
-    function configure(aurelia, config) {
-        var instance = aurelia.container.get(AuthService);
-        instance.configure(config);
-        aurelia.globalResources('./aurelia-keycloak');
-    }
 
     var AuthService = exports.AuthService = function () {
         function AuthService() {
             
 
-            this.Keycloak = importKeycloak();
+            this.Keycloak;
+            importKeycloak();
         }
 
         AuthService.prototype.configure = function configure(config) {

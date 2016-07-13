@@ -1,13 +1,9 @@
-export function configure(aurelia, config) {
-    let instance = aurelia.container.get(AuthService);
-    instance.configure(config);
-    aurelia.globalResources('./aurelia-keycloak');
 
-    }
 export class AuthService { 
 
     constructor(){
-        this.Keycloak = importKeycloak();
+        this.Keycloak;
+        importKeycloak();
     }
     configure(config){
         this.Keycloak = new Keycloak(config.install);
@@ -28,3 +24,8 @@ export class AuthService {
         }    
     }        
 }
+export function configure(aurelia, config) {
+    let instance = aurelia.container.get(AuthService);
+    instance.configure(config);
+    aurelia.globalResources('./aurelia-keycloak');
+    }
