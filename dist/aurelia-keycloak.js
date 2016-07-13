@@ -24,8 +24,3 @@ export class AuthService {
         }    
     }        
 }
-export function configure(aurelia, config) {
-    let instance = aurelia.container.get(AuthService);
-    instance.configure(config);
-    aurelia.globalResources('./aurelia-keycloak');
-    }

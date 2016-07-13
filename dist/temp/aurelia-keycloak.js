@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.configure = configure;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -37,9 +36,3 @@ var AuthService = exports.AuthService = function () {
 
     return AuthService;
 }();
-
-function configure(aurelia, config) {
-    var instance = aurelia.container.get(AuthService);
-    instance.configure(config);
-    aurelia.globalResources('./aurelia-keycloak');
-}

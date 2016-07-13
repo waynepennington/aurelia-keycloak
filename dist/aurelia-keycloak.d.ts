@@ -3,4 +3,3 @@ export declare class AuthService {
   configure(config?: any): any;
   importKeycloak(): any;
 }
-export declare function configure(aurelia?: any, config?: any): any;
