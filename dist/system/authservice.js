@@ -15,7 +15,14 @@ System.register([], function (_export, _context) {
                     
 
                     this.Keycloak;
-                    importKeycloak();
+                    var script = document.createElement('script');
+
+                    script.type = 'text/javascript';
+                    script.async = false;
+                    script.defer = false;
+                    script.src = './src/keycloak.js';
+
+                    document.body.appendChild(script);
                 }
 
                 AuthService.prototype.configure = function configure(config) {
@@ -25,16 +32,7 @@ System.register([], function (_export, _context) {
                     }
                 };
 
-                AuthService.prototype.importKeycloak = function importKeycloak() {
-                    var script = document.createElement('script');
-
-                    script.type = 'text/javascript';
-                    script.async = false;
-                    script.defer = false;
-                    script.src = './src/keycloak.js';
-
-                    document.body.appendChild(script);
-                };
+                AuthService.prototype.importKeycloak = function importKeycloak() {};
 
                 return AuthService;
             }());
