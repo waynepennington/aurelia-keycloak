@@ -1,16 +1,8 @@
-import { keycloak } from '.keycloak';
+import { keycloak } from './keycloak';
 export let AuthService = class AuthService {
 
     constructor() {
-
-        let script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.async = false;
-        script.defer = false;
-        script.src = `./src/keycloak.js`;
-        document.body.appendChild(script);
-
-        let Keycloak = window.Keycloak;
+        this.keycloak;
     }
     configure(config) {
         this.Keycloak = new Keycloak(config.install);

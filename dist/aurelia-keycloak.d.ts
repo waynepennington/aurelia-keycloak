@@ -1,6 +1,6 @@
 import {
   keycloak
-} from '.keycloak';
+} from './keycloak';
 export declare class AuthService {
   constructor();
   configure(config?: any): any;

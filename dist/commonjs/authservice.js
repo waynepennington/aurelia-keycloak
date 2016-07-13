@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthService = undefined;
 
-var _keycloak = require('.keycloak');
+var _keycloak = require('./keycloak');
 
 
 
@@ -13,14 +13,7 @@ var AuthService = exports.AuthService = function () {
     function AuthService() {
         
 
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.async = false;
-        script.defer = false;
-        script.src = './src/keycloak.js';
-        document.body.appendChild(script);
-
-        var Keycloak = window.Keycloak;
+        this.keycloak;
     }
 
     AuthService.prototype.configure = function configure(config) {

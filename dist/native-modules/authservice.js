@@ -1,18 +1,11 @@
 
 
-import { keycloak } from '.keycloak';
+import { keycloak } from './keycloak';
 export var AuthService = function () {
     function AuthService() {
         
 
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.async = false;
-        script.defer = false;
-        script.src = './src/keycloak.js';
-        document.body.appendChild(script);
-
-        var Keycloak = window.Keycloak;
+        this.keycloak;
     }
 
     AuthService.prototype.configure = function configure(config) {

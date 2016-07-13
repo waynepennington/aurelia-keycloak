@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['.keycloak'], function (_export, _context) {
+System.register(['./keycloak'], function (_export, _context) {
     "use strict";
 
     var keycloak, AuthService;
@@ -16,14 +16,7 @@ System.register(['.keycloak'], function (_export, _context) {
                 function AuthService() {
                     
 
-                    var script = document.createElement('script');
-                    script.type = 'text/javascript';
-                    script.async = false;
-                    script.defer = false;
-                    script.src = './src/keycloak.js';
-                    document.body.appendChild(script);
-
-                    var Keycloak = window.Keycloak;
+                    this.keycloak;
                 }
 
                 AuthService.prototype.configure = function configure(config) {
