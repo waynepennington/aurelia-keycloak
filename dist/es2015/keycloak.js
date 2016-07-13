@@ -1,19 +1,8 @@
-'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.AuthService = undefined;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _keycloak = require('.keycloak');
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 (function (window, undefined) {
 
-    var Keycloak = function Keycloak(config) {
+    var Keycloak = function (config) {
         if (!(this instanceof Keycloak)) {
             return new Keycloak(config);
         }
@@ -106,7 +95,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             var configPromise = loadConfig(config);
 
             function onLoad() {
-                var doLogin = function doLogin(prompt) {
+                var doLogin = function (prompt) {
                     if (!prompt) {
                         options.prompt = 'none';
                     }
@@ -348,7 +337,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             minValidity = minValidity || 5;
 
-            var exec = function exec() {
+            var exec = function () {
                 if (!kc.isTokenExpired(minValidity)) {
                     promise.setSuccess(false);
                 } else {
@@ -695,7 +684,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         function createPromise() {
             var p = {
-                setSuccess: function setSuccess(result) {
+                setSuccess: function (result) {
                     p.success = true;
                     p.result = result;
                     if (p.successCallback) {
@@ -703,7 +692,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     }
                 },
 
-                setError: function setError(result) {
+                setError: function (result) {
                     p.error = true;
                     p.result = result;
                     if (p.errorCallback) {
@@ -712,7 +701,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 },
 
                 promise: {
-                    success: function success(callback) {
+                    success: function (callback) {
                         if (p.success) {
                             callback(p.result);
                         } else if (!p.error) {
@@ -720,7 +709,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         }
                         return p.promise;
                     },
-                    error: function error(callback) {
+                    error: function (callback) {
                         if (p.error) {
                             callback(p.result);
                         } else if (!p.success) {
@@ -766,7 +755,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
 
-            var messageCallback = function messageCallback(event) {
+            var messageCallback = function (event) {
                 if (event.origin !== loginIframe.iframeOrigin) {
                     return;
                 }
@@ -783,7 +772,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             };
             window.addEventListener('message', messageCallback, false);
 
-            var check = function check() {
+            var check = function () {
                 checkLoginIframe();
                 if (kc.token) {
                     setTimeout(check, loginIframe.interval * 1000);
@@ -812,27 +801,27 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         function loadAdapter(type) {
             if (!type || type == 'default') {
                 return {
-                    login: function login(options) {
+                    login: function (options) {
                         window.location.href = kc.createLoginUrl(options);
                         return createPromise().promise;
                     },
 
-                    logout: function logout(options) {
+                    logout: function (options) {
                         window.location.href = kc.createLogoutUrl(options);
                         return createPromise().promise;
                     },
 
-                    register: function register(options) {
+                    register: function (options) {
                         window.location.href = kc.createRegisterUrl(options);
                         return createPromise().promise;
                     },
 
-                    accountManagement: function accountManagement() {
+                    accountManagement: function () {
                         window.location.href = kc.createAccountUrl();
                         return createPromise().promise;
                     },
 
-                    redirectUri: function redirectUri(options, encodeHash) {
+                    redirectUri: function (options, encodeHash) {
                         if (arguments.length == 1) {
                             encodeHash = true;
                         }
@@ -857,7 +846,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 loginIframe.enable = false;
 
                 return {
-                    login: function login(options) {
+                    login: function (options) {
                         var promise = createPromise();
 
                         var o = 'location=no';
@@ -896,7 +885,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         return promise.promise;
                     },
 
-                    logout: function logout(options) {
+                    logout: function (options) {
                         var promise = createPromise();
 
                         var logoutUrl = kc.createLogoutUrl(options);
@@ -931,7 +920,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         return promise.promise;
                     },
 
-                    register: function register() {
+                    register: function () {
                         var registerUrl = kc.createRegisterUrl();
                         var ref = window.open(registerUrl, '_blank', 'location=no');
                         ref.addEventListener('loadstart', function (event) {
@@ -941,7 +930,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         });
                     },
 
-                    accountManagement: function accountManagement() {
+                    accountManagement: function () {
                         var accountUrl = kc.createAccountUrl();
                         var ref = window.open(accountUrl, '_blank', 'location=no');
                         ref.addEventListener('loadstart', function (event) {
@@ -951,7 +940,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         });
                     },
 
-                    redirectUri: function redirectUri(options) {
+                    redirectUri: function (options) {
                         return 'http://localhost';
                     }
                 };
@@ -960,12 +949,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             throw 'invalid adapter type: ' + type;
         }
 
-        var PersistentStorage = function PersistentStorage() {
+        var PersistentStorage = function () {
             if (!(this instanceof PersistentStorage)) {
                 return new PersistentStorage();
             }
             var ps = this;
-            var useCookieStorage = function useCookieStorage() {
+            var useCookieStorage = function () {
                 if (typeof localStorage === "undefined") {
                     return true;
                 }
@@ -1004,13 +993,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 setCookie(key, '', cookieExpiration(-100));
             };
 
-            var cookieExpiration = function cookieExpiration(minutes) {
+            var cookieExpiration = function (minutes) {
                 var exp = new Date();
                 exp.setTime(exp.getTime() + minutes * 60 * 1000);
                 return exp;
             };
 
-            var getCookie = function getCookie(key) {
+            var getCookie = function (key) {
                 var name = key + '=';
                 var ca = document.cookie.split(';');
                 for (var i = 0; i < ca.length; i++) {
@@ -1025,19 +1014,19 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 return '';
             };
 
-            var setCookie = function setCookie(key, value, expirationDate) {
+            var setCookie = function (key, value, expirationDate) {
                 var cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
                 document.cookie = cookie;
             };
         };
 
-        var CallbackParser = function CallbackParser(uriToParse, responseMode) {
+        var CallbackParser = function (uriToParse, responseMode) {
             if (!(this instanceof CallbackParser)) {
                 return new CallbackParser(uriToParse, responseMode);
             }
             var parser = this;
 
-            var initialParse = function initialParse() {
+            var initialParse = function () {
                 var baseUri = null;
                 var queryString = null;
                 var fragmentString = null;
@@ -1062,7 +1051,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 return { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
             };
 
-            var parseParams = function parseParams(paramString) {
+            var parseParams = function (paramString) {
                 var result = {};
                 var params = paramString.split('&');
                 for (var i = 0; i < params.length; i++) {
@@ -1074,7 +1063,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 return result;
             };
 
-            var handleQueryParam = function handleQueryParam(paramName, paramValue, oauth) {
+            var handleQueryParam = function (paramName, paramValue, oauth) {
                 var supportedOAuthParams = ['code', 'error', 'state'];
 
                 for (var i = 0; i < supportedOAuthParams.length; i++) {
@@ -1126,7 +1115,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         };
     };
 
-    if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === "object" && module && _typeof(module.exports) === "object") {
+    if (typeof module === "object" && module && typeof module.exports === "object") {
         module.exports = Keycloak;
     } else {
         window.Keycloak = Keycloak;
@@ -1138,29 +1127,3 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
     }
 })(window);
-
-var AuthService = exports.AuthService = function () {
-    function AuthService() {
-        _classCallCheck(this, AuthService);
-
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.async = false;
-        script.defer = false;
-        script.src = './src/keycloak.js';
-        document.body.appendChild(script);
-
-        var Keycloak = window.Keycloak;
-    }
-
-    AuthService.prototype.configure = function configure(config) {
-        this.Keycloak = new Keycloak(config.install);
-        if (typeof config.initOptions !== 'undefined') {
-            this.Keycloak.init(config.initOptions);
-        }
-    };
-
-    AuthService.prototype.importKeycloak = function importKeycloak() {};
-
-    return AuthService;
-}();

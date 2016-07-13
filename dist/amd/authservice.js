@@ -1,9 +1,10 @@
-define(['exports'], function (exports) {
+define(['exports', '.keycloak'], function (exports, _keycloak) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
+    exports.AuthService = undefined;
 
     
 
@@ -11,15 +12,14 @@ define(['exports'], function (exports) {
         function AuthService() {
             
 
-            this.Keycloak;
             var script = document.createElement('script');
-
             script.type = 'text/javascript';
             script.async = false;
             script.defer = false;
             script.src = './src/keycloak.js';
-
             document.body.appendChild(script);
+
+            var Keycloak = window.Keycloak;
         }
 
         AuthService.prototype.configure = function configure(config) {
