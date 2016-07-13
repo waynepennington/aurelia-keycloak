@@ -3,11 +3,8 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthService = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _keycloak = require('./keycloak');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1143,11 +1140,17 @@ var AuthService = exports.AuthService = function () {
     function AuthService() {
         _classCallCheck(this, AuthService);
 
-        this.keycloak;
+        this.Keycloak;
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.async = false;
+        script.defer = false;
+        script.src = './src/keycloak.js';
+        document.body.appendChild(script);
     }
 
     AuthService.prototype.configure = function configure(config) {
-        this.Keycloak = new Keycloak(config.install);
+        this.Keycloak = new window.Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.Keycloak.init(config.initOptions);
         }

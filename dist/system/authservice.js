@@ -1,26 +1,30 @@
 'use strict';
 
-System.register(['./keycloak'], function (_export, _context) {
+System.register([], function (_export, _context) {
     "use strict";
 
-    var keycloak, AuthService;
+    var AuthService;
 
     
 
     return {
-        setters: [function (_keycloak) {
-            keycloak = _keycloak.keycloak;
-        }],
+        setters: [],
         execute: function () {
             _export('AuthService', AuthService = function () {
                 function AuthService() {
                     
 
-                    this.keycloak;
+                    this.Keycloak;
+                    var script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    script.async = false;
+                    script.defer = false;
+                    script.src = './src/keycloak.js';
+                    document.body.appendChild(script);
                 }
 
                 AuthService.prototype.configure = function configure(config) {
-                    this.Keycloak = new Keycloak(config.install);
+                    this.Keycloak = new window.Keycloak(config.install);
                     if (typeof config.initOptions !== 'undefined') {
                         this.Keycloak.init(config.initOptions);
                     }
