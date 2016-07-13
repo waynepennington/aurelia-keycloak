@@ -11,6 +11,9 @@ var AuthService = exports.AuthService = function () {
         _classCallCheck(this, AuthService);
 
         this.Keycloak;
+    }
+
+    AuthService.prototype.configure = function configure(config) {
         System.config({
             meta: {
                 '/src/keycloak.js': {
@@ -20,10 +23,8 @@ var AuthService = exports.AuthService = function () {
             }
         });
         System.import('/src/keycloak.js');
-    }
 
-    AuthService.prototype.configure = function configure(config) {
-        this.Keycloak = new window.Keycloak(config.install);
+        this.Keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.Keycloak.init(config.initOptions);
         }

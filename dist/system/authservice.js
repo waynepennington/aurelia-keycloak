@@ -15,6 +15,9 @@ System.register([], function (_export, _context) {
                     
 
                     this.Keycloak;
+                }
+
+                AuthService.prototype.configure = function configure(config) {
                     System.config({
                         meta: {
                             '/src/keycloak.js': {
@@ -24,10 +27,8 @@ System.register([], function (_export, _context) {
                         }
                     });
                     System.import('/src/keycloak.js');
-                }
 
-                AuthService.prototype.configure = function configure(config) {
-                    this.Keycloak = new window.Keycloak(config.install);
+                    this.Keycloak = new Keycloak(config.install);
                     if (typeof config.initOptions !== 'undefined') {
                         this.Keycloak.init(config.initOptions);
                     }

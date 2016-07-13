@@ -4,6 +4,8 @@ export class AuthService {
 
     constructor(){
         this.Keycloak;
+    }
+    configure(config){
         System.config({
             meta: {
                 '/src/keycloak.js': {
@@ -13,9 +15,8 @@ export class AuthService {
             }
         });
         System.import('/src/keycloak.js');
-    }
-    configure(config){
-        this.Keycloak = new window.Keycloak(config.install);
+        
+        this.Keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.Keycloak.init(config.initOptions);                                     
         }
