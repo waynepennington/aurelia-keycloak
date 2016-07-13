@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['http://localhost:9000/src/keycloak'], function (_export, _context) {
+System.register(['./keycloak'], function (_export, _context) {
     "use strict";
 
     var Keycloak, AuthService;
@@ -8,8 +8,8 @@ System.register(['http://localhost:9000/src/keycloak'], function (_export, _cont
     
 
     return {
-        setters: [function (_httpLocalhost9000SrcKeycloak) {
-            Keycloak = _httpLocalhost9000SrcKeycloak.Keycloak;
+        setters: [function (_keycloak) {
+            Keycloak = _keycloak.Keycloak;
         }],
         execute: function () {
             _export('AuthService', AuthService = function () {

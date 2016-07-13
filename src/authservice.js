@@ -1,4 +1,4 @@
-import {Keycloak} from 'http://localhost:9000/src/keycloak';
+import {Keycloak} from './keycloak';
 
 export class AuthService { 
 

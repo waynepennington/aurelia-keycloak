@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthService = undefined;
 
-var _keycloak = require('http://localhost:9000/src/keycloak');
+var _keycloak = require('./keycloak');
 
 
 
