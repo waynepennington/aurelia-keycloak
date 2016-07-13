@@ -1,5 +1,7 @@
 export declare class AuthService {
-  constructor();
+  
+  // constructor(){
+  //     this.Keycloak;
+  // }
   configure(config?: any): any;
-  installKeycloak(): any;
 }
