@@ -3,16 +3,42 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthService = undefined;
 exports.configure = configure;
 
-var _AuthService = require('./AuthService');
+
 
 function configure(aurelia, config) {
-    var instance = aurelia.container.get(_AuthService.AuthService);
+    var instance = aurelia.container.get(AuthService);
     instance.configure(config);
-    console.log('INFO AuthService configured');
     aurelia.globalResources('./aurelia-keycloak');
 }
 
-exports.AuthService = _AuthService.AuthService;
+var AuthService = exports.AuthService = function () {
+    function AuthService() {
+        
+
+        this.Keycloak = importKeycloak();
+    }
+
+    AuthService.prototype.configure = function configure(config) {
+        this.Keycloak = new Keycloak(config.install);
+        if (typeof config.initOptions !== 'undefined') {
+            this.Keycloak.init(config.initOptions);
+        }
+    };
+
+    AuthService.prototype.importKeycloak = function importKeycloak() {
+        return function () {
+            var script = document.createElement('script');
+
+            script.type = 'text/javascript';
+            script.async = false;
+            script.defer = false;
+            script.src = './src/keycloak.js';
+
+            document.body.appendChild(script);
+        };
+    };
+
+    return AuthService;
+}();
