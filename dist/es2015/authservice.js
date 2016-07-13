@@ -3,12 +3,15 @@ export let AuthService = class AuthService {
 
     constructor() {
         this.Keycloak;
-        let script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.async = false;
-        script.defer = false;
-        script.src = `./src/keycloak.js`;
-        document.body.appendChild(script);
+        System.config({
+            meta: {
+                '/src/keycloak.js': {
+                    exports: 'Keycloak',
+                    format: 'global'
+                }
+            }
+        });
+        System.import('/src/keycloak.js');
     }
     configure(config) {
         this.Keycloak = new window.Keycloak(config.install);
@@ -16,5 +19,14 @@ export let AuthService = class AuthService {
             this.Keycloak.init(config.initOptions);
         }
     }
-    importKeycloak() {}
+    installKeycloak() {
+        return function (src, fOnload) {
+            let script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.async = false;
+            script.defer = false;
+            script.src = `./src/keycloak.js`;
+            document.getElementsByTagName('head')[0].appendChild(script);
+        };
+    }
 };
