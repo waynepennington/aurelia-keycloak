@@ -1168,6 +1168,8 @@
     }
 })( window );
 
+import {Keycloak} from 'http://localhost:9000/src/keycloak';
+
 export class AuthService { 
 
     // constructor(){

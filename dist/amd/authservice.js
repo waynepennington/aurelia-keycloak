@@ -1,4 +1,4 @@
-define(['exports', '../src/keycloak'], function (exports, _keycloak) {
+define(['exports', 'http://localhost:9000/src/keycloak'], function (exports, _keycloak) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
