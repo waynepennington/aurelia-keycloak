@@ -1,4 +1,4 @@
-import {Keycloak} from './keycloak';
+import {Keycloak} from '../src/keycloak';
 
 export class AuthService { 
 
