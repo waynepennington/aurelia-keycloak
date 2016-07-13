@@ -11,15 +11,13 @@ export let AuthService = class AuthService {
         }
     }
     importKeycloak() {
-        return function () {
-            let script = document.createElement('script');
+        let script = document.createElement('script');
 
-            script.type = 'text/javascript';
-            script.async = false;
-            script.defer = false;
-            script.src = `./src/keycloak.js`;
+        script.type = 'text/javascript';
+        script.async = false;
+        script.defer = false;
+        script.src = `./src/keycloak.js`;
 
-            document.body.appendChild(script);
-        };
+        document.body.appendChild(script);
     }
 };

@@ -12,7 +12,6 @@ export class AuthService {
         }
     }
     importKeycloak(){ 
-        return function (){
             let script = document.createElement('script');
 
             script.type = 'text/javascript';
@@ -20,7 +19,6 @@ export class AuthService {
             script.defer = false;
             script.src = `./src/keycloak.js`;
 
-            document.body.appendChild(script);        
-        }    
+            document.body.appendChild(script);          
     }        
 }

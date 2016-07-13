@@ -16,16 +16,14 @@ export var AuthService = function () {
     };
 
     AuthService.prototype.importKeycloak = function importKeycloak() {
-        return function () {
-            var script = document.createElement('script');
+        var script = document.createElement('script');
 
-            script.type = 'text/javascript';
-            script.async = false;
-            script.defer = false;
-            script.src = './src/keycloak.js';
+        script.type = 'text/javascript';
+        script.async = false;
+        script.defer = false;
+        script.src = './src/keycloak.js';
 
-            document.body.appendChild(script);
-        };
+        document.body.appendChild(script);
     };
 
     return AuthService;
