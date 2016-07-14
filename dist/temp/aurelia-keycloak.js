@@ -3,9 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthService = undefined;
-
-var _aureliaFramework = require('aurelia-framework');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1135,7 +1132,8 @@ var AuthService = exports.AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(aurelia, config) {
-        this.keycloak = new Keycloak(config.install);
+        var instance = aurelia.container.get(Keycloak);
+        this.keycloak = new instance(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }

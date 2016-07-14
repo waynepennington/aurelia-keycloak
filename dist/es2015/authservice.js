@@ -1,11 +1,12 @@
-import { Keycloak } from './keycloak';
+import { keycloak } from './keycloak';
 
 export let AuthService = class AuthService {
     constructor() {
         this.keycloak = {};
     }
     configure(aurelia, config) {
-        this.keycloak = new Keycloak(config.install);
+        let instance = aurelia.container.get(Keycloak);
+        this.keycloak = new instance(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }

@@ -3,13 +3,13 @@
 System.register(['./keycloak'], function (_export, _context) {
     "use strict";
 
-    var Keycloak, AuthService;
+    var keycloak, AuthService;
 
     
 
     return {
         setters: [function (_keycloak) {
-            Keycloak = _keycloak.Keycloak;
+            keycloak = _keycloak.keycloak;
         }],
         execute: function () {
             _export('AuthService', AuthService = function () {
@@ -20,7 +20,8 @@ System.register(['./keycloak'], function (_export, _context) {
                 }
 
                 AuthService.prototype.configure = function configure(aurelia, config) {
-                    this.keycloak = new Keycloak(config.install);
+                    var instance = aurelia.container.get(Keycloak);
+                    this.keycloak = new instance(config.install);
                     if (typeof config.initOptions !== 'undefined') {
                         this.keycloak.init(config.initOptions);
                     }

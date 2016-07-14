@@ -1,6 +1,6 @@
 
 
-import { Keycloak } from './keycloak';
+import { keycloak } from './keycloak';
 
 export var AuthService = function () {
     function AuthService() {
@@ -10,7 +10,8 @@ export var AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(aurelia, config) {
-        this.keycloak = new Keycloak(config.install);
+        var instance = aurelia.container.get(Keycloak);
+        this.keycloak = new instance(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }
