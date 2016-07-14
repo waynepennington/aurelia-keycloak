@@ -1,13 +1,4 @@
-System.config({
-    meta: {
-        './keycloak.js': {
-            globals: {
-                Keycloak: 'keycloak.js'
-            }
-        }
-    }
-});
-System.import('./keycloak.js');
+import { keycloak } from './keycloak';
 
 export let AuthService = class AuthService {
     constructor() {

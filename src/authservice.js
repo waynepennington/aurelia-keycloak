@@ -1,14 +1,7 @@
-System.config({
-  meta: {
-    './keycloak.js': {
-      globals: {
-        Keycloak: 'keycloak.js'
-      }
-    }
-  }
-});
-System.import('./keycloak.js');
+import {keycloak} from './keycloak';
+// import {inject} from 'aurelia-framework';
 
+// @inject(Keycloak)
 export class AuthService { 
     constructor(){
         this.keycloak = {};

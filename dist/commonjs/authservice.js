@@ -3,19 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.AuthService = undefined;
+
+var _keycloak = require('./keycloak');
 
 
-
-System.config({
-    meta: {
-        './keycloak.js': {
-            globals: {
-                Keycloak: 'keycloak.js'
-            }
-        }
-    }
-});
-System.import('./keycloak.js');
 
 var AuthService = exports.AuthService = function () {
     function AuthService() {

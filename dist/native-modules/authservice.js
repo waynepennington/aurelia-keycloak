@@ -1,15 +1,6 @@
 
 
-System.config({
-    meta: {
-        './keycloak.js': {
-            globals: {
-                Keycloak: 'keycloak.js'
-            }
-        }
-    }
-});
-System.import('./keycloak.js');
+import { keycloak } from './keycloak';
 
 export var AuthService = function () {
     function AuthService() {

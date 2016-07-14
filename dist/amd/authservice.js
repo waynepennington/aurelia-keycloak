@@ -1,22 +1,12 @@
-define(['exports'], function (exports) {
+define(['exports', './keycloak'], function (exports, _keycloak) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
+    exports.AuthService = undefined;
 
     
-
-    System.config({
-        meta: {
-            './keycloak.js': {
-                globals: {
-                    Keycloak: 'keycloak.js'
-                }
-            }
-        }
-    });
-    System.import('./keycloak.js');
 
     var AuthService = exports.AuthService = function () {
         function AuthService() {

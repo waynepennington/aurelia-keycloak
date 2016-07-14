@@ -1,26 +1,17 @@
 'use strict';
 
-System.register([], function (_export, _context) {
+System.register(['./keycloak'], function (_export, _context) {
     "use strict";
 
-    var AuthService;
+    var keycloak, AuthService;
 
     
 
     return {
-        setters: [],
+        setters: [function (_keycloak) {
+            keycloak = _keycloak.keycloak;
+        }],
         execute: function () {
-            System.config({
-                meta: {
-                    './keycloak.js': {
-                        globals: {
-                            Keycloak: 'keycloak.js'
-                        }
-                    }
-                }
-            });
-            System.import('./keycloak.js');
-
             _export('AuthService', AuthService = function () {
                 function AuthService() {
                     
