@@ -1,4 +1,4 @@
 export declare class AuthService {
   constructor();
-  configure(config?: any): any;
+  configure(aurelia?: any, config?: any): any;
 }

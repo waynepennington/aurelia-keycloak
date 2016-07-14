@@ -9,6 +9,6 @@ var _authservice = require('./authservice');
 
 function configure(aurelia, config) {
     var instance = aurelia.container.get(_authservice.AuthService);
-    instance.configure(config);
+    instance.configure(aurelia, config);
     aurelia.globalResources('./aurelia-keycloak');
 }
