@@ -1,8 +1,11 @@
+var _dec, _class;
 
 
-import { keycloak } from './keycloak';
 
-export var AuthService = function () {
+import { Keycloak } from './keycloak';
+import { inject } from 'aurelia-framework';
+
+export var AuthService = (_dec = inject(Keycloak), _dec(_class = function () {
     function AuthService() {
         
 
@@ -10,12 +13,11 @@ export var AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(aurelia, config) {
-        var instance = aurelia.container.get(Keycloak);
-        this.keycloak = new instance(config.install);
+        this.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }
     };
 
     return AuthService;
-}();
+}()) || _class);
