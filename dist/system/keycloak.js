@@ -6,7 +6,6 @@ System.register([], function (_export, _context) {
     return {
         setters: [],
         execute: function () {
-
             (function (window, undefined) {
 
                 var Keycloak = function Keycloak(config) {

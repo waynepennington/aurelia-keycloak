@@ -1,5 +1,4 @@
 
-
 (function (window, undefined) {
 
     var Keycloak = function Keycloak(config) {
