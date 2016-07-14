@@ -1,6 +1,15 @@
 
 
-import { keycloak } from './keycloak';
+System.config({
+    meta: {
+        './keycloak.js': {
+            globals: {
+                Keycloak: 'keycloak.js'
+            }
+        }
+    }
+});
+System.import('./keycloak.js');
 
 export var AuthService = function () {
     function AuthService() {
@@ -10,8 +19,7 @@ export var AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(aurelia, config) {
-        var instance = aurelia.container.get(keycloak);
-        this.keycloak = new instance(config.install);
+        this.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }

@@ -1,12 +1,22 @@
-define(['exports', './keycloak'], function (exports, _keycloak) {
+define(['exports'], function (exports) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.AuthService = undefined;
 
     
+
+    System.config({
+        meta: {
+            './keycloak.js': {
+                globals: {
+                    Keycloak: 'keycloak.js'
+                }
+            }
+        }
+    });
+    System.import('./keycloak.js');
 
     var AuthService = exports.AuthService = function () {
         function AuthService() {
@@ -16,8 +26,7 @@ define(['exports', './keycloak'], function (exports, _keycloak) {
         }
 
         AuthService.prototype.configure = function configure(aurelia, config) {
-            var instance = aurelia.container.get(_keycloak.keycloak);
-            this.keycloak = new instance(config.install);
+            this.keycloak = new Keycloak(config.install);
             if (typeof config.initOptions !== 'undefined') {
                 this.keycloak.init(config.initOptions);
             }

@@ -1,17 +1,26 @@
 'use strict';
 
-System.register(['./keycloak'], function (_export, _context) {
+System.register([], function (_export, _context) {
     "use strict";
 
-    var keycloak, AuthService;
+    var AuthService;
 
     
 
     return {
-        setters: [function (_keycloak) {
-            keycloak = _keycloak.keycloak;
-        }],
+        setters: [],
         execute: function () {
+            System.config({
+                meta: {
+                    './keycloak.js': {
+                        globals: {
+                            Keycloak: 'keycloak.js'
+                        }
+                    }
+                }
+            });
+            System.import('./keycloak.js');
+
             _export('AuthService', AuthService = function () {
                 function AuthService() {
                     
@@ -20,8 +29,7 @@ System.register(['./keycloak'], function (_export, _context) {
                 }
 
                 AuthService.prototype.configure = function configure(aurelia, config) {
-                    var instance = aurelia.container.get(keycloak);
-                    this.keycloak = new instance(config.install);
+                    this.keycloak = new Keycloak(config.install);
                     if (typeof config.initOptions !== 'undefined') {
                         this.keycloak.init(config.initOptions);
                     }

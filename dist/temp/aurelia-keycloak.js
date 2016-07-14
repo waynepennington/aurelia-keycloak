@@ -1136,6 +1136,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     }
 })(window);
 
+System.config({
+    meta: {
+        './keycloak.js': {
+            globals: {
+                Keycloak: 'keycloak.js'
+            }
+        }
+    }
+});
+System.import('./keycloak.js');
+
 var AuthService = exports.AuthService = function () {
     function AuthService() {
         _classCallCheck(this, AuthService);
@@ -1144,8 +1155,7 @@ var AuthService = exports.AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(aurelia, config) {
-        var instance = aurelia.container.get(keycloak);
-        this.keycloak = new instance(config.install);
+        this.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }
