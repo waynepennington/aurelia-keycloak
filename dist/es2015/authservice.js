@@ -1,4 +1,4 @@
-import { keycloak } from './keycloak';
+import { Keycloak } from './keycloak';
 
 export let AuthService = class AuthService {
     constructor() {

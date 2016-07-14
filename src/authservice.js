@@ -1,4 +1,4 @@
-import {keycloak} from './keycloak';
+import {Keycloak} from './keycloak';
 // import {inject} from 'aurelia-framework';
 
 // @inject(Keycloak)
