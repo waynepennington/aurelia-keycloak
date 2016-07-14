@@ -1,9 +1,11 @@
-import { Keycloak } from './keycloak';
+import { keycloak } from './keycloak';
 
 export let AuthService = class AuthService {
-
+    constructor() {
+        this.keycloak = {};
+    }
     configure(config) {
-        let keycloak = new Keycloak(config.install);
+        this.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }

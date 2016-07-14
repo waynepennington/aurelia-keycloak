@@ -12,10 +12,12 @@ var _keycloak = require('./keycloak');
 var AuthService = exports.AuthService = function () {
     function AuthService() {
         
+
+        this.keycloak = {};
     }
 
     AuthService.prototype.configure = function configure(config) {
-        var keycloak = new _keycloak.Keycloak(config.install);
+        this.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }
