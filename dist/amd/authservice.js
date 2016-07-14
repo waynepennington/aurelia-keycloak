@@ -43,7 +43,7 @@ define(['exports', './PersistentStorage'], function (exports, _PersistentStorage
                 if (window.Cordova) {
                     this.adapter = loadAdapter('cordova');
                 } else {
-                    this.adapter = loadAdapter();
+                    this.adapter = loadAdapter('default');
                 }
             }
 

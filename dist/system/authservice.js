@@ -47,7 +47,7 @@ System.register(['./PersistentStorage'], function (_export, _context) {
                         if (window.Cordova) {
                             this.adapter = loadAdapter('cordova');
                         } else {
-                            this.adapter = loadAdapter();
+                            this.adapter = loadAdapter('default');
                         }
                     }
 
