@@ -3,21 +3,24 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthService = undefined;
-
-var _dec, _class;
-
-var _aureliaFramework = require('aurelia-framework');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-(function (window, undefined) {
+var AuthService = exports.AuthService = function () {
+    function AuthService() {
+        _classCallCheck(this, AuthService);
 
-    var Keycloak = function Keycloak(config) {
-        if (!(this instanceof Keycloak)) {
-            return new Keycloak(config);
+        this.keycloak = {};
+    }
+
+    AuthService.prototype.configure = function configure(aurelia, config) {
+        this.keycloak = Keycloak(config.install);
+        if (typeof config.initOptions !== 'undefined') {
+            this.keycloak.init(config.initOptions);
         }
+    };
 
+    AuthService.prototype.Keycloak = function Keycloak(config) {
         var kc = this;
         var adapter;
         var refreshQueue = [];
@@ -183,7 +186,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             return promise.promise;
         };
-
         kc.login = function (options) {
             return adapter.login(options);
         };
@@ -411,7 +413,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             return promise.promise;
         };
-
         kc.clearToken = function () {
             if (kc.token) {
                 setToken(null, null, null, true);
@@ -422,6 +423,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
         };
 
+
         function getRealmUrl() {
             if (kc.authServerUrl.charAt(kc.authServerUrl.length - 1) == '/') {
                 return kc.authServerUrl + 'realms/' + encodeURIComponent(kc.realm);
@@ -430,6 +432,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
         }
 
+
         function getOrigin() {
             if (!window.location.origin) {
                 return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
@@ -437,6 +440,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 return window.location.origin;
             }
         }
+
 
         function processCallback(oauth, promise) {
             var code = oauth.code;
@@ -491,6 +495,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 req.send(params);
             }
 
+
             function authSuccess(accessToken, refreshToken, idToken, fulfillPromise) {
                 timeLocal = (timeLocal + new Date().getTime()) / 2;
 
@@ -511,6 +516,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }
             }
         }
+
 
         function loadConfig(url) {
             var promise = createPromise();
@@ -575,6 +581,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             return promise.promise;
         }
 
+
         function setToken(token, refreshToken, idToken, useTokenTime) {
             if (kc.tokenTimeoutHandle) {
                 clearTimeout(kc.tokenTimeoutHandle);
@@ -626,6 +633,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
         }
 
+
         function decodeToken(str) {
             str = str.split('.')[1];
 
@@ -653,6 +661,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             return str;
         }
 
+
         function createUUID() {
             var s = [];
             var hexDigits = '0123456789abcdef';
@@ -668,10 +677,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         kc.callback_id = 0;
 
+
         function createCallbackId() {
             var id = '<id: ' + kc.callback_id++ + Math.random() + '>';
             return id;
         }
+
 
         function parseCallback(url) {
             var oauth = new CallbackParser(url, kc.responseMode).parseUri();
@@ -692,6 +703,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 return oauth;
             }
         }
+
 
         function createPromise() {
             var p = {
@@ -732,6 +744,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             };
             return p;
         }
+
 
         function setupCheckLoginIframe() {
             var promise = createPromise();
@@ -793,6 +806,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             return promise.promise;
         }
 
+
         function checkLoginIframe() {
             var promise = createPromise();
 
@@ -808,6 +822,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             return promise.promise;
         }
+
 
         function loadAdapter(type) {
             if (!type || type == 'default') {
@@ -852,6 +867,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     }
                 };
             }
+
 
             if (type == 'cordova') {
                 loginIframe.enable = false;
@@ -959,6 +975,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             throw 'invalid adapter type: ' + type;
         }
+
 
         var PersistentStorage = function PersistentStorage() {
             if (!(this instanceof PersistentStorage)) {
@@ -1126,22 +1143,5 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         };
     };
 
-    module.exports = Keycloak;
-})(window);
-
-var AuthService = exports.AuthService = (_dec = (0, _aureliaFramework.inject)(Keycloak), _dec(_class = function () {
-    function AuthService() {
-        _classCallCheck(this, AuthService);
-
-        this.keycloak = {};
-    }
-
-    AuthService.prototype.configure = function configure(aurelia, config) {
-        this.keycloak = new Keycloak(config.install);
-        if (typeof config.initOptions !== 'undefined') {
-            this.keycloak.init(config.initOptions);
-        }
-    };
-
     return AuthService;
-}()) || _class);
+}();
