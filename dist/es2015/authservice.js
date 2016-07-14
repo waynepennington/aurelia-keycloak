@@ -5,7 +5,7 @@ export let AuthService = class AuthService {
         this.keycloak = {};
     }
     configure(aurelia, config) {
-        let instance = aurelia.container.get(Keycloak);
+        let instance = aurelia.container.get(keycloak);
         this.keycloak = new instance(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);

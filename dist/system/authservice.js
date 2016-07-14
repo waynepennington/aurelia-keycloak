@@ -20,7 +20,7 @@ System.register(['./keycloak'], function (_export, _context) {
                 }
 
                 AuthService.prototype.configure = function configure(aurelia, config) {
-                    var instance = aurelia.container.get(Keycloak);
+                    var instance = aurelia.container.get(keycloak);
                     this.keycloak = new instance(config.install);
                     if (typeof config.initOptions !== 'undefined') {
                         this.keycloak.init(config.initOptions);
