@@ -14,7 +14,7 @@ export var AuthService = function () {
             callbackMap: [],
             interval: 5
         };
-        callback_id = 0;
+        this.callback_id = 0;
     }
 
     AuthService.prototype.configure = function configure(aurelia, configKC) {

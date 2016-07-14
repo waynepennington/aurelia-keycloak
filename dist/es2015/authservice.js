@@ -10,7 +10,7 @@ export let AuthService = class AuthService {
             callbackMap: [],
             interval: 5
         };
-        callback_id = 0;
+        this.callback_id = 0;
     }
     configure(aurelia, configKC) {
         config = configKC.install;
