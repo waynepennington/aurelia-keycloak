@@ -1,3 +1,13 @@
+export declare class PersistentStorage {
+  constructor();
+  useCookieStorage(): any;
+  setitem(key?: any, value?: any): any;
+  getItem(key?: any): any;
+  removeItem(key?: any): any;
+  cookieExpiration(minutes?: any): any;
+  getCookie(key?: any): any;
+  setCookie(key?: any, value?: any, expirationDate?: any): any;
+}
 export declare class AuthService {
   constructor();
   configure(aurelia?: any, configKC?: any): any;
@@ -108,6 +118,16 @@ export declare class AuthService {
   parseCallback(url?: any): any;
   
   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  // CALLBACKPARSER
+  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  CallbackParser(uriToParse?: any, responseMode?: any): any;
+  
+  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  // HANDLEQUERYPARAM
+  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  handleQueryParam(paramName?: any, paramValue?: any, oauth?: any): any;
+  
+  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   // CREATEPROMISE
   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   createPromise(): any;
@@ -126,14 +146,4 @@ export declare class AuthService {
   // LOADADAPTER
   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   loadAdapter(type?: any): any;
-  
-  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  // PERSISTENT STORAGE
-  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  PersistentStorage(): any;
-  
-  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  // CALLBACKPARSER
-  // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  CallbackParser(uriToParse?: any, responseMode?: any): any;
 }

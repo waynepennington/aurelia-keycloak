@@ -3,6 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.AuthService = undefined;
+
+var _PersistentStorage = require('./PersistentStorage');
 
 
 
@@ -31,7 +34,7 @@ var AuthService = exports.AuthService = function () {
     };
 
     AuthService.prototype.init = function init(initOptions) {
-        this.storage = new PersistentStorage();
+        this.storage = new _PersistentStorage.PersistentStorage();
 
         if (initOptions && initOptions.adapter === 'cordova') {
             this.adapter = loadAdapter('cordova');
@@ -672,7 +675,7 @@ var AuthService = exports.AuthService = function () {
     };
 
     AuthService.prototype.parseCallback = function parseCallback(url) {
-        var oauth = new CallbackParser(url, this.responseMode).parseUri();
+        var oauth = CallbackParser(url, this.responseMode);
 
         var oauthState = this.storage.getItem('oauthState');
         var sessionState = oauthState && JSON.parse(oauthState);
@@ -689,6 +692,82 @@ var AuthService = exports.AuthService = function () {
 
             return oauth;
         }
+    };
+
+    AuthService.prototype.CallbackParser = function CallbackParser(uriToParse, responseMode) {
+        var baseUri = null;
+        var queryString = null;
+        var fragmentString = null;
+
+        var questionMarkIndex = uriToParse.indexOf("?");
+        var fragmentIndex = uriToParse.indexOf("#", questionMarkIndex + 1);
+        if (questionMarkIndex == -1 && fragmentIndex == -1) {
+            baseUri = uriToParse;
+        } else if (questionMarkIndex != -1) {
+            baseUri = uriToParse.substring(0, questionMarkIndex);
+            queryString = uriToParse.substring(questionMarkIndex + 1);
+            if (fragmentIndex != -1) {
+                fragmentIndex = queryString.indexOf("#");
+                fragmentString = queryString.substring(fragmentIndex + 1);
+                queryString = queryString.substring(0, fragmentIndex);
+            }
+        } else {
+            baseUri = uriToParse.substring(0, fragmentIndex);
+            fragmentString = uriToParse.substring(fragmentIndex + 1);
+        }
+
+        var parsedUri = { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
+        var queryParams = {};
+        if (parsedUri.queryString) {
+            queryParams = parseParams(parsedUri.queryString);
+        }
+
+        var oauth = { newUrl: parsedUri.baseUri };
+        for (var param in queryParams) {
+            switch (param) {
+                case 'redirect_fragment':
+                    oauth.fragment = queryParams[param];
+                    break;
+                case 'prompt':
+                    oauth.prompt = queryParams[param];
+                    break;
+                default:
+                    if (responseMode != 'query' || !handleQueryParam(param, queryParams[param], oauth)) {
+                        oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
+                    }
+                    break;
+            }
+        }
+        if (responseMode === 'fragment') {
+            var fragmentParams = {};
+            if (parsedUri.fragmentString) {
+                var result = {};
+                var params = parsedUri.fragmentString.split('&');
+                for (var i = 0; i < params.length; i++) {
+                    var p = params[i].split('=');
+                    var paramName = decodeURIComponent(p[0]);
+                    var paramValue = decodeURIComponent(p[1]);
+                    result[paramName] = paramValue;
+                }
+                fragmentParams = result;
+            }
+            for (var param in fragmentParams) {
+                oauth[param] = fragmentParams[param];
+            }
+        }
+        return oauth;
+    };
+
+    AuthService.prototype.handleQueryParam = function handleQueryParam(paramName, paramValue, oauth) {
+        var supportedOAuthParams = ['code', 'error', 'state'];
+
+        for (var i = 0; i < supportedOAuthParams.length; i++) {
+            if (paramName === supportedOAuthParams[i]) {
+                oauth[paramName] = paramValue;
+                return true;
+            }
+        }
+        return false;
     };
 
     AuthService.prototype.createPromise = function createPromise() {
@@ -957,178 +1036,6 @@ var AuthService = exports.AuthService = function () {
         }
 
         throw 'invalid adapter type: ' + type;
-    };
-
-    AuthService.prototype.PersistentStorage = function (_PersistentStorage) {
-        function PersistentStorage() {
-            return _PersistentStorage.apply(this, arguments);
-        }
-
-        PersistentStorage.toString = function () {
-            return _PersistentStorage.toString();
-        };
-
-        return PersistentStorage;
-    }(function () {
-        if (!(this instanceof PersistentStorage)) {
-            return new PersistentStorage();
-        }
-        var ps = this;
-        var useCookieStorage = function useCookieStorage() {
-            if (typeof localStorage === "undefined") {
-                return true;
-            }
-            try {
-                var key = '@@keycloak-session-storage/test';
-                localStorage.setItem(key, 'test');
-                localStorage.removeItem(key);
-                return false;
-            } catch (err) {
-                return true;
-            }
-        };
-
-        ps.setItem = function (key, value) {
-            if (useCookieStorage()) {
-                setCookie(key, value, cookieExpiration(5));
-            } else {
-                localStorage.setItem(key, value);
-            }
-        };
-
-        ps.getItem = function (key) {
-            if (useCookieStorage()) {
-                return getCookie(key);
-            }
-            return localStorage.getItem(key);
-        };
-
-        ps.removeItem = function (key) {
-            if (typeof localStorage !== "undefined") {
-                try {
-                    localStorage.removeItem(key);
-                } catch (err) {}
-            }
-
-            setCookie(key, '', cookieExpiration(-100));
-        };
-
-        var cookieExpiration = function cookieExpiration(minutes) {
-            var exp = new Date();
-            exp.setTime(exp.getTime() + minutes * 60 * 1000);
-            return exp;
-        };
-
-        var getCookie = function getCookie(key) {
-            var name = key + '=';
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return '';
-        };
-
-        var setCookie = function setCookie(key, value, expirationDate) {
-            var cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
-            document.cookie = cookie;
-        };
-    });
-
-    AuthService.prototype.CallbackParser = function CallbackParser(uriToParse, responseMode) {
-        var parser = this;
-
-        var initialParse = function initialParse() {
-            var baseUri = null;
-            var queryString = null;
-            var fragmentString = null;
-
-            var questionMarkIndex = uriToParse.indexOf("?");
-            var fragmentIndex = uriToParse.indexOf("#", questionMarkIndex + 1);
-            if (questionMarkIndex == -1 && fragmentIndex == -1) {
-                baseUri = uriToParse;
-            } else if (questionMarkIndex != -1) {
-                baseUri = uriToParse.substring(0, questionMarkIndex);
-                queryString = uriToParse.substring(questionMarkIndex + 1);
-                if (fragmentIndex != -1) {
-                    fragmentIndex = queryString.indexOf("#");
-                    fragmentString = queryString.substring(fragmentIndex + 1);
-                    queryString = queryString.substring(0, fragmentIndex);
-                }
-            } else {
-                baseUri = uriToParse.substring(0, fragmentIndex);
-                fragmentString = uriToParse.substring(fragmentIndex + 1);
-            }
-
-            return { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
-        };
-
-        var parseParams = function parseParams(paramString) {
-            var result = {};
-            var params = paramString.split('&');
-            for (var i = 0; i < params.length; i++) {
-                var p = params[i].split('=');
-                var paramName = decodeURIComponent(p[0]);
-                var paramValue = decodeURIComponent(p[1]);
-                result[paramName] = paramValue;
-            }
-            return result;
-        };
-
-        var handleQueryParam = function handleQueryParam(paramName, paramValue, oauth) {
-            var supportedOAuthParams = ['code', 'error', 'state'];
-
-            for (var i = 0; i < supportedOAuthParams.length; i++) {
-                if (paramName === supportedOAuthParams[i]) {
-                    oauth[paramName] = paramValue;
-                    return true;
-                }
-            }
-            return false;
-        };
-
-        parser.parseUri = function () {
-            var parsedUri = initialParse();
-
-            var queryParams = {};
-            if (parsedUri.queryString) {
-                queryParams = parseParams(parsedUri.queryString);
-            }
-
-            var oauth = { newUrl: parsedUri.baseUri };
-            for (var param in queryParams) {
-                switch (param) {
-                    case 'redirect_fragment':
-                        oauth.fragment = queryParams[param];
-                        break;
-                    case 'prompt':
-                        oauth.prompt = queryParams[param];
-                        break;
-                    default:
-                        if (responseMode != 'query' || !handleQueryParam(param, queryParams[param], oauth)) {
-                            oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
-                        }
-                        break;
-                }
-            }
-
-            if (responseMode === 'fragment') {
-                var fragmentParams = {};
-                if (parsedUri.fragmentString) {
-                    fragmentParams = parseParams(parsedUri.fragmentString);
-                }
-                for (var param in fragmentParams) {
-                    oauth[param] = fragmentParams[param];
-                }
-            }
-
-            return oauth;
-        };
     };
 
     return AuthService;
