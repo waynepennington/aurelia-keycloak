@@ -1,4 +1,5 @@
 import {PersistentStorage} from './PersistentStorage';
+import {CallbackParser} from './CallbackParser';
 
 export class AuthService {
     constructor() {
@@ -13,113 +14,92 @@ export class AuthService {
             interval: 5
         };
         this.callback_id = 0;
-
     }
-    configure(aurelia, configKC) {
+    configure(configKC) {
         this.config = configKC.install;
         if (typeof configKC.initOptions !== 'undefined') {
             this.init(configKC.initOptions);
         }
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // KEYCLOAK
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // INIT
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     init(initOptions) {
-        this.storage = new PersistentStorage();
-
+        kc.authenticated = false;
+        storage = new PersistentStorage();
         if (initOptions && initOptions.adapter === 'cordova') {
-            this.adapter = loadAdapter('cordova');
+            adapter = loadAdapter('cordova');
         } else if (initOptions && initOptions.adapter === 'default') {
             adapter = loadAdapter();
         } else {
             if (window.Cordova) {
-                this.adapter = loadAdapter('cordova');
+                adapter = loadAdapter('cordova');
             } else {
-                this.adapter = loadAdapter('default');
+                adapter = loadAdapter();
             }
         }
-
         if (initOptions) {
             if (typeof initOptions.checkLoginIframe !== 'undefined') {
-                this.loginIframe.enable = initOptions.checkLoginIframe;
+                loginIframe.enable = initOptions.checkLoginIframe;
             }
-
             if (initOptions.checkLoginIframeInterval) {
-                this.loginIframe.interval = initOptions.checkLoginIframeInterval;
+                loginIframe.interval = initOptions.checkLoginIframeInterval;
             }
-
             if (initOptions.onLoad === 'login-required') {
-                this.loginRequired = true;
+                kc.loginRequired = true;
             }
-
             if (initOptions.responseMode) {
                 if (initOptions.responseMode === 'query' || initOptions.responseMode === 'fragment') {
-                    this.responseMode = initOptions.responseMode;
+                    kc.responseMode = initOptions.responseMode;
                 } else {
                     throw 'Invalid value for responseMode';
                 }
             }
-
             if (initOptions.flow) {
                 switch (initOptions.flow) {
                     case 'standard':
-                        this.responseType = 'code';
+                        kc.responseType = 'code';
                         break;
                     case 'implicit':
-                        this.responseType = 'id_token token';
+                        kc.responseType = 'id_token token';
                         break;
                     case 'hybrid':
-                        this.responseType = 'code id_token token';
+                        kc.responseType = 'code id_token token';
                         break;
                     default:
                         throw 'Invalid value for flow';
                 }
-                this.flow = initOptions.flow;
+                kc.flow = initOptions.flow;
             }
         }
-
-        if (!this.responseMode) {
-            this.responseMode = 'fragment';
+        if (!kc.responseMode) {
+            kc.responseMode = 'fragment';
         }
-        if (!this.responseType) {
-            this.responseType = 'code';
-            this.flow = 'standard';
+        if (!kc.responseType) {
+            kc.responseType = 'code';
+            kc.flow = 'standard';
         }
-
         var promise = createPromise();
-
         var initPromise = createPromise();
         initPromise.promise.success(function () {
-            this.onReady && this.onReady(this.authenticated);
-            promise.setSuccess(this.authenticated);
+            kc.onReady && kc.onReady(kc.authenticated);
+            promise.setSuccess(kc.authenticated);
         }).error(function () {
             promise.setError();
         });
-
-        var configPromise = loadConfig(this.config);
-
+        var configPromise = loadConfig(config);
         function onLoad() {
-            var doLogin = function doLogin(prompt) {
+            var doLogin = function (prompt) {
                 if (!prompt) {
                     options.prompt = 'none';
                 }
-                this.login(options).success(function () {
+                kc.login(options).success(function () {
                     initPromise.setSuccess();
                 }).error(function () {
                     initPromise.setError();
                 });
-            };
-
+            }
             var options = {};
             switch (initOptions.onLoad) {
                 case 'check-sso':
-                    if (this.loginIframe.enable) {
+                    if (loginIframe.enable) {
                         setupCheckLoginIframe().success(function () {
                             checkLoginIframe().success(function () {
                                 doLogin(false);
@@ -138,10 +118,8 @@ export class AuthService {
                     throw 'Invalid value for onLoad';
             }
         }
-
         function processInit() {
             var callback = parseCallback(window.location.href);
-
             if (callback) {
                 setupCheckLoginIframe();
                 window.history.replaceState({}, null, callback.newUrl);
@@ -150,9 +128,8 @@ export class AuthService {
             } else if (initOptions) {
                 if (initOptions.token || initOptions.refreshToken) {
                     setToken(initOptions.token, initOptions.refreshToken, initOptions.idToken, false);
-                    this.timeSkew = initOptions.timeSkew || 0;
-
-                    if (this.loginIframe.enable) {
+                    kc.timeSkew = initOptions.timeSkew || 0;
+                    if (loginIframe.enable) {
                         setupCheckLoginIframe().success(function () {
                             checkLoginIframe().success(function () {
                                 initPromise.setSuccess();
@@ -174,231 +151,190 @@ export class AuthService {
                 initPromise.setSuccess();
             }
         }
-
         configPromise.success(processInit);
         configPromise.error(function () {
             promise.setError();
         });
-
         return promise.promise;
-    };//END OF INIT
-
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     login(options) {
-        return this.adapter.login(options);
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        return adapter.login(options);
+    }
     createLoginUrl(options) {
         var state = createUUID();
         var nonce = createUUID();
-
-        var redirectUri = this.adapter.redirectUri(options);
+        var redirectUri = adapter.redirectUri(options);
         if (options && options.prompt) {
             redirectUri += (redirectUri.indexOf('?') == -1 ? '?' : '&') + 'prompt=' + options.prompt;
         }
-
-        this.storage.setItem('oauthState', JSON.stringify({ state: state, nonce: nonce, redirectUri: encodeURIComponent(redirectUri) }));
-
+        storage.setItem('oauthState', JSON.stringify({ state: state, nonce: nonce, redirectUri: encodeURIComponent(redirectUri) }));
         var action = 'auth';
         if (options && options.action == 'register') {
             action = 'registrations';
         }
-
-        var url = getRealmUrl() + '/protocol/openid-connect/' + action + '?client_id=' + encodeURIComponent(this.clientId) + '&redirect_uri=' + encodeURIComponent(redirectUri) + '&state=' + encodeURIComponent(state) + '&nonce=' + encodeURIComponent(nonce) + '&response_mode=' + encodeURIComponent(this.responseMode) + '&response_type=' + encodeURIComponent(this.responseType);
-
+        var url = getRealmUrl()
+            + '/protocol/openid-connect/' + action
+            + '?client_id=' + encodeURIComponent(kc.clientId)
+            + '&redirect_uri=' + encodeURIComponent(redirectUri)
+            + '&state=' + encodeURIComponent(state)
+            + '&nonce=' + encodeURIComponent(nonce)
+            + '&response_mode=' + encodeURIComponent(kc.responseMode)
+            + '&response_type=' + encodeURIComponent(kc.responseType);
         if (options && options.prompt) {
             url += '&prompt=' + encodeURIComponent(options.prompt);
         }
-
         if (options && options.loginHint) {
             url += '&login_hint=' + encodeURIComponent(options.loginHint);
         }
-
         if (options && options.idpHint) {
             url += '&kc_idp_hint=' + encodeURIComponent(options.idpHint);
         }
-
         if (options && options.scope) {
             url += '&scope=' + encodeURIComponent(options.scope);
         }
-
         if (options && options.locale) {
             url += '&ui_locales=' + encodeURIComponent(options.locale);
         }
-
         return url;
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     logout(options) {
-        return this.adapter.logout(options);
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        return adapter.logout(options);
+    }
     createLogoutUrl(options) {
-        var url = getRealmUrl() + '/protocol/openid-connect/logout' + '?redirect_uri=' + encodeURIComponent(this.adapter.redirectUri(options, false));
-
+        var url = getRealmUrl()
+            + '/protocol/openid-connect/logout'
+            + '?redirect_uri=' + encodeURIComponent(adapter.redirectUri(options, false));
         return url;
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     register(options) {
-        return this.adapter.register(options);
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    reateRegisterUrl(options) {
+        return adapter.register(options);
+    }
+    createRegisterUrl(options) {
         if (!options) {
             options = {};
         }
         options.action = 'register';
-        return this.createLoginUrl(options);
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        return kc.createLoginUrl(options);
+    }
     createAccountUrl(options) {
-        var url = getRealmUrl() + '/account' + '?referrer=' + encodeURIComponent(this.clientId) + '&referrer_uri=' + encodeURIComponent(this.adapter.redirectUri(options));
-
+        var url = getRealmUrl()
+            + '/account'
+            + '?referrer=' + encodeURIComponent(kc.clientId)
+            + '&referrer_uri=' + encodeURIComponent(adapter.redirectUri(options));
         return url;
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     accountManagement() {
-        return this.adapter.accountManagement();
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        return adapter.accountManagement();
+    }
     hasRealmRole(role) {
-        var access = this.realmAccess;
+        var access = kc.realmAccess;
         return !!access && access.roles.indexOf(role) >= 0;
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     hasResourceRole(role, resource) {
-        if (!this.resourceAccess) {
+        if (!kc.resourceAccess) {
             return false;
         }
-
-        var access = this.resourceAccess[resource || this.clientId];
+        var access = kc.resourceAccess[resource || kc.clientId];
         return !!access && access.roles.indexOf(role) >= 0;
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     loadUserProfile() {
         var url = getRealmUrl() + '/account';
         var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
-        req.setRequestHeader('Authorization', 'bearer ' + this.token);
-
+        req.setRequestHeader('Authorization', 'bearer ' + kc.token);
         var promise = createPromise();
-
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
-                    this.profile = JSON.parse(req.responseText);
-                    promise.setSuccess(this.profile);
+                    kc.profile = JSON.parse(req.responseText);
+                    promise.setSuccess(kc.profile);
                 } else {
                     promise.setError();
                 }
             }
-        };
-
+        }
         req.send();
-
         return promise.promise;
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     loadUserInfo() {
         var url = getRealmUrl() + '/protocol/openid-connect/userinfo';
         var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
-        req.setRequestHeader('Authorization', 'bearer ' + this.token);
-
+        req.setRequestHeader('Authorization', 'bearer ' + kc.token);
         var promise = createPromise();
-
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
-                    this.userInfo = JSON.parse(req.responseText);
-                    promise.setSuccess(this.userInfo);
+                    kc.userInfo = JSON.parse(req.responseText);
+                    promise.setSuccess(kc.userInfo);
                 } else {
                     promise.setError();
                 }
             }
-        };
-
+        }
         req.send();
-
         return promise.promise;
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     isTokenExpired(minValidity) {
-        if (!this.tokenParsed || !this.refreshToken && this.flow != 'implicit') {
+        if (!kc.tokenParsed || (!kc.refreshToken && kc.flow != 'implicit')) {
             throw 'Not authenticated';
         }
-
-        var expiresIn = this.tokenParsed['exp'] - new Date().getTime() / 1000 + this.timeSkew;
+        var expiresIn = kc.tokenParsed['exp'] - (new Date().getTime() / 1000) + kc.timeSkew;
         if (minValidity) {
             expiresIn -= minValidity;
         }
-
         return expiresIn < 0;
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     updateToken(minValidity) {
         var promise = createPromise();
-
-        if (!this.tokenParsed || !this.refreshToken) {
+        if (!kc.tokenParsed || !kc.refreshToken) {
             promise.setError();
             return promise.promise;
         }
-
         minValidity = minValidity || 5;
-
-        var exec = function exec() {
-            if (!this.isTokenExpired(minValidity)) {
+        var exec = function () {
+            if (!kc.isTokenExpired(minValidity)) {
                 promise.setSuccess(false);
             } else {
-                var params = 'grant_type=refresh_token&' + 'refresh_token=' + this.refreshToken;
+                var params = 'grant_type=refresh_token&' + 'refresh_token=' + kc.refreshToken;
                 var url = getRealmUrl() + '/protocol/openid-connect/token';
-
-                this.refreshQueue.push(promise);
-
-                if (this.refreshQueue.length == 1) {
+                refreshQueue.push(promise);
+                if (refreshQueue.length == 1) {
                     var req = new XMLHttpRequest();
                     req.open('POST', url, true);
                     req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-                    if (this.clientId && this.clientSecret) {
-                        req.setRequestHeader('Authorization', 'Basic ' + btoa(this.clientId + ':' + this.clientSecret));
+                    if (kc.clientId && kc.clientSecret) {
+                        req.setRequestHeader('Authorization', 'Basic ' + btoa(kc.clientId + ':' + kc.clientSecret));
                     } else {
-                        params += '&client_id=' + encodeURIComponent(this.clientId);
+                        params += '&client_id=' + encodeURIComponent(kc.clientId);
                     }
-
                     var timeLocal = new Date().getTime();
-
                     req.onreadystatechange = function () {
                         if (req.readyState == 4) {
                             if (req.status == 200) {
                                 timeLocal = (timeLocal + new Date().getTime()) / 2;
-
                                 var tokenResponse = JSON.parse(req.responseText);
                                 setToken(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], true);
-
-                                this.timeSkew = Math.floor(timeLocal / 1000) - this.tokenParsed.iat;
-
-                                this.onAuthRefreshSuccess && this.onAuthRefreshSuccess();
-                                for (var p = this.refreshQueue.pop(); p != null; p = this.refreshQueue.pop()) {
+                                kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
+                                kc.onAuthRefreshSuccess && kc.onAuthRefreshSuccess();
+                                for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
                                     p.setSuccess(true);
                                 }
                             } else {
-                                this.onAuthRefreshError && this.onAuthRefreshError();
-                                for (var p = this.refreshQueue.pop(); p != null; p = this.refreshQueue.pop()) {
+                                kc.onAuthRefreshError && kc.onAuthRefreshError();
+                                for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
                                     p.setError(true);
                                 }
                             }
                         }
                     };
-
                     req.send(params);
                 }
             }
-        };
-
-        if (this.loginIframe.enable) {
+        }
+        if (loginIframe.enable) {
             var iframePromise = checkLoginIframe();
             iframePromise.success(function () {
                 exec();
@@ -408,38 +344,24 @@ export class AuthService {
         } else {
             exec();
         }
-
         return promise.promise;
-    };//END OF UPDATETOKEN
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    }
     clearToken() {
-        if (this.token) {
+        if (kc.token) {
             setToken(null, null, null, true);
-            this.onAuthLogout && this.onAuthLogout();
-            if (this.loginRequired) {
-                this.login();
+            kc.onAuthLogout && kc.onAuthLogout();
+            if (kc.loginRequired) {
+                kc.login();
             }
         }
-    };
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    //  F U N C T I O N S
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // GETREALMURL
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
+    }
     getRealmUrl() {
-        if (this.authServerUrl.charAt(this.authServerUrl.length - 1) == '/') {
-            return this.authServerUrl + 'realms/' + encodeURIComponent(this.realm);
+        if (kc.authServerUrl.charAt(kc.authServerUrl.length - 1) == '/') {
+            return kc.authServerUrl + 'realms/' + encodeURIComponent(kc.realm);
         } else {
-            return this.authServerUrl + '/realms/' + encodeURIComponent(this.realm);
+            return kc.authServerUrl + '/realms/' + encodeURIComponent(kc.realm);
         }
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // GETORIGIN
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
     getOrigin() {
         if (!window.location.origin) {
             return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
@@ -447,213 +369,164 @@ export class AuthService {
             return window.location.origin;
         }
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // PROCESSCALLBACK
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
     processCallback(oauth, promise) {
         var code = oauth.code;
         var error = oauth.error;
         var prompt = oauth.prompt;
-
         var timeLocal = new Date().getTime();
-
         if (error) {
             if (prompt != 'none') {
-                this.onAuthError && this.onAuthError();
+                kc.onAuthError && kc.onAuthError();
                 promise && promise.setError();
             } else {
                 promise && promise.setSuccess();
             }
             return;
-        } else if (this.flow != 'standard' && (oauth.access_token || oauth.id_token)) {
+        } else if ((kc.flow != 'standard') && (oauth.access_token || oauth.id_token)) {
             authSuccess(oauth.access_token, null, oauth.id_token, true);
         }
-
-        if (this.flow != 'implicit' && code) {
+        if ((kc.flow != 'implicit') && code) {
             var params = 'code=' + code + '&grant_type=authorization_code';
             var url = getRealmUrl() + '/protocol/openid-connect/token';
-
             var req = new XMLHttpRequest();
             req.open('POST', url, true);
             req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-            if (this.clientId && this.clientSecret) {
-                req.setRequestHeader('Authorization', 'Basic ' + btoa(this.clientId + ':' + this.clientSecret));
+            if (kc.clientId && kc.clientSecret) {
+                req.setRequestHeader('Authorization', 'Basic ' + btoa(kc.clientId + ':' + kc.clientSecret));
             } else {
-                params += '&client_id=' + encodeURIComponent(this.clientId);
+                params += '&client_id=' + encodeURIComponent(kc.clientId);
             }
-
             params += '&redirect_uri=' + oauth.redirectUri;
-
             req.withCredentials = true;
-
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
-
                         var tokenResponse = JSON.parse(req.responseText);
-                        authSuccess(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], this.flow === 'standard');
+                        authSuccess(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], kc.flow === 'standard');
                     } else {
-                        this.onAuthError && this.onAuthError();
+                        kc.onAuthError && kc.onAuthError();
                         promise && promise.setError();
                     }
                 }
             };
-
             req.send(params);
         }
-        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        // AUTHSUCCESS
-        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
         function authSuccess(accessToken, refreshToken, idToken, fulfillPromise) {
             timeLocal = (timeLocal + new Date().getTime()) / 2;
-
             setToken(accessToken, refreshToken, idToken, true);
-
-            if (this.tokenParsed && this.tokenParsed.nonce != oauth.storedNonce || this.refreshTokenParsed && this.refreshTokenParsed.nonce != oauth.storedNonce || this.idTokenParsed && this.idTokenParsed.nonce != oauth.storedNonce) {
-
+            if ((kc.tokenParsed && kc.tokenParsed.nonce != oauth.storedNonce) ||
+                (kc.refreshTokenParsed && kc.refreshTokenParsed.nonce != oauth.storedNonce) ||
+                (kc.idTokenParsed && kc.idTokenParsed.nonce != oauth.storedNonce)) {
                 console.log('invalid nonce!');
-                this.clearToken();
+                kc.clearToken();
                 promise && promise.setError();
             } else {
-                this.timeSkew = Math.floor(timeLocal / 1000) - this.tokenParsed.iat;
-
+                kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
                 if (fulfillPromise) {
-                    this.onAuthSuccess && this.onAuthSuccess();
+                    kc.onAuthSuccess && kc.onAuthSuccess();
                     promise && promise.setSuccess();
                 }
             }
         }
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // LOADCONFIG
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
     loadConfig(url) {
         var promise = createPromise();
         var configUrl;
-
-        if (!this.config) {
+        if (!config) {
             configUrl = 'keycloak.json';
-        } else if (typeof this.config === 'string') {
-            configUrl = this.config;
+        } else if (typeof config === 'string') {
+            configUrl = config;
         }
-
         if (configUrl) {
             var req = new XMLHttpRequest();
             req.open('GET', configUrl, true);
             req.setRequestHeader('Accept', 'application/json');
-
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
                         var config = JSON.parse(req.responseText);
-
-                        this.authServerUrl = config['auth-server-url'];
-                        this.realm = config['realm'];
-                        this.clientId = config['resource'];
-                        this.clientSecret = (config['credentials'] || {})['secret'];
-
+                        kc.authServerUrl = config['auth-server-url'];
+                        kc.realm = config['realm'];
+                        kc.clientId = config['resource'];
+                        kc.clientSecret = (config['credentials'] || {})['secret'];
                         promise.setSuccess();
                     } else {
                         promise.setError();
                     }
                 }
             };
-
             req.send();
         } else {
-            if (!this.config['url']) {
+            if (!config['url']) {
                 var scripts = document.getElementsByTagName('script');
                 for (var i = 0; i < scripts.length; i++) {
                     if (scripts[i].src.match(/.*keycloak\.js/)) {
-                        this.config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
+                        config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
                         break;
                     }
                 }
             }
-
-            if (!this.config.realm) {
+            if (!config.realm) {
                 throw 'realm missing';
             }
-
-            if (!this.config.clientId) {
+            if (!config.clientId) {
                 throw 'clientId missing';
             }
-
-            this.authServerUrl = this.config.url;
-            this.realm = this.config.realm;
-            this.clientId = this.config.clientId;
-            this.clientSecret = (this.config.credentials || {}).secret;
-
+            kc.authServerUrl = config.url;
+            kc.realm = config.realm;
+            kc.clientId = config.clientId;
+            kc.clientSecret = (config.credentials || {}).secret;
             promise.setSuccess();
         }
-
         return promise.promise;
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // SETTOKEN
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
     setToken(token, refreshToken, idToken, useTokenTime) {
-        if (this.tokenTimeoutHandle) {
-            clearTimeout(this.tokenTimeoutHandle);
-            this.tokenTimeoutHandle = null;
+        if (kc.tokenTimeoutHandle) {
+            clearTimeout(kc.tokenTimeoutHandle);
+            kc.tokenTimeoutHandle = null;
         }
-
         if (token) {
-            this.token = token;
-            this.tokenParsed = decodeToken(token);
-            var sessionId = this.realm + '/' + this.tokenParsed.sub;
-            if (this.tokenParsed.session_state) {
-                sessionId = sessionId + '/' + this.tokenParsed.session_state;
+            kc.token = token;
+            kc.tokenParsed = decodeToken(token);
+            var sessionId = kc.realm + '/' + kc.tokenParsed.sub;
+            if (kc.tokenParsed.session_state) {
+                sessionId = sessionId + '/' + kc.tokenParsed.session_state;
             }
-            this.sessionId = sessionId;
-            this.authenticated = true;
-            this.subject = this.tokenParsed.sub;
-            this.realmAccess = this.tokenParsed.realm_access;
-            this.resourceAccess = this.tokenParsed.resource_access;
-
-            if (this.onTokenExpired) {
-                var start = useTokenTime ? this.tokenParsed.iat : new Date().getTime() / 1000;
-                var expiresIn = this.tokenParsed.exp - start;
-                this.tokenTimeoutHandle = setTimeout(this.onTokenExpired, expiresIn * 1000);
+            kc.sessionId = sessionId;
+            kc.authenticated = true;
+            kc.subject = kc.tokenParsed.sub;
+            kc.realmAccess = kc.tokenParsed.realm_access;
+            kc.resourceAccess = kc.tokenParsed.resource_access;
+            if (kc.onTokenExpired) {
+                var start = useTokenTime ? kc.tokenParsed.iat : (new Date().getTime() / 1000);
+                var expiresIn = kc.tokenParsed.exp - start;
+                kc.tokenTimeoutHandle = setTimeout(kc.onTokenExpired, expiresIn * 1000);
             }
         } else {
-            delete this.token;
-            delete this.tokenParsed;
-            delete this.subject;
-            delete this.realmAccess;
-            delete this.resourceAccess;
-
-            this.authenticated = false;
+            delete kc.token;
+            delete kc.tokenParsed;
+            delete kc.subject;
+            delete kc.realmAccess;
+            delete kc.resourceAccess;
+            kc.authenticated = false;
         }
-
         if (refreshToken) {
-            this.refreshToken = refreshToken;
-            this.refreshTokenParsed = decodeToken(refreshToken);
+            kc.refreshToken = refreshToken;
+            kc.refreshTokenParsed = decodeToken(refreshToken);
         } else {
-            delete this.refreshToken;
-            delete this.refreshTokenParsed;
+            delete kc.refreshToken;
+            delete kc.refreshTokenParsed;
         }
-
         if (idToken) {
-            this.idToken = idToken;
-            this.idTokenParsed = decodeToken(idToken);
+            kc.idToken = idToken;
+            kc.idTokenParsed = decodeToken(idToken);
         } else {
-            delete this.idToken;
-            delete this.idTokenParsed;
+            delete kc.idToken;
+            delete kc.idTokenParsed;
         }
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // DECODETOKEN
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
     decodeToken(str) {
         str = str.split('.')[1];
-
         str = str.replace('/-/g', '+');
         str = str.replace('/_/g', '/');
         switch (str.length % 4) {
@@ -668,19 +541,12 @@ export class AuthService {
             default:
                 throw 'Invalid token';
         }
-
-        str = (str + '===').slice(0, str.length + str.length % 4);
+        str = (str + '===').slice(0, str.length + (str.length % 4));
         str = str.replace(/-/g, '+').replace(/_/g, '/');
-
         str = decodeURIComponent(escape(atob(str)));
-
         str = JSON.parse(str);
         return str;
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // CREATEUUID
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
     createUUID() {
         var s = [];
         var hexDigits = '0123456789abcdef';
@@ -688,407 +554,253 @@ export class AuthService {
             s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
         }
         s[14] = '4';
-        s[19] = hexDigits.substr(s[19] & 0x3 | 0x8, 1);
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
         s[8] = s[13] = s[18] = s[23] = '-';
         var uuid = s.join('');
         return uuid;
     }
-
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // CREATECALLBACK
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
     createCallbackId() {
-        var id = '<id: ' + this.callback_id++ + Math.random() + '>';
+        var id = '<id: ' + (kc.callback_id++) + (Math.random()) + '>';
         return id;
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // PARSECALLBACK
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-    parseCallback(url) {
-        var oauth = CallbackParser(url, this.responseMode);
-
-        var oauthState = this.storage.getItem('oauthState');
-        var sessionState = oauthState && JSON.parse(oauthState);
-
-        if (sessionState && (oauth.code || oauth.error || oauth.access_token || oauth.id_token) && oauth.state && oauth.state == sessionState.state) {
-            this.storage.removeItem('oauthState');
-
-            oauth.redirectUri = sessionState.redirectUri;
-            oauth.storedNonce = sessionState.nonce;
-
-            if (oauth.fragment) {
-                oauth.newUrl += '#' + oauth.fragment;
-            }
-
-            return oauth;
-        }
-    }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // CALLBACKPARSER
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    CallbackParser(uriToParse, responseMode) {
-        var baseUri = null;
-        var queryString = null;
-        var fragmentString = null;
-
-        var questionMarkIndex = uriToParse.indexOf("?");
-        var fragmentIndex = uriToParse.indexOf("#", questionMarkIndex + 1);
-        if (questionMarkIndex == -1 && fragmentIndex == -1) {
-            baseUri = uriToParse;
-        } else if (questionMarkIndex != -1) {
-            baseUri = uriToParse.substring(0, questionMarkIndex);
-            queryString = uriToParse.substring(questionMarkIndex + 1);
-            if (fragmentIndex != -1) {
-                fragmentIndex = queryString.indexOf("#");
-                fragmentString = queryString.substring(fragmentIndex + 1);
-                queryString = queryString.substring(0, fragmentIndex);
-            }
-        } else {
-            baseUri = uriToParse.substring(0, fragmentIndex);
-            fragmentString = uriToParse.substring(fragmentIndex + 1);
-        }
-
-        var parsedUri = { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
-        var queryParams = {};
-        if (parsedUri.queryString) {
-            queryParams = parseParams(parsedUri.queryString);
-        }
-
-        var oauth = { newUrl: parsedUri.baseUri };
-        for (var param in queryParams) {
-            switch (param) {
-                case 'redirect_fragment':
-                    oauth.fragment = queryParams[param];
-                    break;
-                case 'prompt':
-                    oauth.prompt = queryParams[param];
-                    break;
-                default:
-                    if (responseMode != 'query' || !handleQueryParam(param, queryParams[param], oauth)) {
-                        oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
-                    }
-                    break;
-            }
-        }
-        if (responseMode === 'fragment') {
-            var fragmentParams = {};
-            if (parsedUri.fragmentString) {
-                var result = {};
-                var params = parsedUri.fragmentString.split('&');
-                for (var i = 0; i < params.length; i++) {
-                    var p = params[i].split('=');
-                    var paramName = decodeURIComponent(p[0]);
-                    var paramValue = decodeURIComponent(p[1]);
-                    result[paramName] = paramValue;
-                }
-                fragmentParams = result;
-
-            }
-            for (var param in fragmentParams) {
-                oauth[param] = fragmentParams[param];
-            }
+parseCallback(url) {
+    var oauth = new CallbackParser(url, kc.responseMode).parseUri();
+    var oauthState = storage.getItem('oauthState');
+    var sessionState = oauthState && JSON.parse(oauthState);
+    if (sessionState && (oauth.code || oauth.error || oauth.access_token || oauth.id_token) && oauth.state && oauth.state == sessionState.state) {
+        storage.removeItem('oauthState');
+        oauth.redirectUri = sessionState.redirectUri;
+        oauth.storedNonce = sessionState.nonce;
+        if (oauth.fragment) {
+            oauth.newUrl += '#' + oauth.fragment;
         }
         return oauth;
-    };
-
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // HANDLEQUERYPARAM
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    handleQueryParam(paramName, paramValue, oauth) {
-        var supportedOAuthParams = ['code', 'error', 'state'];
-
-        for (var i = 0; i < supportedOAuthParams.length; i++) {
-            if (paramName === supportedOAuthParams[i]) {
-                oauth[paramName] = paramValue;
-                return true;
-            }
-        }
-        return false;
-    };
-
-
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // CREATEPROMISE
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-    createPromise() {
-        var p = {
-            setSuccess: function setSuccess(result) {
-                p.success = true;
-                p.result = result;
-                if (p.successCallback) {
-                    p.successCallback(result);
-                }
-            },
-
-            setError: function setError(result) {
-                p.error = true;
-                p.result = result;
-                if (p.errorCallback) {
-                    p.errorCallback(result);
-                }
-            },
-
-            promise: {
-                success: function success(callback) {
-                    if (p.success) {
-                        callback(p.result);
-                    } else if (!p.error) {
-                        p.successCallback = callback;
-                    }
-                    return p.promise;
-                },
-                error: function error(callback) {
-                    if (p.error) {
-                        callback(p.result);
-                    } else if (!p.success) {
-                        p.errorCallback = callback;
-                    }
-                    return p.promise;
-                }
-            }
-        };
-        return p;
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // SETUPCHECKLOGINFRAME
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-    setupCheckLoginIframe() {
-        var promise = createPromise();
-
-        if (!this.loginIframe.enable) {
-            promise.setSuccess();
-            return promise.promise;
+}
+createPromise() {
+    var p = {
+        setSuccess: function (result) {
+            p.success = true;
+            p.result = result;
+            if (p.successCallback) {
+                p.successCallback(result);
+            }
+        },
+        setError: function (result) {
+            p.error = true;
+            p.result = result;
+            if (p.errorCallback) {
+                p.errorCallback(result);
+            }
+        },
+        promise: {
+            success: function (callback) {
+                if (p.success) {
+                    callback(p.result);
+                } else if (!p.error) {
+                    p.successCallback = callback;
+                }
+                return p.promise;
+            },
+            error: function (callback) {
+                if (p.error) {
+                    callback(p.result);
+                } else if (!p.success) {
+                    p.errorCallback = callback;
+                }
+                return p.promise;
+            }
         }
-
-        if (this.loginIframe.iframe) {
-            promise.setSuccess();
-            return promise.promise;
-        }
-
-        var iframe = document.createElement('iframe');
-        this.loginIframe.iframe = iframe;
-
-        iframe.onload = function () {
-            var realmUrl = getRealmUrl();
-            if (realmUrl.charAt(0) === '/') {
-                this.loginIframe.iframeOrigin = getOrigin();
-            } else {
-                this.loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
-            }
-            promise.setSuccess();
-
-            setTimeout(check, this.loginIframe.interval * 1000);
-        };
-
-        var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(this.clientId) + '&origin=' + getOrigin();
-        iframe.setAttribute('src', src);
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-
-        var messageCallback = function messageCallback(event) {
-            if (event.origin !== this.loginIframe.iframeOrigin) {
-                return;
-            }
-            var data = JSON.parse(event.data);
-            var promise = this.loginIframe.callbackMap[data.callbackId];
-            delete this.loginIframe.callbackMap[data.callbackId];
-
-            if ((!this.sessionId || this.sessionId == data.session) && data.loggedIn) {
-                promise.setSuccess();
-            } else {
-                this.clearToken();
-                promise.setError();
-            }
-        };
-        window.addEventListener('message', messageCallback, false);
-
-        var check = function check() {
-            checkLoginIframe();
-            if (this.token) {
-                setTimeout(check, this.loginIframe.interval * 1000);
-            }
-        };
-
+    }
+    return p;
+}
+setupCheckLoginIframe() {
+    var promise = createPromise();
+    if (!loginIframe.enable) {
+        promise.setSuccess();
         return promise.promise;
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // CHECKLOGINFRAME
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-    checkLoginIframe() {
-        var promise = createPromise();
-
-        if (this.loginIframe.iframe && this.loginIframe.iframeOrigin) {
-            var msg = {};
-            msg.callbackId = createCallbackId();
-            this.loginIframe.callbackMap[msg.callbackId] = promise;
-            var origin = this.loginIframe.iframeOrigin;
-            this.loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
+    if (loginIframe.iframe) {
+        promise.setSuccess();
+        return promise.promise;
+    }
+    var iframe = document.createElement('iframe');
+    loginIframe.iframe = iframe;
+    iframe.onload = function () {
+        var realmUrl = getRealmUrl();
+        if (realmUrl.charAt(0) === '/') {
+            loginIframe.iframeOrigin = getOrigin();
         } else {
-            promise.setSuccess();
+            loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
         }
-
-        return promise.promise;
+        promise.setSuccess();
+        setTimeout(check, loginIframe.interval * 1000);
     }
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    // LOADADAPTER
-    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-    loadAdapter(type) {
-        if (!type || type == 'default') {
-            return {
-                login: function login(options) {
-                    window.location.href = this.createLoginUrl(options);
-                    return createPromise().promise;
-                },
-
-                logout: function logout(options) {
-                    window.location.href = this.createLogoutUrl(options);
-                    return createPromise().promise;
-                },
-
-                register: function register(options) {
-                    window.location.href = this.createRegisterUrl(options);
-                    return createPromise().promise;
-                },
-
-                accountManagement: function accountManagement() {
-                    window.location.href = this.createAccountUrl();
-                    return createPromise().promise;
-                },
-
-                redirectUri: function redirectUri(options, encodeHash) {
-                    if (arguments.length == 1) {
-                        encodeHash = true;
-                    }
-
-                    if (options && options.redirectUri) {
-                        return options.redirectUri;
-                    } else if (this.redirectUri) {
-                        return this.redirectUri;
-                    } else {
-                        var redirectUri = location.href;
-                        if (location.hash && encodeHash) {
-                            redirectUri = redirectUri.substring(0, location.href.indexOf('#'));
-                            redirectUri += (redirectUri.indexOf('?') == -1 ? '?' : '&') + 'redirect_fragment=' + encodeURIComponent(location.hash.substring(1));
-                        }
-                        return redirectUri;
-                    }
-                }
-            };
+    var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
+    iframe.setAttribute('src', src);
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    var messageCallback = function (event) {
+        if (event.origin !== loginIframe.iframeOrigin) {
+            return;
         }
-        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        // CORDOVA
-        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-        if (type == 'cordova') {
-            this.loginIframe.enable = false;
-
-            return {
-                login: function login(options) {
-                    var promise = createPromise();
-
-                    var o = 'location=no';
-                    if (options && options.prompt == 'none') {
-                        o += ',hidden=yes';
+        var data = JSON.parse(event.data);
+        var promise = loginIframe.callbackMap[data.callbackId];
+        delete loginIframe.callbackMap[data.callbackId];
+        if ((!kc.sessionId || kc.sessionId == data.session) && data.loggedIn) {
+            promise.setSuccess();
+        } else {
+            kc.clearToken();
+            promise.setError();
+        }
+    };
+    window.addEventListener('message', messageCallback, false);
+    var check = function () {
+        checkLoginIframe();
+        if (kc.token) {
+            setTimeout(check, loginIframe.interval * 1000);
+        }
+    };
+    return promise.promise;
+}
+checkLoginIframe() {
+    var promise = createPromise();
+    if (loginIframe.iframe && loginIframe.iframeOrigin) {
+        var msg = {};
+        msg.callbackId = createCallbackId();
+        loginIframe.callbackMap[msg.callbackId] = promise;
+        var origin = loginIframe.iframeOrigin;
+        loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
+    } else {
+        promise.setSuccess();
+    }
+    return promise.promise;
+}
+loadAdapter(type) {
+    if (!type || type == 'default') {
+        return {
+            login: function (options) {
+                window.location.href = kc.createLoginUrl(options);
+                return createPromise().promise;
+            },
+            logout: function (options) {
+                window.location.href = kc.createLogoutUrl(options);
+                return createPromise().promise;
+            },
+            register: function (options) {
+                window.location.href = kc.createRegisterUrl(options);
+                return createPromise().promise;
+            },
+            accountManagement: function () {
+                window.location.href = kc.createAccountUrl();
+                return createPromise().promise;
+            },
+            redirectUri: function (options, encodeHash) {
+                if (arguments.length == 1) {
+                    encodeHash = true;
+                }
+                if (options && options.redirectUri) {
+                    return options.redirectUri;
+                } else if (kc.redirectUri) {
+                    return kc.redirectUri;
+                } else {
+                    var redirectUri = location.href;
+                    if (location.hash && encodeHash) {
+                        redirectUri = redirectUri.substring(0, location.href.indexOf('#'));
+                        redirectUri += (redirectUri.indexOf('?') == -1 ? '?' : '&') + 'redirect_fragment=' + encodeURIComponent(location.hash.substring(1));
                     }
-
-                    var loginUrl = this.createLoginUrl(options);
-                    var ref = window.open(loginUrl, '_blank', o);
-
-                    var completed = false;
-
-                    ref.addEventListener('loadstart', function (event) {
+                    return redirectUri;
+                }
+            }
+        };
+    }
+    if (type == 'cordova') {
+        loginIframe.enable = false;
+        return {
+            login: function (options) {
+                var promise = createPromise();
+                var o = 'location=no';
+                if (options && options.prompt == 'none') {
+                    o += ',hidden=yes';
+                }
+                var loginUrl = kc.createLoginUrl(options);
+                var ref = window.open(loginUrl, '_blank', o);
+                var completed = false;
+                ref.addEventListener('loadstart', function (event) {
+                    if (event.url.indexOf('http://localhost') == 0) {
+                        var callback = parseCallback(event.url);
+                        processCallback(callback, promise);
+                        ref.close();
+                        completed = true;
+                    }
+                });
+                ref.addEventListener('loaderror', function (event) {
+                    if (!completed) {
                         if (event.url.indexOf('http://localhost') == 0) {
                             var callback = parseCallback(event.url);
                             processCallback(callback, promise);
                             ref.close();
                             completed = true;
-                        }
-                    });
-
-                    ref.addEventListener('loaderror', function (event) {
-                        if (!completed) {
-                            if (event.url.indexOf('http://localhost') == 0) {
-                                var callback = parseCallback(event.url);
-                                processCallback(callback, promise);
-                                ref.close();
-                                completed = true;
-                            } else {
-                                promise.setError();
-                                ref.close();
-                            }
-                        }
-                    });
-
-                    return promise.promise;
-                },
-
-                logout: function logout(options) {
-                    var promise = createPromise();
-
-                    var logoutUrl = this.createLogoutUrl(options);
-                    var ref = window.open(logoutUrl, '_blank', 'location=no,hidden=yes');
-
-                    var error;
-
-                    ref.addEventListener('loadstart', function (event) {
-                        if (event.url.indexOf('http://localhost') == 0) {
-                            ref.close();
-                        }
-                    });
-
-                    ref.addEventListener('loaderror', function (event) {
-                        if (event.url.indexOf('http://localhost') == 0) {
-                            ref.close();
                         } else {
-                            error = true;
-                            ref.close();
-                        }
-                    });
-
-                    ref.addEventListener('exit', function (event) {
-                        if (error) {
                             promise.setError();
-                        } else {
-                            this.clearToken();
-                            promise.setSuccess();
-                        }
-                    });
-
-                    return promise.promise;
-                },
-
-                register: function register() {
-                    var registerUrl = this.createRegisterUrl();
-                    var ref = window.open(registerUrl, '_blank', 'location=no');
-                    ref.addEventListener('loadstart', function (event) {
-                        if (event.url.indexOf('http://localhost') == 0) {
                             ref.close();
                         }
-                    });
-                },
-
-                accountManagement: function accountManagement() {
-                    var accountUrl = this.createAccountUrl();
-                    var ref = window.open(accountUrl, '_blank', 'location=no');
-                    ref.addEventListener('loadstart', function (event) {
-                        if (event.url.indexOf('http://localhost') == 0) {
-                            ref.close();
-                        }
-                    });
-                },
-
-                redirectUri: function redirectUri(options) {
-                    return 'http://localhost';
-                }
-            };
+                    }
+                });
+                return promise.promise;
+            },
+            logout: function (options) {
+                var promise = createPromise();
+                var logoutUrl = kc.createLogoutUrl(options);
+                var ref = window.open(logoutUrl, '_blank', 'location=no,hidden=yes');
+                var error;
+                ref.addEventListener('loadstart', function (event) {
+                    if (event.url.indexOf('http://localhost') == 0) {
+                        ref.close();
+                    }
+                });
+                ref.addEventListener('loaderror', function (event) {
+                    if (event.url.indexOf('http://localhost') == 0) {
+                        ref.close();
+                    } else {
+                        error = true;
+                        ref.close();
+                    }
+                });
+                ref.addEventListener('exit', function (event) {
+                    if (error) {
+                        promise.setError();
+                    } else {
+                        kc.clearToken();
+                        promise.setSuccess();
+                    }
+                });
+                return promise.promise;
+            },
+            register: function () {
+                var registerUrl = kc.createRegisterUrl();
+                var ref = window.open(registerUrl, '_blank', 'location=no');
+                ref.addEventListener('loadstart', function (event) {
+                    if (event.url.indexOf('http://localhost') == 0) {
+                        ref.close();
+                    }
+                });
+            },
+            accountManagement: function () {
+                var accountUrl = kc.createAccountUrl();
+                var ref = window.open(accountUrl, '_blank', 'location=no');
+                ref.addEventListener('loadstart', function (event) {
+                    if (event.url.indexOf('http://localhost') == 0) {
+                        ref.close();
+                    }
+                });
+            },
+            redirectUri: function (options) {
+                return 'http://localhost';
+            }
         }
-
-        throw 'invalid adapter type: ' + type;
     }
+    throw 'invalid adapter type: ' + type;
+}
+
 }

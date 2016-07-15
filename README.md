@@ -7,12 +7,9 @@ An authentication plugin based on KeyCloak ('keycloak.org') for Aurelia applicat
 ## Get Started
 
 * Install Aurelia-Keycloak:
-For now and until this plugin is registered with jspm, install this way.
 ```bash
-jspm install github:waynepennington/aurelia-keycloak
+jspm install aurelia-keycloak
 ```
-Copy aurelia-keycloak.js (from this GITHUB /dist directory) to your application's ../jspm_packages/github/waynepennington/ directory.
-Rename this copied file 'aurelia-keycloak@master.js'
 
 * Add keycloak configuration:
 Follow Keycloak directions for creating a keycloak.json configuration file.  Put this file in the same directory as your application's index.html file.
@@ -24,7 +21,7 @@ export function configure(aurelia) {
     aurelia.use
         .standardConfiguration()
         .developmentLogging()
-        .plugin('waynepennington/aurelia-keycloak', (keycloak)=>  keycloak.init({ onLoad: 'login-required' }))
+        .plugin('aurelia-keycloak', {initOptions:{ onLoad: 'login-required' }})
         };
 
     aurelia.start().then(a => a.setRoot());
@@ -37,7 +34,7 @@ export function configure(aurelia) {
     aurelia.use
         .standardConfiguration()
         .developmentLogging()
-        .plugin('waynepennington/aurelia-keycloak')
+        .plugin('aurelia-keycloak')
         };
 
     aurelia.start().then(a => a.setRoot());
@@ -49,11 +46,11 @@ Then, construct a login button within your code to call the keycloak login funct
 
 ```javascript
 import {inject} from 'aurelia-framework';
-import {Keycloak} from 'waynepennington/aurelia-keycloak';
+import {AuthService} from 'aurelia-keycloak';
 
-@inject(Keycloak)
+@inject(AuthService)
 export class ViewModel {
-    constructor(keycloak) {
+    constructor() {
         keycloak.FUNCTION ... ;
 
             }
@@ -65,12 +62,6 @@ See keycloak API and the example js-console for the many examples using its func
 
 
 ### item xxx
-
-
-## Dependencies
-
-* [aurelia-dependency-injection](https://github.com/aurelia/dependency-injection)
-
 
 ## Building from src
 
@@ -114,12 +105,12 @@ To run the unit tests (there are none currently), please make sure you follow th
   npm install -g karma-cli
   ```
 
-* Install the client-side dependencies with JSPM:
+* Install the browser client-side dependencies with JSPM:
 
   ```shell
-  jspm install
+  jspm install aurelia-keycloak
   ```
-* You can now run the tests with this command:
+* No testing yet.  ... You can now run the tests with this command:
 
   ```shell
   karma start
