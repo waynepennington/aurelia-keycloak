@@ -8,7 +8,8 @@ export let AuthService = noView(_class = class AuthService {
         this.kc = {};
     }
     configure(aurelia, config) {
-        this.kc = new keycloak(config.install);
+        let Keycloak = keycloak();
+        this.kc = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.kc.init(config.initOptions);
         }
