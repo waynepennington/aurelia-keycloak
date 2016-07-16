@@ -1,179 +1,8 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.AuthService = undefined;
-
-var _class;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _aureliaFramework = require("aurelia-framework");
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var CallbackParser = function CallbackParser(uriToParse, responseMode) {
-    _classCallCheck(this, CallbackParser);
-
-    var parser = this;
-    var initialParse = function initialParse() {
-        var baseUri = null;
-        var queryString = null;
-        var fragmentString = null;
-        var questionMarkIndex = uriToParse.indexOf("?");
-        var fragmentIndex = uriToParse.indexOf("#", questionMarkIndex + 1);
-        if (questionMarkIndex == -1 && fragmentIndex == -1) {
-            baseUri = uriToParse;
-        } else if (questionMarkIndex != -1) {
-            baseUri = uriToParse.substring(0, questionMarkIndex);
-            queryString = uriToParse.substring(questionMarkIndex + 1);
-            if (fragmentIndex != -1) {
-                fragmentIndex = queryString.indexOf("#");
-                fragmentString = queryString.substring(fragmentIndex + 1);
-                queryString = queryString.substring(0, fragmentIndex);
-            }
-        } else {
-            baseUri = uriToParse.substring(0, fragmentIndex);
-            fragmentString = uriToParse.substring(fragmentIndex + 1);
-        }
-        return { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
-    };
-    var parseParams = function parseParams(paramString) {
-        var result = {};
-        var params = paramString.split('&');
-        for (var i = 0; i < params.length; i++) {
-            var p = params[i].split('=');
-            var paramName = decodeURIComponent(p[0]);
-            var paramValue = decodeURIComponent(p[1]);
-            result[paramName] = paramValue;
-        }
-        return result;
-    };
-    var handleQueryParam = function handleQueryParam(paramName, paramValue, oauth) {
-        var supportedOAuthParams = ['code', 'error', 'state'];
-        for (var i = 0; i < supportedOAuthParams.length; i++) {
-            if (paramName === supportedOAuthParams[i]) {
-                oauth[paramName] = paramValue;
-                return true;
-            }
-        }
-        return false;
-    };
-    parser.parseUri = function () {
-        var parsedUri = initialParse();
-        var queryParams = {};
-        if (parsedUri.queryString) {
-            queryParams = parseParams(parsedUri.queryString);
-        }
-        var oauth = { newUrl: parsedUri.baseUri };
-        for (var param in queryParams) {
-            switch (param) {
-                case 'redirect_fragment':
-                    oauth.fragment = queryParams[param];
-                    break;
-                case 'prompt':
-                    oauth.prompt = queryParams[param];
-                    break;
-                default:
-                    if (responseMode != 'query' || !handleQueryParam(param, queryParams[param], oauth)) {
-                        oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
-                    }
-                    break;
-            }
-        }
-        if (responseMode === 'fragment') {
-            var fragmentParams = {};
-            if (parsedUri.fragmentString) {
-                fragmentParams = parseParams(parsedUri.fragmentString);
-            }
-            for (var param in fragmentParams) {
-                oauth[param] = fragmentParams[param];
-            }
-        }
-        return oauth;
-    };
-};
-
-var PersistentStorage = function () {
-    function PersistentStorage() {
-        _classCallCheck(this, PersistentStorage);
-    }
-
-    PersistentStorage.prototype.useCookieStorage = function useCookieStorage() {
-        if (typeof localStorage === "undefined") {
-            return true;
-        }
-        try {
-            key = '@@keycloak-session-storage/test';
-            localStorage.setItem(key, 'test');
-            localStorage.removeItem(key);
-            return false;
-        } catch (err) {
-            return true;
-        }
-    };
-
-    PersistentStorage.prototype.setitem = function setitem(key, value) {
-        if (useCookieStorage()) {
-            setCookie(key, value, cookieExpiration(5));
-        } else {
-            localStorage.setItem(key, value);
-        }
-    };
-
-    PersistentStorage.prototype.getItem = function getItem(key) {
-        if (useCookieStorage()) {
-            return getCookie(key);
-        }
-        return localStorage.getItem(key);
-    };
-
-    PersistentStorage.prototype.removeItem = function removeItem(key) {
-        if (typeof localStorage !== "undefined") {
-            try {
-                localStorage.removeItem(key);
-            } catch (err) {}
-        }
-
-        setCookie(key, '', cookieExpiration(-100));
-    };
-
-    PersistentStorage.prototype.cookieExpiration = function cookieExpiration(minutes) {
-        exp = new Date();
-        exp.setTime(exp.getTime() + minutes * 60 * 1000);
-        return exp;
-    };
-
-    PersistentStorage.prototype.getCookie = function getCookie(key) {
-        name = key + '=';
-        ca = document.cookie.split(';');
-        for (i = 0; i < ca.length; i++) {
-            c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return '';
-    };
-
-    PersistentStorage.prototype.setCookie = function setCookie(key, value, expirationDate) {
-        cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
-        document.cookie = cookie;
-    };
-
-    return PersistentStorage;
-}();
-
-;
 
 
 (function (window, undefined) {
 
-    var Keycloak = function Keycloak(config) {
+    var Keycloak = function (config) {
         if (!(this instanceof Keycloak)) {
             return new Keycloak(config);
         }
@@ -266,7 +95,7 @@ var PersistentStorage = function () {
             var configPromise = loadConfig(config);
 
             function onLoad() {
-                var doLogin = function doLogin(prompt) {
+                var doLogin = function (prompt) {
                     if (!prompt) {
                         options.prompt = 'none';
                     }
@@ -508,7 +337,7 @@ var PersistentStorage = function () {
 
             minValidity = minValidity || 5;
 
-            var exec = function exec() {
+            var exec = function () {
                 if (!kc.isTokenExpired(minValidity)) {
                     promise.setSuccess(false);
                 } else {
@@ -855,7 +684,7 @@ var PersistentStorage = function () {
 
         function createPromise() {
             var p = {
-                setSuccess: function setSuccess(result) {
+                setSuccess: function (result) {
                     p.success = true;
                     p.result = result;
                     if (p.successCallback) {
@@ -863,7 +692,7 @@ var PersistentStorage = function () {
                     }
                 },
 
-                setError: function setError(result) {
+                setError: function (result) {
                     p.error = true;
                     p.result = result;
                     if (p.errorCallback) {
@@ -872,7 +701,7 @@ var PersistentStorage = function () {
                 },
 
                 promise: {
-                    success: function success(callback) {
+                    success: function (callback) {
                         if (p.success) {
                             callback(p.result);
                         } else if (!p.error) {
@@ -880,7 +709,7 @@ var PersistentStorage = function () {
                         }
                         return p.promise;
                     },
-                    error: function error(callback) {
+                    error: function (callback) {
                         if (p.error) {
                             callback(p.result);
                         } else if (!p.success) {
@@ -926,7 +755,7 @@ var PersistentStorage = function () {
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
 
-            var messageCallback = function messageCallback(event) {
+            var messageCallback = function (event) {
                 if (event.origin !== loginIframe.iframeOrigin) {
                     return;
                 }
@@ -943,7 +772,7 @@ var PersistentStorage = function () {
             };
             window.addEventListener('message', messageCallback, false);
 
-            var check = function check() {
+            var check = function () {
                 checkLoginIframe();
                 if (kc.token) {
                     setTimeout(check, loginIframe.interval * 1000);
@@ -972,27 +801,27 @@ var PersistentStorage = function () {
         function loadAdapter(type) {
             if (!type || type == 'default') {
                 return {
-                    login: function login(options) {
+                    login: function (options) {
                         window.location.href = kc.createLoginUrl(options);
                         return createPromise().promise;
                     },
 
-                    logout: function logout(options) {
+                    logout: function (options) {
                         window.location.href = kc.createLogoutUrl(options);
                         return createPromise().promise;
                     },
 
-                    register: function register(options) {
+                    register: function (options) {
                         window.location.href = kc.createRegisterUrl(options);
                         return createPromise().promise;
                     },
 
-                    accountManagement: function accountManagement() {
+                    accountManagement: function () {
                         window.location.href = kc.createAccountUrl();
                         return createPromise().promise;
                     },
 
-                    redirectUri: function redirectUri(options, encodeHash) {
+                    redirectUri: function (options, encodeHash) {
                         if (arguments.length == 1) {
                             encodeHash = true;
                         }
@@ -1017,7 +846,7 @@ var PersistentStorage = function () {
                 loginIframe.enable = false;
 
                 return {
-                    login: function login(options) {
+                    login: function (options) {
                         var promise = createPromise();
 
                         var o = 'location=no';
@@ -1056,7 +885,7 @@ var PersistentStorage = function () {
                         return promise.promise;
                     },
 
-                    logout: function logout(options) {
+                    logout: function (options) {
                         var promise = createPromise();
 
                         var logoutUrl = kc.createLogoutUrl(options);
@@ -1091,7 +920,7 @@ var PersistentStorage = function () {
                         return promise.promise;
                     },
 
-                    register: function register() {
+                    register: function () {
                         var registerUrl = kc.createRegisterUrl();
                         var ref = window.open(registerUrl, '_blank', 'location=no');
                         ref.addEventListener('loadstart', function (event) {
@@ -1101,7 +930,7 @@ var PersistentStorage = function () {
                         });
                     },
 
-                    accountManagement: function accountManagement() {
+                    accountManagement: function () {
                         var accountUrl = kc.createAccountUrl();
                         var ref = window.open(accountUrl, '_blank', 'location=no');
                         ref.addEventListener('loadstart', function (event) {
@@ -1111,7 +940,7 @@ var PersistentStorage = function () {
                         });
                     },
 
-                    redirectUri: function redirectUri(options) {
+                    redirectUri: function (options) {
                         return 'http://localhost';
                     }
                 };
@@ -1120,12 +949,12 @@ var PersistentStorage = function () {
             throw 'invalid adapter type: ' + type;
         }
 
-        var PersistentStorage = function PersistentStorage() {
+        var PersistentStorage = function () {
             if (!(this instanceof PersistentStorage)) {
                 return new PersistentStorage();
             }
             var ps = this;
-            var useCookieStorage = function useCookieStorage() {
+            var useCookieStorage = function () {
                 if (typeof localStorage === "undefined") {
                     return true;
                 }
@@ -1164,13 +993,13 @@ var PersistentStorage = function () {
                 setCookie(key, '', cookieExpiration(-100));
             };
 
-            var cookieExpiration = function cookieExpiration(minutes) {
+            var cookieExpiration = function (minutes) {
                 var exp = new Date();
                 exp.setTime(exp.getTime() + minutes * 60 * 1000);
                 return exp;
             };
 
-            var getCookie = function getCookie(key) {
+            var getCookie = function (key) {
                 var name = key + '=';
                 var ca = document.cookie.split(';');
                 for (var i = 0; i < ca.length; i++) {
@@ -1185,19 +1014,19 @@ var PersistentStorage = function () {
                 return '';
             };
 
-            var setCookie = function setCookie(key, value, expirationDate) {
+            var setCookie = function (key, value, expirationDate) {
                 var cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
                 document.cookie = cookie;
             };
         };
 
-        var CallbackParser = function CallbackParser(uriToParse, responseMode) {
+        var CallbackParser = function (uriToParse, responseMode) {
             if (!(this instanceof CallbackParser)) {
                 return new CallbackParser(uriToParse, responseMode);
             }
             var parser = this;
 
-            var initialParse = function initialParse() {
+            var initialParse = function () {
                 var baseUri = null;
                 var queryString = null;
                 var fragmentString = null;
@@ -1222,7 +1051,7 @@ var PersistentStorage = function () {
                 return { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
             };
 
-            var parseParams = function parseParams(paramString) {
+            var parseParams = function (paramString) {
                 var result = {};
                 var params = paramString.split('&');
                 for (var i = 0; i < params.length; i++) {
@@ -1234,7 +1063,7 @@ var PersistentStorage = function () {
                 return result;
             };
 
-            var handleQueryParam = function handleQueryParam(paramName, paramValue, oauth) {
+            var handleQueryParam = function (paramName, paramValue, oauth) {
                 var supportedOAuthParams = ['code', 'error', 'state'];
 
                 for (var i = 0; i < supportedOAuthParams.length; i++) {
@@ -1286,7 +1115,7 @@ var PersistentStorage = function () {
         };
     };
 
-    if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && module && _typeof(module.exports) === "object") {
+    if (typeof module === "object" && module && typeof module.exports === "object") {
         module.exports = Keycloak;
     } else {
         window.Keycloak = Keycloak;
@@ -1298,20 +1127,3 @@ var PersistentStorage = function () {
         }
     }
 })(window);
-
-var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
-    function AuthService() {
-        _classCallCheck(this, AuthService);
-
-        this.keycloak = {};
-    }
-
-    AuthService.prototype.configure = function configure(config) {
-        this.keycloak = new Keycloak(config.install);
-        if (typeof config.initOptions !== 'undefined') {
-            this.keycloak.init(config.initOptions);
-        }
-    };
-
-    return AuthService;
-}()) || _class;
