@@ -21,7 +21,7 @@ var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = f
     };
 
     AuthService.initKeycloak = function initKeycloak(initOptions) {
-        keycloak.init(config.initOptions);
+        AuthService.keycloak.init(config.initOptions);
     };
 
     AuthService.prototype.configure = function configure(aurelia, config) {
