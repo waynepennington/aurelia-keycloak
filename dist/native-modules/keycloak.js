@@ -27,12 +27,12 @@ export var Keycloak = function () {
         this.storage = new PersistentStorage();
 
         if (initOptions && initOptions.adapter === 'cordova') {
-            this.adapter = loadAdapter('cordova');
+            this.adapter = this.loadAdapter('cordova');
         } else if (initOptions && initOptions.adapter === 'default') {
-            this.adapter = loadAdapter();
+            this.adapter = this.loadAdapter();
         } else {
             if (window.Cordova) {
-                this.adapter = loadAdapter('cordova');
+                this.adapter = this.loadAdapter('cordova');
             } else {
                 this.adapter = this.loadAdapter();
             }
@@ -85,9 +85,9 @@ export var Keycloak = function () {
             this.flow = 'standard';
         }
 
-        var promise = createPromise();
+        var promise = this.createPromise();
 
-        var initPromise = createPromise();
+        var initPromise = this.createPromise();
         initPromise.promise.success(function () {
             this.onReady && this.onReady(this.authenticated);
             promise.setSuccess(this.authenticated);
@@ -274,7 +274,7 @@ export var Keycloak = function () {
         req.setRequestHeader('Accept', 'application/json');
         req.setRequestHeader('Authorization', 'bearer ' + this.token);
 
-        var promise = createPromise();
+        var promise = this.createPromise();
 
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
@@ -299,7 +299,7 @@ export var Keycloak = function () {
         req.setRequestHeader('Accept', 'application/json');
         req.setRequestHeader('Authorization', 'bearer ' + this.token);
 
-        var promise = createPromise();
+        var promise = this.createPromise();
 
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
@@ -331,7 +331,7 @@ export var Keycloak = function () {
     };
 
     Keycloak.prototype.updateToken = function updateToken(minValidity) {
-        var promise = createPromise();
+        var promise = this.createPromise();
 
         if (!this.tokenParsed || !this.refreshToken) {
             promise.setError();
@@ -505,7 +505,7 @@ export var Keycloak = function () {
     };
 
     Keycloak.prototype.loadConfig = function loadConfig(url) {
-        var promise = createPromise();
+        var promise = this.createPromise();
         var configUrl;
 
         if (!this.config) {
@@ -724,7 +724,7 @@ export var Keycloak = function () {
     };
 
     Keycloak.prototype.setupCheckLoginIframe = function setupCheckLoginIframe() {
-        var promise = createPromise();
+        var promise = this.createPromise();
 
         if (!this.loginIframe.enable) {
             promise.setSuccess();
@@ -784,7 +784,7 @@ export var Keycloak = function () {
     };
 
     Keycloak.prototype.checkLoginIframe = function checkLoginIframe() {
-        var promise = createPromise();
+        var promise = this.createPromise();
 
         if (this.loginIframe.iframe && this.loginIframe.iframeOrigin) {
             var msg = {};
@@ -804,22 +804,22 @@ export var Keycloak = function () {
             return {
                 login: function login(options) {
                     window.location.href = this.createLoginUrl(options);
-                    return createPromise().promise;
+                    return this.createPromise().promise;
                 },
 
                 logout: function logout(options) {
                     window.location.href = this.createLogoutUrl(options);
-                    return createPromise().promise;
+                    return this.createPromise().promise;
                 },
 
                 register: function register(options) {
                     window.location.href = this.createRegisterUrl(options);
-                    return createPromise().promise;
+                    return this.createPromise().promise;
                 },
 
                 accountManagement: function accountManagement() {
                     window.location.href = this.createAccountUrl();
-                    return createPromise().promise;
+                    return this.createPromise().promise;
                 },
 
                 redirectUri: function redirectUri(options, encodeHash) {
@@ -848,7 +848,7 @@ export var Keycloak = function () {
 
             return {
                 login: function login(options) {
-                    var promise = createPromise();
+                    var promise = this.createPromise();
 
                     var o = 'location=no';
                     if (options && options.prompt == 'none') {
@@ -887,7 +887,7 @@ export var Keycloak = function () {
                 },
 
                 logout: function logout(options) {
-                    var promise = createPromise();
+                    var promise = this.createPromise();
 
                     var logoutUrl = this.createLogoutUrl(options);
                     var ref = window.open(logoutUrl, '_blank', 'location=no,hidden=yes');

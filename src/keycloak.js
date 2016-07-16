@@ -42,12 +42,12 @@ init (initOptions) {
             this.storage = new PersistentStorage();
 
             if (initOptions && initOptions.adapter === 'cordova') {
-               this.adapter = loadAdapter('cordova');
+               this.adapter = this.loadAdapter('cordova');
             } else if (initOptions && initOptions.adapter === 'default') {
-                this.adapter = loadAdapter();
+                this.adapter = this.loadAdapter();
             } else {
                 if (window.Cordova) {
-                    this.adapter = loadAdapter('cordova');
+                    this.adapter = this.loadAdapter('cordova');
                 } else {
                     this.adapter = this.loadAdapter();
                 }
@@ -100,9 +100,9 @@ init (initOptions) {
                 this.flow = 'standard';
             }
 
-            var promise = createPromise();
+            var promise = this.createPromise();
 
-            var initPromise = createPromise();
+            var initPromise = this.createPromise();
             initPromise.promise.success(function() {
                 this.onReady && this.onReady(this.authenticated);
                 promise.setSuccess(this.authenticated);
@@ -301,7 +301,7 @@ init (initOptions) {
             req.setRequestHeader('Accept', 'application/json');
             req.setRequestHeader('Authorization', 'bearer ' + this.token);
 
-            var promise = createPromise();
+            var promise = this.createPromise();
 
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
@@ -326,7 +326,7 @@ init (initOptions) {
             req.setRequestHeader('Accept', 'application/json');
             req.setRequestHeader('Authorization', 'bearer ' + this.token);
 
-            var promise = createPromise();
+            var promise = this.createPromise();
 
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
@@ -358,7 +358,7 @@ init (initOptions) {
         }
 
         updateToken(minValidity) {
-            var promise = createPromise();
+            var promise = this.createPromise();
 
             if (!this.tokenParsed || !this.refreshToken) {
                 promise.setError();
@@ -535,7 +535,7 @@ init (initOptions) {
         }
 
         loadConfig(url) {
-            var promise = createPromise();
+            var promise = this.createPromise();
             var configUrl;
 
             if (!this.config) {
@@ -757,7 +757,7 @@ init (initOptions) {
         }
 
         setupCheckLoginIframe() {
-            var promise = createPromise();
+            var promise = this.createPromise();
 
             if (!this.loginIframe.enable) {
                 promise.setSuccess();
@@ -817,7 +817,7 @@ init (initOptions) {
         }
 
         checkLoginIframe() {
-            var promise = createPromise();
+            var promise = this.createPromise();
 
             if (this.loginIframe.iframe && this.loginIframe.iframeOrigin) {
                 var msg = {};
@@ -837,22 +837,22 @@ init (initOptions) {
                 return {
                     login: function(options) {
                         window.location.href = this.createLoginUrl(options);
-                        return createPromise().promise;
+                        return this.createPromise().promise;
                     },
 
                     logout: function(options) {
                         window.location.href = this.createLogoutUrl(options);
-                        return createPromise().promise;
+                        return this.createPromise().promise;
                     },
 
                     register: function(options) {
                         window.location.href = this.createRegisterUrl(options);
-                        return createPromise().promise;
+                        return this.createPromise().promise;
                     },
 
                     accountManagement : function() {
                         window.location.href = this.createAccountUrl();
-                        return createPromise().promise;
+                        return this.createPromise().promise;
                     },
 
                     redirectUri: function(options, encodeHash) {
@@ -881,7 +881,7 @@ init (initOptions) {
 
                 return {
                     login: function(options) {
-                        var promise = createPromise();
+                        var promise = this.createPromise();
 
                         var o = 'location=no';
                         if (options && options.prompt == 'none') {
@@ -920,7 +920,7 @@ init (initOptions) {
                     },
 
                     logout: function(options) {
-                        var promise = createPromise();
+                        var promise = this.createPromise();
 
                         var logoutUrl = this.createLogoutUrl(options);
                         var ref = window.open(logoutUrl, '_blank', 'location=no,hidden=yes');
