@@ -5,11 +5,20 @@ export class AuthService {
     // constructor(){
     //     this.keycloak = null;
     // }
+    static keycloak;
+    static installKeycloak(installConfig){
+        let keycloak = new Keycloak(installConfig);
+    }
+    static initKeycloak(initOptions){
+        keycloak.init(config.initOptions)
+    }
     configure(aurelia,config){
         // let kc = new keycloak.Keycloak(config.install);
-        this.keycloak = new Keycloak(config.install);
+        // this.keycloak = new Keycloak(config.install);ll
+        AuthService.installKeycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
-            this.keycloak.init(config.initOptions);                                  
+            // this.keycloak.init(config.initOptions); 
+            AuthService.initKeycloak(config.initOptions);                             
         }
     }
     

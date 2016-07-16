@@ -17,10 +17,18 @@ System.register(['aurelia-framework'], function (_export, _context) {
                     
                 }
 
+                AuthService.installKeycloak = function installKeycloak(installConfig) {
+                    var keycloak = new Keycloak(installConfig);
+                };
+
+                AuthService.initKeycloak = function initKeycloak(initOptions) {
+                    keycloak.init(config.initOptions);
+                };
+
                 AuthService.prototype.configure = function configure(aurelia, config) {
-                    this.keycloak = new Keycloak(config.install);
+                    AuthService.installKeycloak(config.install);
                     if (typeof config.initOptions !== 'undefined') {
-                        this.keycloak.init(config.initOptions);
+                        AuthService.initKeycloak(config.initOptions);
                     }
                 };
 
