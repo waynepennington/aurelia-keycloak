@@ -110,7 +110,7 @@ init (initOptions) {
                 promise.setError();
             });
 
-            var configPromise = loadConfig(this.config);
+            var configPromise = this.loadConfig(this.config);
 
             function onLoad() {
                 var doLogin = function(prompt) {
@@ -128,8 +128,8 @@ init (initOptions) {
                 switch (initOptions.onLoad) {
                     case 'check-sso':
                         if (this.loginIframe.enable) {
-                            setupCheckLoginIframe().success(function() {
-                                checkLoginIframe().success(function () {
+                            this.setupCheckLoginIframe().success(function() {
+                                this.checkLoginIframe().success(function () {
                                     doLogin(false);
                                 }).error(function () {
                                     initPromise.setSuccess();
@@ -148,21 +148,21 @@ init (initOptions) {
             }
 
             function processInit() {
-                var callback = parseCallback(window.location.href);
+                var callback = this.parseCallback(window.location.href);
 
                 if (callback) {
-                    setupCheckLoginIframe();
+                    this.setupCheckLoginIframe();
                     window.history.replaceState({}, null, callback.newUrl);
-                    processCallback(callback, initPromise);
+                    this.processCallback(callback, initPromise);
                     return;
                 } else if (initOptions) {
                     if (initOptions.token || initOptions.refreshToken) {
-                        setToken(initOptions.token, initOptions.refreshToken, initOptions.idToken, false);
+                        this.setToken(initOptions.token, initOptions.refreshToken, initOptions.idToken, false);
                         this.timeSkew = initOptions.timeSkew || 0;
 
                         if (this.loginIframe.enable) {
-                            setupCheckLoginIframe().success(function() {
-                                checkLoginIframe().success(function () {
+                            this.setupCheckLoginIframe().success(function() {
+                                this.checkLoginIframe().success(function () {
                                     initPromise.setSuccess();
                                 }).error(function () {
                                     if (initOptions.onLoad) {
