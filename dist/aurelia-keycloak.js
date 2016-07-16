@@ -247,13 +247,10 @@ class PersistentStorage {
  * limitations under the License.
  */
 
-(function( window, undefined ) {
-
-    var Keycloak = function (config) {
-        if (!(this instanceof Keycloak)) {
-            return new Keycloak(config);
-        }
-
+// (function( window, undefined ) {
+export class Keycloak{
+    constructor(config){
+        this.config = config;
         var kc = this;
         var adapter;
         var refreshQueue = [];
@@ -264,8 +261,12 @@ class PersistentStorage {
             callbackMap: [],
             interval: 5
         };
+        this.callback_id = 0;
+    }
 
-        kc.init = function (initOptions) {
+
+init (initOptions) {
+
             kc.authenticated = false;
 
             storage = new PersistentStorage();
@@ -420,11 +421,11 @@ class PersistentStorage {
             return promise.promise;
         }
 
-        kc.login = function (options) {
+       login (options) {
             return adapter.login(options);
         }
 
-        kc.createLoginUrl = function(options) {
+        createLoginUrl(options) {
             var state = createUUID();
             var nonce = createUUID();
 
@@ -472,11 +473,11 @@ class PersistentStorage {
             return url;
         }
 
-        kc.logout = function(options) {
+        logout(options) {
             return adapter.logout(options);
         }
 
-        kc.createLogoutUrl = function(options) {
+        createLogoutUrl(options) {
             var url = getRealmUrl()
                 + '/protocol/openid-connect/logout'
                 + '?redirect_uri=' + encodeURIComponent(adapter.redirectUri(options, false));
@@ -484,11 +485,11 @@ class PersistentStorage {
             return url;
         }
 
-        kc.register = function (options) {
+        register (options) {
             return adapter.register(options);
         }
 
-        kc.createRegisterUrl = function(options) {
+        createRegisterUrl(options) {
             if (!options) {
                 options = {};
             }
@@ -496,7 +497,7 @@ class PersistentStorage {
             return kc.createLoginUrl(options);
         }
 
-        kc.createAccountUrl = function(options) {
+        createAccountUrl(options) {
             var url = getRealmUrl()
                 + '/account'
                 + '?referrer=' + encodeURIComponent(kc.clientId)
@@ -505,16 +506,16 @@ class PersistentStorage {
             return url;
         }
 
-        kc.accountManagement = function() {
+        accountManagement() {
             return adapter.accountManagement();
         }
 
-        kc.hasRealmRole = function (role) {
+        hasRealmRole (role) {
             var access = kc.realmAccess;
             return !!access && access.roles.indexOf(role) >= 0;
         }
 
-        kc.hasResourceRole = function(role, resource) {
+        hasResourceRole(role, resource) {
             if (!kc.resourceAccess) {
                 return false;
             }
@@ -523,7 +524,7 @@ class PersistentStorage {
             return !!access && access.roles.indexOf(role) >= 0;
         }
 
-        kc.loadUserProfile = function() {
+        loadUserProfile() {
             var url = getRealmUrl() + '/account';
             var req = new XMLHttpRequest();
             req.open('GET', url, true);
@@ -548,7 +549,7 @@ class PersistentStorage {
             return promise.promise;
         }
 
-        kc.loadUserInfo = function() {
+        loadUserInfo() {
             var url = getRealmUrl() + '/protocol/openid-connect/userinfo';
             var req = new XMLHttpRequest();
             req.open('GET', url, true);
@@ -573,7 +574,7 @@ class PersistentStorage {
             return promise.promise;
         }
 
-        kc.isTokenExpired = function(minValidity) {
+        isTokenExpired(minValidity) {
             if (!kc.tokenParsed || (!kc.refreshToken && kc.flow != 'implicit' )) {
                 throw 'Not authenticated';
             }
@@ -586,7 +587,7 @@ class PersistentStorage {
             return expiresIn < 0;
         }
 
-        kc.updateToken = function(minValidity) {
+        updateToken(minValidity) {
             var promise = createPromise();
 
             if (!kc.tokenParsed || !kc.refreshToken) {
@@ -660,7 +661,7 @@ class PersistentStorage {
             return promise.promise;
         }
 
-        kc.clearToken = function() {
+        clearToken() {
             if (kc.token) {
                 setToken(null, null, null, true);
                 kc.onAuthLogout && kc.onAuthLogout();
@@ -670,7 +671,7 @@ class PersistentStorage {
             }
         }
 
-        function getRealmUrl() {
+        getRealmUrl() {
             if (kc.authServerUrl.charAt(kc.authServerUrl.length - 1) == '/') {
                 return kc.authServerUrl + 'realms/' + encodeURIComponent(kc.realm);
             } else {
@@ -678,7 +679,7 @@ class PersistentStorage {
             }
         }
 
-        function getOrigin() {
+        getOrigin() {
             if (!window.location.origin) {
                 return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
             } else {
@@ -686,7 +687,7 @@ class PersistentStorage {
             }
         }
 
-        function processCallback(oauth, promise) {
+        processCallback(oauth, promise) {
             var code = oauth.code;
             var error = oauth.error;
             var prompt = oauth.prompt;
@@ -763,7 +764,7 @@ class PersistentStorage {
 
         }
 
-        function loadConfig(url) {
+        loadConfig(url) {
             var promise = createPromise();
             var configUrl;
 
@@ -826,7 +827,7 @@ class PersistentStorage {
             return promise.promise;
         }
 
-        function setToken(token, refreshToken, idToken, useTokenTime) {
+        setToken(token, refreshToken, idToken, useTokenTime) {
             if (kc.tokenTimeoutHandle) {
                 clearTimeout(kc.tokenTimeoutHandle);
                 kc.tokenTimeoutHandle = null;
@@ -878,7 +879,7 @@ class PersistentStorage {
             }
         }
 
-        function decodeToken(str) {
+        decodeToken(str) {
             str = str.split('.')[1];
 
             str = str.replace('/-/g', '+');
@@ -906,7 +907,7 @@ class PersistentStorage {
             return str;
         }
 
-        function createUUID() {
+        createUUID() {
             var s = [];
             var hexDigits = '0123456789abcdef';
             for (var i = 0; i < 36; i++) {
@@ -919,15 +920,13 @@ class PersistentStorage {
             return uuid;
         }
 
-        kc.callback_id = 0;
-
-        function createCallbackId() {
+        createCallbackId() {
             var id = '<id: ' + (kc.callback_id++) + (Math.random()) + '>';
             return id;
 
         }
 
-        function parseCallback(url) {
+        parseCallback(url) {
             var oauth = new CallbackParser(url, kc.responseMode).parseUri();
 
             var oauthState = storage.getItem('oauthState');
@@ -947,7 +946,7 @@ class PersistentStorage {
             }
         }
 
-        function createPromise() {
+        createPromise() {
             var p = {
                 setSuccess: function(result) {
                     p.success = true;
@@ -987,7 +986,7 @@ class PersistentStorage {
             return p;
         }
 
-        function setupCheckLoginIframe() {
+        setupCheckLoginIframe() {
             var promise = createPromise();
 
             if (!loginIframe.enable) {
@@ -1047,7 +1046,7 @@ class PersistentStorage {
             return promise.promise;
         }
 
-        function checkLoginIframe() {
+        checkLoginIframe() {
             var promise = createPromise();
 
             if (loginIframe.iframe && loginIframe.iframeOrigin) {
@@ -1063,7 +1062,7 @@ class PersistentStorage {
             return promise.promise;
         }
 
-        function loadAdapter(type) {
+        loadAdapter(type) {
             if (!type || type == 'default') {
                 return {
                     login: function(options) {
@@ -1215,181 +1214,182 @@ class PersistentStorage {
         }
 
 
-        var PersistentStorage = function() {
-            if (!(this instanceof PersistentStorage)) {
-                return new PersistentStorage();
-            }
-            var ps = this;
-            var useCookieStorage = function () {
-                if (typeof localStorage === "undefined") {
-                    return true;
-                }
-                try {
-                    var key = '@@keycloak-session-storage/test';
-                    localStorage.setItem(key, 'test');
-                    localStorage.removeItem(key);
-                    return false;
-                } catch (err) {
-                    // Probably in Safari "private mode" where localStorage
-                    // quota is 0, or quota exceeded. Switching to cookie
-                    // storage.
-                    return true;
-                }
-            }
+        // var PersistentStorage = function() {
+        //     if (!(this instanceof PersistentStorage)) {
+        //         return new PersistentStorage();
+        //     }
+        //     var ps = this;
+        //     var useCookieStorage = function () {
+        //         if (typeof localStorage === "undefined") {
+        //             return true;
+        //         }
+        //         try {
+        //             var key = '@@keycloak-session-storage/test';
+        //             localStorage.setItem(key, 'test');
+        //             localStorage.removeItem(key);
+        //             return false;
+        //         } catch (err) {
+        //             // Probably in Safari "private mode" where localStorage
+        //             // quota is 0, or quota exceeded. Switching to cookie
+        //             // storage.
+        //             return true;
+        //         }
+        //     }
 
-            ps.setItem = function(key, value) {
-                if (useCookieStorage()) {
-                    setCookie(key, value, cookieExpiration(5));
-                } else {
-                    localStorage.setItem(key, value);
-                }
-            }
+        //     ps.setItem = function(key, value) {
+        //         if (useCookieStorage()) {
+        //             setCookie(key, value, cookieExpiration(5));
+        //         } else {
+        //             localStorage.setItem(key, value);
+        //         }
+        //     }
 
-            ps.getItem = function(key) {
-                if (useCookieStorage()) {
-                    return getCookie(key);
-                }
-                return localStorage.getItem(key);
-            }
+        //     ps.getItem = function(key) {
+        //         if (useCookieStorage()) {
+        //             return getCookie(key);
+        //         }
+        //         return localStorage.getItem(key);
+        //     }
 
-            ps.removeItem = function(key) {
-                if (typeof localStorage !== "undefined") {
-                    try {
-                        // Always try to delete from localStorage.
-                        localStorage.removeItem(key);
-                    } catch (err) { }
-                }
-                // Always remove the cookie.
-                setCookie(key, '', cookieExpiration(-100));
-            }
+        //     ps.removeItem = function(key) {
+        //         if (typeof localStorage !== "undefined") {
+        //             try {
+        //                 // Always try to delete from localStorage.
+        //                 localStorage.removeItem(key);
+        //             } catch (err) { }
+        //         }
+        //         // Always remove the cookie.
+        //         setCookie(key, '', cookieExpiration(-100));
+        //     }
 
-            var cookieExpiration = function (minutes) {
-                var exp = new Date();
-                exp.setTime(exp.getTime() + (minutes*60*1000));
-                return exp;
-            }
+        //     var cookieExpiration = function (minutes) {
+        //         var exp = new Date();
+        //         exp.setTime(exp.getTime() + (minutes*60*1000));
+        //         return exp;
+        //     }
 
-            var getCookie = function (key) {
-                var name = key + '=';
-                var ca = document.cookie.split(';');
-                for (var i = 0; i < ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0) == ' ') {
-                        c = c.substring(1);
-                    }
-                    if (c.indexOf(name) == 0) {
-                        return c.substring(name.length, c.length);
-                    }
-                }
-                return '';
-            }
+        //     var getCookie = function (key) {
+        //         var name = key + '=';
+        //         var ca = document.cookie.split(';');
+        //         for (var i = 0; i < ca.length; i++) {
+        //             var c = ca[i];
+        //             while (c.charAt(0) == ' ') {
+        //                 c = c.substring(1);
+        //             }
+        //             if (c.indexOf(name) == 0) {
+        //                 return c.substring(name.length, c.length);
+        //             }
+        //         }
+        //         return '';
+        //     }
 
-            var setCookie = function (key, value, expirationDate) {
-                var cookie = key + '=' + value + '; '
-                    + 'expires=' + expirationDate.toUTCString() + '; ';
-                document.cookie = cookie;
-            }
-        }
+        //     var setCookie = function (key, value, expirationDate) {
+        //         var cookie = key + '=' + value + '; '
+        //             + 'expires=' + expirationDate.toUTCString() + '; ';
+        //         document.cookie = cookie;
+        //     }
+        // }
 
-        var CallbackParser = function(uriToParse, responseMode) {
-            if (!(this instanceof CallbackParser)) {
-                return new CallbackParser(uriToParse, responseMode);
-            }
-            var parser = this;
+        // var CallbackParser = function(uriToParse, responseMode) {
+        //     if (!(this instanceof CallbackParser)) {
+        //         return new CallbackParser(uriToParse, responseMode);
+        //     }
+        //     var parser = this;
 
-            var initialParse = function() {
-                var baseUri = null;
-                var queryString = null;
-                var fragmentString = null;
+        //     var initialParse = function() {
+        //         var baseUri = null;
+        //         var queryString = null;
+        //         var fragmentString = null;
 
-                var questionMarkIndex = uriToParse.indexOf("?");
-                var fragmentIndex = uriToParse.indexOf("#", questionMarkIndex + 1);
-                if (questionMarkIndex == -1 && fragmentIndex == -1) {
-                    baseUri = uriToParse;
-                } else if (questionMarkIndex != -1) {
-                    baseUri = uriToParse.substring(0, questionMarkIndex);
-                    queryString = uriToParse.substring(questionMarkIndex + 1);
-                    if (fragmentIndex != -1) {
-                        fragmentIndex = queryString.indexOf("#");
-                        fragmentString = queryString.substring(fragmentIndex + 1);
-                        queryString = queryString.substring(0, fragmentIndex);
-                    }
-                } else {
-                    baseUri = uriToParse.substring(0, fragmentIndex);
-                    fragmentString = uriToParse.substring(fragmentIndex + 1);
-                }
+        //         var questionMarkIndex = uriToParse.indexOf("?");
+        //         var fragmentIndex = uriToParse.indexOf("#", questionMarkIndex + 1);
+        //         if (questionMarkIndex == -1 && fragmentIndex == -1) {
+        //             baseUri = uriToParse;
+        //         } else if (questionMarkIndex != -1) {
+        //             baseUri = uriToParse.substring(0, questionMarkIndex);
+        //             queryString = uriToParse.substring(questionMarkIndex + 1);
+        //             if (fragmentIndex != -1) {
+        //                 fragmentIndex = queryString.indexOf("#");
+        //                 fragmentString = queryString.substring(fragmentIndex + 1);
+        //                 queryString = queryString.substring(0, fragmentIndex);
+        //             }
+        //         } else {
+        //             baseUri = uriToParse.substring(0, fragmentIndex);
+        //             fragmentString = uriToParse.substring(fragmentIndex + 1);
+        //         }
 
-                return { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
-            }
+        //         return { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
+        //     }
 
-            var parseParams = function(paramString) {
-                var result = {};
-                var params = paramString.split('&');
-                for (var i = 0; i < params.length; i++) {
-                    var p = params[i].split('=');
-                    var paramName = decodeURIComponent(p[0]);
-                    var paramValue = decodeURIComponent(p[1]);
-                    result[paramName] = paramValue;
-                }
-                return result;
-            }
+        //     var parseParams = function(paramString) {
+        //         var result = {};
+        //         var params = paramString.split('&');
+        //         for (var i = 0; i < params.length; i++) {
+        //             var p = params[i].split('=');
+        //             var paramName = decodeURIComponent(p[0]);
+        //             var paramValue = decodeURIComponent(p[1]);
+        //             result[paramName] = paramValue;
+        //         }
+        //         return result;
+        //     }
 
-            var handleQueryParam = function(paramName, paramValue, oauth) {
-                var supportedOAuthParams = [ 'code', 'error', 'state' ];
+        //     var handleQueryParam = function(paramName, paramValue, oauth) {
+        //         var supportedOAuthParams = [ 'code', 'error', 'state' ];
 
-                for (var i = 0 ; i< supportedOAuthParams.length ; i++) {
-                    if (paramName === supportedOAuthParams[i]) {
-                        oauth[paramName] = paramValue;
-                        return true;
-                    }
-                }
-                return false;
-            }
+        //         for (var i = 0 ; i< supportedOAuthParams.length ; i++) {
+        //             if (paramName === supportedOAuthParams[i]) {
+        //                 oauth[paramName] = paramValue;
+        //                 return true;
+        //             }
+        //         }
+        //         return false;
+        //     }
 
 
-            parser.parseUri = function() {
-                var parsedUri = initialParse();
+        //     parser.parseUri = function() {
+        //         var parsedUri = initialParse();
 
-                var queryParams = {};
-                if (parsedUri.queryString) {
-                    queryParams = parseParams(parsedUri.queryString);
-                }
+        //         var queryParams = {};
+        //         if (parsedUri.queryString) {
+        //             queryParams = parseParams(parsedUri.queryString);
+        //         }
 
-                var oauth = { newUrl: parsedUri.baseUri };
-                for (var param in queryParams) {
-                    switch (param) {
-                        case 'redirect_fragment':
-                            oauth.fragment = queryParams[param];
-                            break;
-                        case 'prompt':
-                            oauth.prompt = queryParams[param];
-                            break;
-                        default:
-                            if (responseMode != 'query' || !handleQueryParam(param, queryParams[param], oauth)) {
-                                oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
-                            }
-                            break;
-                    }
-                }
+        //         var oauth = { newUrl: parsedUri.baseUri };
+        //         for (var param in queryParams) {
+        //             switch (param) {
+        //                 case 'redirect_fragment':
+        //                     oauth.fragment = queryParams[param];
+        //                     break;
+        //                 case 'prompt':
+        //                     oauth.prompt = queryParams[param];
+        //                     break;
+        //                 default:
+        //                     if (responseMode != 'query' || !handleQueryParam(param, queryParams[param], oauth)) {
+        //                         oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
+        //                     }
+        //                     break;
+        //             }
+        //         }
 
-                if (responseMode === 'fragment') {
-                    var fragmentParams = {};
-                    if (parsedUri.fragmentString) {
-                        fragmentParams = parseParams(parsedUri.fragmentString);
-                    }
-                    for (var param in fragmentParams) {
-                        oauth[param] = fragmentParams[param];
-                    }
-                }
+        //         if (responseMode === 'fragment') {
+        //             var fragmentParams = {};
+        //             if (parsedUri.fragmentString) {
+        //                 fragmentParams = parseParams(parsedUri.fragmentString);
+        //             }
+        //             for (var param in fragmentParams) {
+        //                 oauth[param] = fragmentParams[param];
+        //             }
+        //         }
 
-                return oauth;
-            }
-        }
+        //         return oauth;
+        //     }
+        // }
 
     }
 
+
     // if ( typeof module === "object" && module && typeof module.exports === "object" ) {
-        module.exports = Keycloak;
+        // module.exports = Keycloak;
     // } else {
     //     window.Keycloak = Keycloak;
 
@@ -1397,7 +1397,7 @@ class PersistentStorage {
     //         define( "keycloak", [], function () { return Keycloak; } );
     //     }
     // }
-})( window );
+// })( window );
 
 @noView
 export class AuthService { 
