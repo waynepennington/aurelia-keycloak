@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['./PersistentStorage', './CallbackParser', 'aurelia-framework'], function (_export, _context) {
+System.register(['./PersistentStorage', './CallbackParser'], function (_export, _context) {
     "use strict";
 
-    var PersistentStorage, CallbackParser, noView, _class, AuthService;
+    var PersistentStorage, CallbackParser, AuthService;
 
     
 
@@ -12,11 +12,9 @@ System.register(['./PersistentStorage', './CallbackParser', 'aurelia-framework']
             PersistentStorage = _PersistentStorage.PersistentStorage;
         }, function (_CallbackParser) {
             CallbackParser = _CallbackParser.CallbackParser;
-        }, function (_aureliaFramework) {
-            noView = _aureliaFramework.noView;
         }],
         execute: function () {
-            _export('AuthService', AuthService = noView(_class = function () {
+            _export('AuthService', AuthService = function () {
                 function AuthService() {
                     
 
@@ -837,7 +835,7 @@ System.register(['./PersistentStorage', './CallbackParser', 'aurelia-framework']
                 };
 
                 return AuthService;
-            }()) || _class);
+            }());
 
             _export('AuthService', AuthService);
         }

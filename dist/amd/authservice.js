@@ -1,4 +1,4 @@
-define(['exports', './PersistentStorage', './CallbackParser', 'aurelia-framework'], function (exports, _PersistentStorage, _CallbackParser, _aureliaFramework) {
+define(['exports', './PersistentStorage', './CallbackParser'], function (exports, _PersistentStorage, _CallbackParser) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -8,9 +8,7 @@ define(['exports', './PersistentStorage', './CallbackParser', 'aurelia-framework
 
     
 
-    var _class;
-
-    var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
+    var AuthService = exports.AuthService = function () {
         function AuthService() {
             
 
@@ -831,5 +829,5 @@ define(['exports', './PersistentStorage', './CallbackParser', 'aurelia-framework
         };
 
         return AuthService;
-    }()) || _class;
+    }();
 });

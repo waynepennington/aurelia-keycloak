@@ -3,11 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthService = undefined;
-
-var _class;
-
-var _aureliaFramework = require("aurelia-framework");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -168,7 +163,7 @@ var PersistentStorage = function () {
 
 ;
 
-var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
+var AuthService = exports.AuthService = function () {
     function AuthService() {
         _classCallCheck(this, AuthService);
 
@@ -989,4 +984,4 @@ var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = f
     };
 
     return AuthService;
-}()) || _class;
+}();
