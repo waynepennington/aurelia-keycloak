@@ -1,6 +1,6 @@
 class PersistentStorage {
     constructor() {
-
+        this.bogusconstructor=null;
     }
     useCookieStorage() {
         if (typeof localStorage === "undefined") {

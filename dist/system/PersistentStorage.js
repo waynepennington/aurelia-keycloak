@@ -13,6 +13,8 @@ System.register([], function (_export, _context) {
             PersistentStorage = function () {
                 function PersistentStorage() {
                     
+
+                    this.bogusconstructor = null;
                 }
 
                 PersistentStorage.prototype.useCookieStorage = function useCookieStorage() {

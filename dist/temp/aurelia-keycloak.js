@@ -96,6 +96,8 @@ var CallbackParser = function CallbackParser(uriToParse, responseMode) {
 var PersistentStorage = function () {
     function PersistentStorage() {
         _classCallCheck(this, PersistentStorage);
+
+        this.bogusconstructor = null;
     }
 
     PersistentStorage.prototype.useCookieStorage = function useCookieStorage() {

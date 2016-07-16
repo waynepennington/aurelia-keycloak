@@ -3,6 +3,8 @@
 var PersistentStorage = function () {
     function PersistentStorage() {
         
+
+        this.bogusconstructor = null;
     }
 
     PersistentStorage.prototype.useCookieStorage = function useCookieStorage() {
