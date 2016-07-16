@@ -1122,7 +1122,7 @@ System.register([], function (_export, _context) {
                     };
                 };
 
-                window.Keycloak = Keycloak;
+                module.exports = Keycloak;
             })(window);
         }
     };

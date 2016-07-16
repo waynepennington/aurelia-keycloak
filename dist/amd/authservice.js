@@ -14,13 +14,13 @@ define(['exports', './keycloak', 'aurelia-framework'], function (exports, _keycl
         function AuthService() {
             
 
-            this.kc = {};
+            this.keycloak = {};
         }
 
         AuthService.prototype.configure = function configure(aurelia, config) {
-            this.kc = new _keycloak.Keycloak(config.install);
+            this.keycloak = new _keycloak.Keycloak(config.install);
             if (typeof config.initOptions !== 'undefined') {
-                this.kc.init(config.initOptions);
+                this.keycloak.init(config.initOptions);
             }
         };
 

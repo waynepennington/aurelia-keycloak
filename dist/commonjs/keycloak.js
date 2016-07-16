@@ -1115,5 +1115,5 @@
         };
     };
 
-    window.Keycloak = Keycloak;
+    module.exports = Keycloak;
 })(window);

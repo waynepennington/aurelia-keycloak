@@ -1284,20 +1284,20 @@ var PersistentStorage = function () {
         };
     };
 
-    window.Keycloak = Keycloak;
+    module.exports = Keycloak;
 })(window);
 
 var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
     function AuthService() {
         _classCallCheck(this, AuthService);
 
-        this.kc = {};
+        this.keycloak = {};
     }
 
     AuthService.prototype.configure = function configure(aurelia, config) {
-        this.kc = new Keycloak(config.install);
+        this.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
-            this.kc.init(config.initOptions);
+            this.keycloak.init(config.initOptions);
         }
     };
 

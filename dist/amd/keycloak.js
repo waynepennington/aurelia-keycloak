@@ -1,4 +1,4 @@
-define([], function () {
+define(['module'], function (module) {
     'use strict';
 
     (function (window, undefined) {
@@ -1116,6 +1116,6 @@ define([], function () {
             };
         };
 
-        window.Keycloak = Keycloak;
+        module.exports = Keycloak;
     })(window);
 });
