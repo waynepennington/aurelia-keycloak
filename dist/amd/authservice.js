@@ -17,7 +17,6 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
 
         AuthService.prototype.configure = function configure(aurelia, config) {
             AuthService.keycloak = new Keycloak(config.install);
-            AuthService.installKeycloak(config.install);
             if (typeof config.initOptions !== 'undefined') {
                 AuthService.keycloak.init(config.initOptions);
             }
