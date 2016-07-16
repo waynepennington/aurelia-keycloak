@@ -1,8 +1,10 @@
 import {PersistentStorage} from './PersistentStorage';
 import {CallbackParser} from './CallbackParser';
+import {noView} from 'aurelia-framework';
 
 export class AuthService {
     constructor() {
+        kc = this;
         this.authenticated = false;
         this.config;
         this.adapter;
@@ -16,9 +18,9 @@ export class AuthService {
         this.callback_id = 0;
     }
     configure(configKC) {
-        this.config = configKC.install;
-        if (typeof configKC.initOptions !== 'undefined') {
-            this.init(configKC.initOptions);
+        this.config = configthis.install;
+        if (typeof configthis.initOptions !== 'undefined') {
+            this.init(configthis.initOptions);
         }
     }
     init(initOptions) {
@@ -76,24 +78,24 @@ export class AuthService {
             kc.responseType = 'code';
             kc.flow = 'standard';
         }
-        var promise = createPromise();
-        var initPromise = createPromise();
-        initPromise.promise.success(function () {
+        var p_romise = createP_romise();
+        var initP_romise = createP_romise();
+        initP_romise.p_romise.success(function () {
             kc.onReady && kc.onReady(kc.authenticated);
-            promise.setSuccess(kc.authenticated);
+            p_romise.setSuccess(kc.authenticated);
         }).error(function () {
-            promise.setError();
+            p_romise.setError();
         });
-        var configPromise = loadConfig(config);
+        var configP_romise = loadConfig(config);
         function onLoad() {
             var doLogin = function (prompt) {
                 if (!prompt) {
                     options.prompt = 'none';
                 }
                 kc.login(options).success(function () {
-                    initPromise.setSuccess();
+                    initP_romise.setSuccess();
                 }).error(function () {
-                    initPromise.setError();
+                    initP_romise.setError();
                 });
             }
             var options = {};
@@ -104,7 +106,7 @@ export class AuthService {
                             checkLoginIframe().success(function () {
                                 doLogin(false);
                             }).error(function () {
-                                initPromise.setSuccess();
+                                initP_romise.setSuccess();
                             });
                         });
                     } else {
@@ -123,7 +125,7 @@ export class AuthService {
             if (callback) {
                 setupCheckLoginIframe();
                 window.history.replaceState({}, null, callback.newUrl);
-                processCallback(callback, initPromise);
+                processCallback(callback, initP_romise);
                 return;
             } else if (initOptions) {
                 if (initOptions.token || initOptions.refreshToken) {
@@ -132,7 +134,7 @@ export class AuthService {
                     if (loginIframe.enable) {
                         setupCheckLoginIframe().success(function () {
                             checkLoginIframe().success(function () {
-                                initPromise.setSuccess();
+                                initP_romise.setSuccess();
                             }).error(function () {
                                 if (initOptions.onLoad) {
                                     onLoad();
@@ -140,22 +142,22 @@ export class AuthService {
                             });
                         });
                     } else {
-                        initPromise.setSuccess();
+                        initP_romise.setSuccess();
                     }
                 } else if (initOptions.onLoad) {
                     onLoad();
                 } else {
-                    initPromise.setSuccess();
+                    initP_romise.setSuccess();
                 }
             } else {
-                initPromise.setSuccess();
+                initP_romise.setSuccess();
             }
         }
-        configPromise.success(processInit);
-        configPromise.error(function () {
-            promise.setError();
+        configP_romise.success(processInit);
+        configP_romise.error(function () {
+            p_romise.setError();
         });
-        return promise.promise;
+        return p_romise.p_romise;
     }
     login(options) {
         return adapter.login(options);
@@ -243,19 +245,19 @@ export class AuthService {
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
         req.setRequestHeader('Authorization', 'bearer ' + kc.token);
-        var promise = createPromise();
+        var p_romise = createP_romise();
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
                     kc.profile = JSON.parse(req.responseText);
-                    promise.setSuccess(kc.profile);
+                    p_romise.setSuccess(kc.profile);
                 } else {
-                    promise.setError();
+                    p_romise.setError();
                 }
             }
         }
         req.send();
-        return promise.promise;
+        return p_romise.p_romise;
     }
     loadUserInfo() {
         var url = getRealmUrl() + '/protocol/openid-connect/userinfo';
@@ -263,19 +265,19 @@ export class AuthService {
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
         req.setRequestHeader('Authorization', 'bearer ' + kc.token);
-        var promise = createPromise();
+        var p_romise = createP_romise();
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
                     kc.userInfo = JSON.parse(req.responseText);
-                    promise.setSuccess(kc.userInfo);
+                    p_romise.setSuccess(kc.userInfo);
                 } else {
-                    promise.setError();
+                    p_romise.setError();
                 }
             }
         }
         req.send();
-        return promise.promise;
+        return p_romise.p_romise;
     }
     isTokenExpired(minValidity) {
         if (!kc.tokenParsed || (!kc.refreshToken && kc.flow != 'implicit')) {
@@ -288,19 +290,19 @@ export class AuthService {
         return expiresIn < 0;
     }
     updateToken(minValidity) {
-        var promise = createPromise();
+        var p_romise = createP_romise();
         if (!kc.tokenParsed || !kc.refreshToken) {
-            promise.setError();
-            return promise.promise;
+            p_romise.setError();
+            return p_romise.p_romise;
         }
         minValidity = minValidity || 5;
         var exec = function () {
             if (!kc.isTokenExpired(minValidity)) {
-                promise.setSuccess(false);
+                p_romise.setSuccess(false);
             } else {
                 var params = 'grant_type=refresh_token&' + 'refresh_token=' + kc.refreshToken;
                 var url = getRealmUrl() + '/protocol/openid-connect/token';
-                refreshQueue.push(promise);
+                refreshQueue.push(p_romise);
                 if (refreshQueue.length == 1) {
                     var req = new XMLHttpRequest();
                     req.open('POST', url, true);
@@ -335,16 +337,16 @@ export class AuthService {
             }
         }
         if (loginIframe.enable) {
-            var iframePromise = checkLoginIframe();
-            iframePromise.success(function () {
+            var iframeP_romise = checkLoginIframe();
+            iframeP_romise.success(function () {
                 exec();
             }).error(function () {
-                promise.setError();
+                p_romise.setError();
             });
         } else {
             exec();
         }
-        return promise.promise;
+        return p_romise.p_romise;
     }
     clearToken() {
         if (kc.token) {
@@ -369,7 +371,7 @@ export class AuthService {
             return window.location.origin;
         }
     }
-    processCallback(oauth, promise) {
+    processCallback(oauth, p_romise) {
         var code = oauth.code;
         var error = oauth.error;
         var prompt = oauth.prompt;
@@ -377,9 +379,9 @@ export class AuthService {
         if (error) {
             if (prompt != 'none') {
                 kc.onAuthError && kc.onAuthError();
-                promise && promise.setError();
+                p_romise && p_romise.setError();
             } else {
-                promise && promise.setSuccess();
+                p_romise && p_romise.setSuccess();
             }
             return;
         } else if ((kc.flow != 'standard') && (oauth.access_token || oauth.id_token)) {
@@ -405,13 +407,13 @@ export class AuthService {
                         authSuccess(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], kc.flow === 'standard');
                     } else {
                         kc.onAuthError && kc.onAuthError();
-                        promise && promise.setError();
+                        p_romise && p_romise.setError();
                     }
                 }
             };
             req.send(params);
         }
-        function authSuccess(accessToken, refreshToken, idToken, fulfillPromise) {
+        function authSuccess(accessToken, refreshToken, idToken, fulfillP_romise) {
             timeLocal = (timeLocal + new Date().getTime()) / 2;
             setToken(accessToken, refreshToken, idToken, true);
             if ((kc.tokenParsed && kc.tokenParsed.nonce != oauth.storedNonce) ||
@@ -419,18 +421,18 @@ export class AuthService {
                 (kc.idTokenParsed && kc.idTokenParsed.nonce != oauth.storedNonce)) {
                 console.log('invalid nonce!');
                 kc.clearToken();
-                promise && promise.setError();
+                p_romise && p_romise.setError();
             } else {
                 kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
-                if (fulfillPromise) {
+                if (fulfillP_romise) {
                     kc.onAuthSuccess && kc.onAuthSuccess();
-                    promise && promise.setSuccess();
+                    p_romise && p_romise.setSuccess();
                 }
             }
         }
     }
     loadConfig(url) {
-        var promise = createPromise();
+        var p_romise = createP_romise();
         var configUrl;
         if (!config) {
             configUrl = 'keycloak.json';
@@ -449,9 +451,9 @@ export class AuthService {
                         kc.realm = config['realm'];
                         kc.clientId = config['resource'];
                         kc.clientSecret = (config['credentials'] || {})['secret'];
-                        promise.setSuccess();
+                        p_romise.setSuccess();
                     } else {
-                        promise.setError();
+                        p_romise.setError();
                     }
                 }
             };
@@ -476,9 +478,9 @@ export class AuthService {
             kc.realm = config.realm;
             kc.clientId = config.clientId;
             kc.clientSecret = (config.credentials || {}).secret;
-            promise.setSuccess();
+            p_romise.setSuccess();
         }
-        return promise.promise;
+        return p_romise.p_romise;
     }
     setToken(token, refreshToken, idToken, useTokenTime) {
         if (kc.tokenTimeoutHandle) {
@@ -563,244 +565,244 @@ export class AuthService {
         var id = '<id: ' + (kc.callback_id++) + (Math.random()) + '>';
         return id;
     }
-parseCallback(url) {
-    var oauth = new CallbackParser(url, kc.responseMode).parseUri();
-    var oauthState = storage.getItem('oauthState');
-    var sessionState = oauthState && JSON.parse(oauthState);
-    if (sessionState && (oauth.code || oauth.error || oauth.access_token || oauth.id_token) && oauth.state && oauth.state == sessionState.state) {
-        storage.removeItem('oauthState');
-        oauth.redirectUri = sessionState.redirectUri;
-        oauth.storedNonce = sessionState.nonce;
-        if (oauth.fragment) {
-            oauth.newUrl += '#' + oauth.fragment;
+    parseCallback(url) {
+        var oauth = new CallbackParser(url, kc.responseMode).parseUri();
+        var oauthState = storage.getItem('oauthState');
+        var sessionState = oauthState && JSON.parse(oauthState);
+        if (sessionState && (oauth.code || oauth.error || oauth.access_token || oauth.id_token) && oauth.state && oauth.state == sessionState.state) {
+            storage.removeItem('oauthState');
+            oauth.redirectUri = sessionState.redirectUri;
+            oauth.storedNonce = sessionState.nonce;
+            if (oauth.fragment) {
+                oauth.newUrl += '#' + oauth.fragment;
+            }
+            return oauth;
         }
-        return oauth;
     }
-}
-createPromise() {
-    var p = {
-        setSuccess: function (result) {
-            p.success = true;
-            p.result = result;
-            if (p.successCallback) {
-                p.successCallback(result);
-            }
-        },
-        setError: function (result) {
-            p.error = true;
-            p.result = result;
-            if (p.errorCallback) {
-                p.errorCallback(result);
-            }
-        },
-        promise: {
-            success: function (callback) {
-                if (p.success) {
-                    callback(p.result);
-                } else if (!p.error) {
-                    p.successCallback = callback;
+    createP_romise() {
+        var p = {
+            setSuccess: function (result) {
+                p.success = true;
+                p.result = result;
+                if (p.successCallback) {
+                    p.successCallback(result);
                 }
-                return p.promise;
             },
-            error: function (callback) {
-                if (p.error) {
-                    callback(p.result);
-                } else if (!p.success) {
-                    p.errorCallback = callback;
+            setError: function (result) {
+                p.error = true;
+                p.result = result;
+                if (p.errorCallback) {
+                    p.errorCallback(result);
                 }
-                return p.promise;
+            },
+            p_romise: {
+                success: function (callback) {
+                    if (p.success) {
+                        callback(p.result);
+                    } else if (!p.error) {
+                        p.successCallback = callback;
+                    }
+                    return p.p_romise;
+                },
+                error: function (callback) {
+                    if (p.error) {
+                        callback(p.result);
+                    } else if (!p.success) {
+                        p.errorCallback = callback;
+                    }
+                    return p.p_romise;
+                }
             }
         }
+        return p;
     }
-    return p;
-}
-setupCheckLoginIframe() {
-    var promise = createPromise();
-    if (!loginIframe.enable) {
-        promise.setSuccess();
-        return promise.promise;
-    }
-    if (loginIframe.iframe) {
-        promise.setSuccess();
-        return promise.promise;
-    }
-    var iframe = document.createElement('iframe');
-    loginIframe.iframe = iframe;
-    iframe.onload = function () {
-        var realmUrl = getRealmUrl();
-        if (realmUrl.charAt(0) === '/') {
-            loginIframe.iframeOrigin = getOrigin();
-        } else {
-            loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
+    setupCheckLoginIframe() {
+        var p_romise = createP_romise();
+        if (!loginIframe.enable) {
+            p_romise.setSuccess();
+            return p_romise.p_romise;
         }
-        promise.setSuccess();
-        setTimeout(check, loginIframe.interval * 1000);
-    }
-    var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
-    iframe.setAttribute('src', src);
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    var messageCallback = function (event) {
-        if (event.origin !== loginIframe.iframeOrigin) {
-            return;
+        if (loginIframe.iframe) {
+            p_romise.setSuccess();
+            return p_romise.p_romise;
         }
-        var data = JSON.parse(event.data);
-        var promise = loginIframe.callbackMap[data.callbackId];
-        delete loginIframe.callbackMap[data.callbackId];
-        if ((!kc.sessionId || kc.sessionId == data.session) && data.loggedIn) {
-            promise.setSuccess();
-        } else {
-            kc.clearToken();
-            promise.setError();
-        }
-    };
-    window.addEventListener('message', messageCallback, false);
-    var check = function () {
-        checkLoginIframe();
-        if (kc.token) {
+        var iframe = document.createElement('iframe');
+        loginIframe.iframe = iframe;
+        iframe.onload = function () {
+            var realmUrl = getRealmUrl();
+            if (realmUrl.charAt(0) === '/') {
+                loginIframe.iframeOrigin = getOrigin();
+            } else {
+                loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
+            }
+            p_romise.setSuccess();
             setTimeout(check, loginIframe.interval * 1000);
         }
-    };
-    return promise.promise;
-}
-checkLoginIframe() {
-    var promise = createPromise();
-    if (loginIframe.iframe && loginIframe.iframeOrigin) {
-        var msg = {};
-        msg.callbackId = createCallbackId();
-        loginIframe.callbackMap[msg.callbackId] = promise;
-        var origin = loginIframe.iframeOrigin;
-        loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
-    } else {
-        promise.setSuccess();
-    }
-    return promise.promise;
-}
-loadAdapter(type) {
-    if (!type || type == 'default') {
-        return {
-            login: function (options) {
-                window.location.href = kc.createLoginUrl(options);
-                return createPromise().promise;
-            },
-            logout: function (options) {
-                window.location.href = kc.createLogoutUrl(options);
-                return createPromise().promise;
-            },
-            register: function (options) {
-                window.location.href = kc.createRegisterUrl(options);
-                return createPromise().promise;
-            },
-            accountManagement: function () {
-                window.location.href = kc.createAccountUrl();
-                return createPromise().promise;
-            },
-            redirectUri: function (options, encodeHash) {
-                if (arguments.length == 1) {
-                    encodeHash = true;
-                }
-                if (options && options.redirectUri) {
-                    return options.redirectUri;
-                } else if (kc.redirectUri) {
-                    return kc.redirectUri;
-                } else {
-                    var redirectUri = location.href;
-                    if (location.hash && encodeHash) {
-                        redirectUri = redirectUri.substring(0, location.href.indexOf('#'));
-                        redirectUri += (redirectUri.indexOf('?') == -1 ? '?' : '&') + 'redirect_fragment=' + encodeURIComponent(location.hash.substring(1));
-                    }
-                    return redirectUri;
-                }
+        var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
+        iframe.setAttribute('src', src);
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+        var messageCallback = function (event) {
+            if (event.origin !== loginIframe.iframeOrigin) {
+                return;
+            }
+            var data = JSON.parse(event.data);
+            var p_romise = loginIframe.callbackMap[data.callbackId];
+            delete loginIframe.callbackMap[data.callbackId];
+            if ((!kc.sessionId || kc.sessionId == data.session) && data.loggedIn) {
+                p_romise.setSuccess();
+            } else {
+                kc.clearToken();
+                p_romise.setError();
             }
         };
+        window.addEventListener('message', messageCallback, false);
+        var check = function () {
+            checkLoginIframe();
+            if (kc.token) {
+                setTimeout(check, loginIframe.interval * 1000);
+            }
+        };
+        return p_romise.p_romise;
     }
-    if (type == 'cordova') {
-        loginIframe.enable = false;
-        return {
-            login: function (options) {
-                var promise = createPromise();
-                var o = 'location=no';
-                if (options && options.prompt == 'none') {
-                    o += ',hidden=yes';
-                }
-                var loginUrl = kc.createLoginUrl(options);
-                var ref = window.open(loginUrl, '_blank', o);
-                var completed = false;
-                ref.addEventListener('loadstart', function (event) {
-                    if (event.url.indexOf('http://localhost') == 0) {
-                        var callback = parseCallback(event.url);
-                        processCallback(callback, promise);
-                        ref.close();
-                        completed = true;
+    checkLoginIframe() {
+        var p_romise = createP_romise();
+        if (loginIframe.iframe && loginIframe.iframeOrigin) {
+            var msg = {};
+            msg.callbackId = createCallbackId();
+            loginIframe.callbackMap[msg.callbackId] = p_romise;
+            var origin = loginIframe.iframeOrigin;
+            loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
+        } else {
+            p_romise.setSuccess();
+        }
+        return p_romise.p_romise;
+    }
+    loadAdapter(type) {
+        if (!type || type == 'default') {
+            return {
+                login: function (options) {
+                    window.location.href = kc.createLoginUrl(options);
+                    return createP_romise().p_romise;
+                },
+                logout: function (options) {
+                    window.location.href = kc.createLogoutUrl(options);
+                    return createP_romise().p_romise;
+                },
+                register: function (options) {
+                    window.location.href = kc.createRegisterUrl(options);
+                    return createP_romise().p_romise;
+                },
+                accountManagement: function () {
+                    window.location.href = kc.createAccountUrl();
+                    return createP_romise().p_romise;
+                },
+                redirectUri: function (options, encodeHash) {
+                    if (arguments.length == 1) {
+                        encodeHash = true;
                     }
-                });
-                ref.addEventListener('loaderror', function (event) {
-                    if (!completed) {
+                    if (options && options.redirectUri) {
+                        return options.redirectUri;
+                    } else if (kc.redirectUri) {
+                        return kc.redirectUri;
+                    } else {
+                        var redirectUri = location.href;
+                        if (location.hash && encodeHash) {
+                            redirectUri = redirectUri.substring(0, location.href.indexOf('#'));
+                            redirectUri += (redirectUri.indexOf('?') == -1 ? '?' : '&') + 'redirect_fragment=' + encodeURIComponent(location.hash.substring(1));
+                        }
+                        return redirectUri;
+                    }
+                }
+            };
+        }
+        if (type == 'cordova') {
+            loginIframe.enable = false;
+            return {
+                login: function (options) {
+                    var p_romise = createP_romise();
+                    var o = 'location=no';
+                    if (options && options.prompt == 'none') {
+                        o += ',hidden=yes';
+                    }
+                    var loginUrl = kc.createLoginUrl(options);
+                    var ref = window.open(loginUrl, '_blank', o);
+                    var completed = false;
+                    ref.addEventListener('loadstart', function (event) {
                         if (event.url.indexOf('http://localhost') == 0) {
                             var callback = parseCallback(event.url);
-                            processCallback(callback, promise);
+                            processCallback(callback, p_romise);
                             ref.close();
                             completed = true;
-                        } else {
-                            promise.setError();
+                        }
+                    });
+                    ref.addEventListener('loaderror', function (event) {
+                        if (!completed) {
+                            if (event.url.indexOf('http://localhost') == 0) {
+                                var callback = parseCallback(event.url);
+                                processCallback(callback, p_romise);
+                                ref.close();
+                                completed = true;
+                            } else {
+                                p_romise.setError();
+                                ref.close();
+                            }
+                        }
+                    });
+                    return p_romise.p_romise;
+                },
+                logout: function (options) {
+                    var p_romise = createP_romise();
+                    var logoutUrl = kc.createLogoutUrl(options);
+                    var ref = window.open(logoutUrl, '_blank', 'location=no,hidden=yes');
+                    var error;
+                    ref.addEventListener('loadstart', function (event) {
+                        if (event.url.indexOf('http://localhost') == 0) {
                             ref.close();
                         }
-                    }
-                });
-                return promise.promise;
-            },
-            logout: function (options) {
-                var promise = createPromise();
-                var logoutUrl = kc.createLogoutUrl(options);
-                var ref = window.open(logoutUrl, '_blank', 'location=no,hidden=yes');
-                var error;
-                ref.addEventListener('loadstart', function (event) {
-                    if (event.url.indexOf('http://localhost') == 0) {
-                        ref.close();
-                    }
-                });
-                ref.addEventListener('loaderror', function (event) {
-                    if (event.url.indexOf('http://localhost') == 0) {
-                        ref.close();
-                    } else {
-                        error = true;
-                        ref.close();
-                    }
-                });
-                ref.addEventListener('exit', function (event) {
-                    if (error) {
-                        promise.setError();
-                    } else {
-                        kc.clearToken();
-                        promise.setSuccess();
-                    }
-                });
-                return promise.promise;
-            },
-            register: function () {
-                var registerUrl = kc.createRegisterUrl();
-                var ref = window.open(registerUrl, '_blank', 'location=no');
-                ref.addEventListener('loadstart', function (event) {
-                    if (event.url.indexOf('http://localhost') == 0) {
-                        ref.close();
-                    }
-                });
-            },
-            accountManagement: function () {
-                var accountUrl = kc.createAccountUrl();
-                var ref = window.open(accountUrl, '_blank', 'location=no');
-                ref.addEventListener('loadstart', function (event) {
-                    if (event.url.indexOf('http://localhost') == 0) {
-                        ref.close();
-                    }
-                });
-            },
-            redirectUri: function (options) {
-                return 'http://localhost';
+                    });
+                    ref.addEventListener('loaderror', function (event) {
+                        if (event.url.indexOf('http://localhost') == 0) {
+                            ref.close();
+                        } else {
+                            error = true;
+                            ref.close();
+                        }
+                    });
+                    ref.addEventListener('exit', function (event) {
+                        if (error) {
+                            p_romise.setError();
+                        } else {
+                            kc.clearToken();
+                            p_romise.setSuccess();
+                        }
+                    });
+                    return p_romise.p_romise;
+                },
+                register: function () {
+                    var registerUrl = kc.createRegisterUrl();
+                    var ref = window.open(registerUrl, '_blank', 'location=no');
+                    ref.addEventListener('loadstart', function (event) {
+                        if (event.url.indexOf('http://localhost') == 0) {
+                            ref.close();
+                        }
+                    });
+                },
+                accountManagement: function () {
+                    var accountUrl = kc.createAccountUrl();
+                    var ref = window.open(accountUrl, '_blank', 'location=no');
+                    ref.addEventListener('loadstart', function (event) {
+                        if (event.url.indexOf('http://localhost') == 0) {
+                            ref.close();
+                        }
+                    });
+                },
+                redirectUri: function (options) {
+                    return 'http://localhost';
+                }
             }
         }
+        throw 'invalid adapter type: ' + type;
     }
-    throw 'invalid adapter type: ' + type;
-}
 
 }

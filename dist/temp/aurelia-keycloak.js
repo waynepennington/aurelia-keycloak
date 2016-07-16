@@ -3,13 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.AuthService = undefined;
+
+var _aureliaFramework = require("aurelia-framework");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var CallbackParser = function CallbackParser(uriToParse, responseMode) {
-    if (!(this instanceof CallbackParser)) {
-        return new CallbackParser(uriToParse, responseMode);
-    }
+    _classCallCheck(this, CallbackParser);
+
     var parser = this;
     var initialParse = function initialParse() {
         var baseUri = null;
@@ -89,7 +91,7 @@ var CallbackParser = function CallbackParser(uriToParse, responseMode) {
     };
 };
 
-var PersistentStorage = exports.PersistentStorage = function () {
+var PersistentStorage = function () {
     function PersistentStorage() {
         _classCallCheck(this, PersistentStorage);
     }
@@ -99,7 +101,7 @@ var PersistentStorage = exports.PersistentStorage = function () {
             return true;
         }
         try {
-            var key = '@@keycloak-session-storage/test';
+            key = '@@keycloak-session-storage/test';
             localStorage.setItem(key, 'test');
             localStorage.removeItem(key);
             return false;
@@ -134,16 +136,16 @@ var PersistentStorage = exports.PersistentStorage = function () {
     };
 
     PersistentStorage.prototype.cookieExpiration = function cookieExpiration(minutes) {
-        var exp = new Date();
+        exp = new Date();
         exp.setTime(exp.getTime() + minutes * 60 * 1000);
         return exp;
     };
 
     PersistentStorage.prototype.getCookie = function getCookie(key) {
-        var name = key + '=';
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
+        name = key + '=';
+        ca = document.cookie.split(';');
+        for (i = 0; i < ca.length; i++) {
+            c = ca[i];
             while (c.charAt(0) == ' ') {
                 c = c.substring(1);
             }
@@ -155,7 +157,7 @@ var PersistentStorage = exports.PersistentStorage = function () {
     };
 
     PersistentStorage.prototype.setCookie = function setCookie(key, value, expirationDate) {
-        var cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
+        cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
         document.cookie = cookie;
     };
 
@@ -168,6 +170,7 @@ var AuthService = exports.AuthService = function () {
     function AuthService() {
         _classCallCheck(this, AuthService);
 
+        kc = this;
         this.authenticated = false;
         this.config;
         this.adapter;
@@ -182,9 +185,9 @@ var AuthService = exports.AuthService = function () {
     }
 
     AuthService.prototype.configure = function configure(configKC) {
-        this.config = configKC.install;
-        if (typeof configKC.initOptions !== 'undefined') {
-            this.init(configKC.initOptions);
+        this.config = configthis.install;
+        if (typeof configthis.initOptions !== 'undefined') {
+            this.init(configthis.initOptions);
         }
     };
 
@@ -243,24 +246,24 @@ var AuthService = exports.AuthService = function () {
             kc.responseType = 'code';
             kc.flow = 'standard';
         }
-        var promise = createPromise();
-        var initPromise = createPromise();
-        initPromise.promise.success(function () {
+        var p_romise = createP_romise();
+        var initP_romise = createP_romise();
+        initP_romise.p_romise.success(function () {
             kc.onReady && kc.onReady(kc.authenticated);
-            promise.setSuccess(kc.authenticated);
+            p_romise.setSuccess(kc.authenticated);
         }).error(function () {
-            promise.setError();
+            p_romise.setError();
         });
-        var configPromise = loadConfig(config);
+        var configP_romise = loadConfig(config);
         function onLoad() {
             var doLogin = function doLogin(prompt) {
                 if (!prompt) {
                     options.prompt = 'none';
                 }
                 kc.login(options).success(function () {
-                    initPromise.setSuccess();
+                    initP_romise.setSuccess();
                 }).error(function () {
-                    initPromise.setError();
+                    initP_romise.setError();
                 });
             };
             var options = {};
@@ -271,7 +274,7 @@ var AuthService = exports.AuthService = function () {
                             checkLoginIframe().success(function () {
                                 doLogin(false);
                             }).error(function () {
-                                initPromise.setSuccess();
+                                initP_romise.setSuccess();
                             });
                         });
                     } else {
@@ -290,7 +293,7 @@ var AuthService = exports.AuthService = function () {
             if (callback) {
                 setupCheckLoginIframe();
                 window.history.replaceState({}, null, callback.newUrl);
-                processCallback(callback, initPromise);
+                processCallback(callback, initP_romise);
                 return;
             } else if (initOptions) {
                 if (initOptions.token || initOptions.refreshToken) {
@@ -299,7 +302,7 @@ var AuthService = exports.AuthService = function () {
                     if (loginIframe.enable) {
                         setupCheckLoginIframe().success(function () {
                             checkLoginIframe().success(function () {
-                                initPromise.setSuccess();
+                                initP_romise.setSuccess();
                             }).error(function () {
                                 if (initOptions.onLoad) {
                                     onLoad();
@@ -307,22 +310,22 @@ var AuthService = exports.AuthService = function () {
                             });
                         });
                     } else {
-                        initPromise.setSuccess();
+                        initP_romise.setSuccess();
                     }
                 } else if (initOptions.onLoad) {
                     onLoad();
                 } else {
-                    initPromise.setSuccess();
+                    initP_romise.setSuccess();
                 }
             } else {
-                initPromise.setSuccess();
+                initP_romise.setSuccess();
             }
         }
-        configPromise.success(processInit);
-        configPromise.error(function () {
-            promise.setError();
+        configP_romise.success(processInit);
+        configP_romise.error(function () {
+            p_romise.setError();
         });
-        return promise.promise;
+        return p_romise.p_romise;
     };
 
     AuthService.prototype.login = function login(options) {
@@ -409,19 +412,19 @@ var AuthService = exports.AuthService = function () {
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
         req.setRequestHeader('Authorization', 'bearer ' + kc.token);
-        var promise = createPromise();
+        var p_romise = createP_romise();
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
                     kc.profile = JSON.parse(req.responseText);
-                    promise.setSuccess(kc.profile);
+                    p_romise.setSuccess(kc.profile);
                 } else {
-                    promise.setError();
+                    p_romise.setError();
                 }
             }
         };
         req.send();
-        return promise.promise;
+        return p_romise.p_romise;
     };
 
     AuthService.prototype.loadUserInfo = function loadUserInfo() {
@@ -430,19 +433,19 @@ var AuthService = exports.AuthService = function () {
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
         req.setRequestHeader('Authorization', 'bearer ' + kc.token);
-        var promise = createPromise();
+        var p_romise = createP_romise();
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
                     kc.userInfo = JSON.parse(req.responseText);
-                    promise.setSuccess(kc.userInfo);
+                    p_romise.setSuccess(kc.userInfo);
                 } else {
-                    promise.setError();
+                    p_romise.setError();
                 }
             }
         };
         req.send();
-        return promise.promise;
+        return p_romise.p_romise;
     };
 
     AuthService.prototype.isTokenExpired = function isTokenExpired(minValidity) {
@@ -457,19 +460,19 @@ var AuthService = exports.AuthService = function () {
     };
 
     AuthService.prototype.updateToken = function updateToken(minValidity) {
-        var promise = createPromise();
+        var p_romise = createP_romise();
         if (!kc.tokenParsed || !kc.refreshToken) {
-            promise.setError();
-            return promise.promise;
+            p_romise.setError();
+            return p_romise.p_romise;
         }
         minValidity = minValidity || 5;
         var exec = function exec() {
             if (!kc.isTokenExpired(minValidity)) {
-                promise.setSuccess(false);
+                p_romise.setSuccess(false);
             } else {
                 var params = 'grant_type=refresh_token&' + 'refresh_token=' + kc.refreshToken;
                 var url = getRealmUrl() + '/protocol/openid-connect/token';
-                refreshQueue.push(promise);
+                refreshQueue.push(p_romise);
                 if (refreshQueue.length == 1) {
                     var req = new XMLHttpRequest();
                     req.open('POST', url, true);
@@ -504,16 +507,16 @@ var AuthService = exports.AuthService = function () {
             }
         };
         if (loginIframe.enable) {
-            var iframePromise = checkLoginIframe();
-            iframePromise.success(function () {
+            var iframeP_romise = checkLoginIframe();
+            iframeP_romise.success(function () {
                 exec();
             }).error(function () {
-                promise.setError();
+                p_romise.setError();
             });
         } else {
             exec();
         }
-        return promise.promise;
+        return p_romise.p_romise;
     };
 
     AuthService.prototype.clearToken = function clearToken() {
@@ -542,7 +545,7 @@ var AuthService = exports.AuthService = function () {
         }
     };
 
-    AuthService.prototype.processCallback = function processCallback(oauth, promise) {
+    AuthService.prototype.processCallback = function processCallback(oauth, p_romise) {
         var code = oauth.code;
         var error = oauth.error;
         var prompt = oauth.prompt;
@@ -550,9 +553,9 @@ var AuthService = exports.AuthService = function () {
         if (error) {
             if (prompt != 'none') {
                 kc.onAuthError && kc.onAuthError();
-                promise && promise.setError();
+                p_romise && p_romise.setError();
             } else {
-                promise && promise.setSuccess();
+                p_romise && p_romise.setSuccess();
             }
             return;
         } else if (kc.flow != 'standard' && (oauth.access_token || oauth.id_token)) {
@@ -578,31 +581,31 @@ var AuthService = exports.AuthService = function () {
                         authSuccess(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], kc.flow === 'standard');
                     } else {
                         kc.onAuthError && kc.onAuthError();
-                        promise && promise.setError();
+                        p_romise && p_romise.setError();
                     }
                 }
             };
             req.send(params);
         }
-        function authSuccess(accessToken, refreshToken, idToken, fulfillPromise) {
+        function authSuccess(accessToken, refreshToken, idToken, fulfillP_romise) {
             timeLocal = (timeLocal + new Date().getTime()) / 2;
             setToken(accessToken, refreshToken, idToken, true);
             if (kc.tokenParsed && kc.tokenParsed.nonce != oauth.storedNonce || kc.refreshTokenParsed && kc.refreshTokenParsed.nonce != oauth.storedNonce || kc.idTokenParsed && kc.idTokenParsed.nonce != oauth.storedNonce) {
                 console.log('invalid nonce!');
                 kc.clearToken();
-                promise && promise.setError();
+                p_romise && p_romise.setError();
             } else {
                 kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
-                if (fulfillPromise) {
+                if (fulfillP_romise) {
                     kc.onAuthSuccess && kc.onAuthSuccess();
-                    promise && promise.setSuccess();
+                    p_romise && p_romise.setSuccess();
                 }
             }
         }
     };
 
     AuthService.prototype.loadConfig = function loadConfig(url) {
-        var promise = createPromise();
+        var p_romise = createP_romise();
         var configUrl;
         if (!config) {
             configUrl = 'keycloak.json';
@@ -621,9 +624,9 @@ var AuthService = exports.AuthService = function () {
                         kc.realm = config['realm'];
                         kc.clientId = config['resource'];
                         kc.clientSecret = (config['credentials'] || {})['secret'];
-                        promise.setSuccess();
+                        p_romise.setSuccess();
                     } else {
-                        promise.setError();
+                        p_romise.setError();
                     }
                 }
             };
@@ -648,9 +651,9 @@ var AuthService = exports.AuthService = function () {
             kc.realm = config.realm;
             kc.clientId = config.clientId;
             kc.clientSecret = (config.credentials || {}).secret;
-            promise.setSuccess();
+            p_romise.setSuccess();
         }
-        return promise.promise;
+        return p_romise.p_romise;
     };
 
     AuthService.prototype.setToken = function setToken(token, refreshToken, idToken, useTokenTime) {
@@ -755,7 +758,7 @@ var AuthService = exports.AuthService = function () {
         }
     };
 
-    AuthService.prototype.createPromise = function createPromise() {
+    AuthService.prototype.createP_romise = function createP_romise() {
         var p = {
             setSuccess: function setSuccess(result) {
                 p.success = true;
@@ -771,14 +774,14 @@ var AuthService = exports.AuthService = function () {
                     p.errorCallback(result);
                 }
             },
-            promise: {
+            p_romise: {
                 success: function success(callback) {
                     if (p.success) {
                         callback(p.result);
                     } else if (!p.error) {
                         p.successCallback = callback;
                     }
-                    return p.promise;
+                    return p.p_romise;
                 },
                 error: function error(callback) {
                     if (p.error) {
@@ -786,7 +789,7 @@ var AuthService = exports.AuthService = function () {
                     } else if (!p.success) {
                         p.errorCallback = callback;
                     }
-                    return p.promise;
+                    return p.p_romise;
                 }
             }
         };
@@ -794,14 +797,14 @@ var AuthService = exports.AuthService = function () {
     };
 
     AuthService.prototype.setupCheckLoginIframe = function setupCheckLoginIframe() {
-        var promise = createPromise();
+        var p_romise = createP_romise();
         if (!loginIframe.enable) {
-            promise.setSuccess();
-            return promise.promise;
+            p_romise.setSuccess();
+            return p_romise.p_romise;
         }
         if (loginIframe.iframe) {
-            promise.setSuccess();
-            return promise.promise;
+            p_romise.setSuccess();
+            return p_romise.p_romise;
         }
         var iframe = document.createElement('iframe');
         loginIframe.iframe = iframe;
@@ -812,7 +815,7 @@ var AuthService = exports.AuthService = function () {
             } else {
                 loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
             }
-            promise.setSuccess();
+            p_romise.setSuccess();
             setTimeout(check, loginIframe.interval * 1000);
         };
         var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
@@ -824,13 +827,13 @@ var AuthService = exports.AuthService = function () {
                 return;
             }
             var data = JSON.parse(event.data);
-            var promise = loginIframe.callbackMap[data.callbackId];
+            var p_romise = loginIframe.callbackMap[data.callbackId];
             delete loginIframe.callbackMap[data.callbackId];
             if ((!kc.sessionId || kc.sessionId == data.session) && data.loggedIn) {
-                promise.setSuccess();
+                p_romise.setSuccess();
             } else {
                 kc.clearToken();
-                promise.setError();
+                p_romise.setError();
             }
         };
         window.addEventListener('message', messageCallback, false);
@@ -840,21 +843,21 @@ var AuthService = exports.AuthService = function () {
                 setTimeout(check, loginIframe.interval * 1000);
             }
         };
-        return promise.promise;
+        return p_romise.p_romise;
     };
 
     AuthService.prototype.checkLoginIframe = function checkLoginIframe() {
-        var promise = createPromise();
+        var p_romise = createP_romise();
         if (loginIframe.iframe && loginIframe.iframeOrigin) {
             var msg = {};
             msg.callbackId = createCallbackId();
-            loginIframe.callbackMap[msg.callbackId] = promise;
+            loginIframe.callbackMap[msg.callbackId] = p_romise;
             var origin = loginIframe.iframeOrigin;
             loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
         } else {
-            promise.setSuccess();
+            p_romise.setSuccess();
         }
-        return promise.promise;
+        return p_romise.p_romise;
     };
 
     AuthService.prototype.loadAdapter = function loadAdapter(type) {
@@ -862,19 +865,19 @@ var AuthService = exports.AuthService = function () {
             return {
                 login: function login(options) {
                     window.location.href = kc.createLoginUrl(options);
-                    return createPromise().promise;
+                    return createP_romise().p_romise;
                 },
                 logout: function logout(options) {
                     window.location.href = kc.createLogoutUrl(options);
-                    return createPromise().promise;
+                    return createP_romise().p_romise;
                 },
                 register: function register(options) {
                     window.location.href = kc.createRegisterUrl(options);
-                    return createPromise().promise;
+                    return createP_romise().p_romise;
                 },
                 accountManagement: function accountManagement() {
                     window.location.href = kc.createAccountUrl();
-                    return createPromise().promise;
+                    return createP_romise().p_romise;
                 },
                 redirectUri: function redirectUri(options, encodeHash) {
                     if (arguments.length == 1) {
@@ -899,7 +902,7 @@ var AuthService = exports.AuthService = function () {
             loginIframe.enable = false;
             return {
                 login: function login(options) {
-                    var promise = createPromise();
+                    var p_romise = createP_romise();
                     var o = 'location=no';
                     if (options && options.prompt == 'none') {
                         o += ',hidden=yes';
@@ -910,7 +913,7 @@ var AuthService = exports.AuthService = function () {
                     ref.addEventListener('loadstart', function (event) {
                         if (event.url.indexOf('http://localhost') == 0) {
                             var callback = parseCallback(event.url);
-                            processCallback(callback, promise);
+                            processCallback(callback, p_romise);
                             ref.close();
                             completed = true;
                         }
@@ -919,19 +922,19 @@ var AuthService = exports.AuthService = function () {
                         if (!completed) {
                             if (event.url.indexOf('http://localhost') == 0) {
                                 var callback = parseCallback(event.url);
-                                processCallback(callback, promise);
+                                processCallback(callback, p_romise);
                                 ref.close();
                                 completed = true;
                             } else {
-                                promise.setError();
+                                p_romise.setError();
                                 ref.close();
                             }
                         }
                     });
-                    return promise.promise;
+                    return p_romise.p_romise;
                 },
                 logout: function logout(options) {
-                    var promise = createPromise();
+                    var p_romise = createP_romise();
                     var logoutUrl = kc.createLogoutUrl(options);
                     var ref = window.open(logoutUrl, '_blank', 'location=no,hidden=yes');
                     var error;
@@ -950,13 +953,13 @@ var AuthService = exports.AuthService = function () {
                     });
                     ref.addEventListener('exit', function (event) {
                         if (error) {
-                            promise.setError();
+                            p_romise.setError();
                         } else {
                             kc.clearToken();
-                            promise.setSuccess();
+                            p_romise.setSuccess();
                         }
                     });
-                    return promise.promise;
+                    return p_romise.p_romise;
                 },
                 register: function register() {
                     var registerUrl = kc.createRegisterUrl();

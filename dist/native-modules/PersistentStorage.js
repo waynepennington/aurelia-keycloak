@@ -1,6 +1,6 @@
 
 
-export var PersistentStorage = function () {
+var PersistentStorage = function () {
     function PersistentStorage() {
         
     }
@@ -10,7 +10,7 @@ export var PersistentStorage = function () {
             return true;
         }
         try {
-            var key = '@@keycloak-session-storage/test';
+            key = '@@keycloak-session-storage/test';
             localStorage.setItem(key, 'test');
             localStorage.removeItem(key);
             return false;
@@ -45,16 +45,16 @@ export var PersistentStorage = function () {
     };
 
     PersistentStorage.prototype.cookieExpiration = function cookieExpiration(minutes) {
-        var exp = new Date();
+        exp = new Date();
         exp.setTime(exp.getTime() + minutes * 60 * 1000);
         return exp;
     };
 
     PersistentStorage.prototype.getCookie = function getCookie(key) {
-        var name = key + '=';
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
+        name = key + '=';
+        ca = document.cookie.split(';');
+        for (i = 0; i < ca.length; i++) {
+            c = ca[i];
             while (c.charAt(0) == ' ') {
                 c = c.substring(1);
             }
@@ -66,9 +66,11 @@ export var PersistentStorage = function () {
     };
 
     PersistentStorage.prototype.setCookie = function setCookie(key, value, expirationDate) {
-        var cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
+        cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
         document.cookie = cookie;
     };
 
     return PersistentStorage;
-}();;
+}();
+
+;

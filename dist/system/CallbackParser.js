@@ -4,13 +4,15 @@ System.register([], function (_export, _context) {
     "use strict";
 
     var CallbackParser;
+
+    
+
     return {
         setters: [],
         execute: function () {
             CallbackParser = function CallbackParser(uriToParse, responseMode) {
-                if (!(this instanceof CallbackParser)) {
-                    return new CallbackParser(uriToParse, responseMode);
-                }
+                
+
                 var parser = this;
                 var initialParse = function initialParse() {
                     var baseUri = null;

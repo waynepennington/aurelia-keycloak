@@ -1,10 +1,11 @@
 define([], function () {
     "use strict";
 
+    
+
     var CallbackParser = function CallbackParser(uriToParse, responseMode) {
-        if (!(this instanceof CallbackParser)) {
-            return new CallbackParser(uriToParse, responseMode);
-        }
+        
+
         var parser = this;
         var initialParse = function initialParse() {
             var baseUri = null;

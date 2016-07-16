@@ -1,13 +1,6 @@
-export declare class PersistentStorage {
-  constructor();
-  useCookieStorage(): any;
-  setitem(key?: any, value?: any): any;
-  getItem(key?: any): any;
-  removeItem(key?: any): any;
-  cookieExpiration(minutes?: any): any;
-  getCookie(key?: any): any;
-  setCookie(key?: any, value?: any, expirationDate?: any): any;
-}
+import {
+  noView
+} from 'aurelia-framework';
 export declare class AuthService {
   constructor();
   configure(configKC?: any): any;
@@ -29,14 +22,14 @@ export declare class AuthService {
   clearToken(): any;
   getRealmUrl(): any;
   getOrigin(): any;
-  processCallback(oauth?: any, promise?: any): any;
+  processCallback(oauth?: any, p_romise?: any): any;
   loadConfig(url?: any): any;
   setToken(token?: any, refreshToken?: any, idToken?: any, useTokenTime?: any): any;
   decodeToken(str?: any): any;
   createUUID(): any;
   createCallbackId(): any;
   parseCallback(url?: any): any;
-  createPromise(): any;
+  createP_romise(): any;
   setupCheckLoginIframe(): any;
   checkLoginIframe(): any;
   loadAdapter(type?: any): any;
