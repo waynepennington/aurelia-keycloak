@@ -1406,7 +1406,7 @@ export class AuthService {
     }
     configure(aurelia,config){
         // this.kc = new Keycloak(config.install);
-        this.kc = keycloak(config.install);
+        this.kc = new keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.kc.init(config.initOptions);                                  
         }
