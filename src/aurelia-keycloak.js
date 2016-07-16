@@ -1,4 +1,5 @@
 import {AuthService} from './authservice';
+import {Keycloak} from '/keycloak';
 
 export function configure(aurelia, config) {
     let instance = aurelia.container.get(AuthService);
@@ -6,3 +7,4 @@ export function configure(aurelia, config) {
     
     }
 export{AuthService};
+export {Keycloak};
