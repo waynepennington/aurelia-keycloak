@@ -1,226 +1,78 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthService = exports.Keycloak = exports.PersistentStorage = exports.CallbackParser = undefined;
+exports.AuthService = undefined;
 
 var _class;
 
-var _aureliaFramework = require("aurelia-framework");
+var _aureliaFramework = require('aurelia-framework');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var CallbackParser = exports.CallbackParser = function CallbackParser(uriToParse, responseMode) {
-    _classCallCheck(this, CallbackParser);
+var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
+    function AuthService() {
+        _classCallCheck(this, AuthService);
 
-    var parser = this;
-    var initialParse = function initialParse() {
-        var baseUri = null;
-        var queryString = null;
-        var fragmentString = null;
-        var questionMarkIndex = uriToParse.indexOf("?");
-        var fragmentIndex = uriToParse.indexOf("#", questionMarkIndex + 1);
-        if (questionMarkIndex == -1 && fragmentIndex == -1) {
-            baseUri = uriToParse;
-        } else if (questionMarkIndex != -1) {
-            baseUri = uriToParse.substring(0, questionMarkIndex);
-            queryString = uriToParse.substring(questionMarkIndex + 1);
-            if (fragmentIndex != -1) {
-                fragmentIndex = queryString.indexOf("#");
-                fragmentString = queryString.substring(fragmentIndex + 1);
-                queryString = queryString.substring(0, fragmentIndex);
-            }
-        } else {
-            baseUri = uriToParse.substring(0, fragmentIndex);
-            fragmentString = uriToParse.substring(fragmentIndex + 1);
-        }
-        return { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
-    };
-    var parseParams = function parseParams(paramString) {
-        var result = {};
-        var params = paramString.split('&');
-        for (var i = 0; i < params.length; i++) {
-            var p = params[i].split('=');
-            var paramName = decodeURIComponent(p[0]);
-            var paramValue = decodeURIComponent(p[1]);
-            result[paramName] = paramValue;
-        }
-        return result;
-    };
-    var handleQueryParam = function handleQueryParam(paramName, paramValue, oauth) {
-        var supportedOAuthParams = ['code', 'error', 'state'];
-        for (var i = 0; i < supportedOAuthParams.length; i++) {
-            if (paramName === supportedOAuthParams[i]) {
-                oauth[paramName] = paramValue;
-                return true;
-            }
-        }
-        return false;
-    };
-    parser.parseUri = function () {
-        var parsedUri = initialParse();
-        var queryParams = {};
-        if (parsedUri.queryString) {
-            queryParams = parseParams(parsedUri.queryString);
-        }
-        var oauth = { newUrl: parsedUri.baseUri };
-        for (var param in queryParams) {
-            switch (param) {
-                case 'redirect_fragment':
-                    oauth.fragment = queryParams[param];
-                    break;
-                case 'prompt':
-                    oauth.prompt = queryParams[param];
-                    break;
-                default:
-                    if (responseMode != 'query' || !handleQueryParam(param, queryParams[param], oauth)) {
-                        oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
-                    }
-                    break;
-            }
-        }
-        if (responseMode === 'fragment') {
-            var fragmentParams = {};
-            if (parsedUri.fragmentString) {
-                fragmentParams = parseParams(parsedUri.fragmentString);
-            }
-            for (var param in fragmentParams) {
-                oauth[param] = fragmentParams[param];
-            }
-        }
-        return oauth;
-    };
-};
-
-var PersistentStorage = exports.PersistentStorage = function () {
-    function PersistentStorage() {
-        _classCallCheck(this, PersistentStorage);
-
-        this.bogusconstructor = null;
+        this.keycloak = null;
     }
 
-    PersistentStorage.prototype.useCookieStorage = function useCookieStorage() {
-        if (typeof localStorage === "undefined") {
-            return true;
-        }
-        try {
-            key = '@@keycloak-session-storage/test';
-            localStorage.setItem(key, 'test');
-            localStorage.removeItem(key);
-            return false;
-        } catch (err) {
-            return true;
+    AuthService.prototype.configure = function configure(aurelia, config) {
+        this.keycloak = new Keycloak(config.install);
+        if (typeof config.initOptions !== 'undefined') {
+            this.keycloak.init(config.initOptions);
         }
     };
 
-    PersistentStorage.prototype.setitem = function setitem(key, value) {
-        if (useCookieStorage()) {
-            setCookie(key, value, cookieExpiration(5));
-        } else {
-            localStorage.setItem(key, value);
-        }
+    return AuthService;
+}()) || _class;
+
+var Keycloak = function Keycloak(config) {
+    var kc = {};
+    var adapter;
+    var refreshQueue = [];
+    var storage;
+
+    var loginIframe = {
+        enable: true,
+        callbackMap: [],
+        interval: 5
     };
 
-    PersistentStorage.prototype.getItem = function getItem(key) {
-        if (useCookieStorage()) {
-            return getCookie(key);
-        }
-        return localStorage.getItem(key);
-    };
+    kc.init = function (initOptions) {
+        kc.authenticated = false;
 
-    PersistentStorage.prototype.removeItem = function removeItem(key) {
-        if (typeof localStorage !== "undefined") {
-            try {
-                localStorage.removeItem(key);
-            } catch (err) {}
-        }
-
-        setCookie(key, '', cookieExpiration(-100));
-    };
-
-    PersistentStorage.prototype.cookieExpiration = function cookieExpiration(minutes) {
-        exp = new Date();
-        exp.setTime(exp.getTime() + minutes * 60 * 1000);
-        return exp;
-    };
-
-    PersistentStorage.prototype.getCookie = function getCookie(key) {
-        name = key + '=';
-        ca = document.cookie.split(';');
-        for (i = 0; i < ca.length; i++) {
-            c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return '';
-    };
-
-    PersistentStorage.prototype.setCookie = function setCookie(key, value, expirationDate) {
-        cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
-        document.cookie = cookie;
-    };
-
-    return PersistentStorage;
-}();
-
-;
-
-var Keycloak = exports.Keycloak = function () {
-    function Keycloak(config) {
-        _classCallCheck(this, Keycloak);
-
-        this.config = config;
-        this.adapter;
-        this.refreshQueue = [];
-        this.storage;
-
-        this.loginIframe = {
-            enable: true,
-            callbackMap: [],
-            interval: 5
-        };
-        this.callback_id = 0;
-    }
-
-    Keycloak.prototype.init = function init(initOptions) {
-
-        this.authenticated = false;
-
-        this.storage = new PersistentStorage();
+        storage = new PersistentStorage();
 
         if (initOptions && initOptions.adapter === 'cordova') {
-            this.adapter = this.loadAdapter('cordova');
+            adapter = loadAdapter('cordova');
         } else if (initOptions && initOptions.adapter === 'default') {
-            this.adapter = this.loadAdapter();
+            adapter = loadAdapter();
         } else {
             if (window.Cordova) {
-                this.adapter = this.loadAdapter('cordova');
+                adapter = loadAdapter('cordova');
             } else {
-                this.adapter = this.loadAdapter();
+                adapter = loadAdapter();
             }
         }
 
         if (initOptions) {
             if (typeof initOptions.checkLoginIframe !== 'undefined') {
-                this.loginIframe.enable = initOptions.checkLoginIframe;
+                loginIframe.enable = initOptions.checkLoginIframe;
             }
 
             if (initOptions.checkLoginIframeInterval) {
-                this.loginIframe.interval = initOptions.checkLoginIframeInterval;
+                loginIframe.interval = initOptions.checkLoginIframeInterval;
             }
 
             if (initOptions.onLoad === 'login-required') {
-                this.loginRequired = true;
+                kc.loginRequired = true;
             }
 
             if (initOptions.responseMode) {
                 if (initOptions.responseMode === 'query' || initOptions.responseMode === 'fragment') {
-                    this.responseMode = initOptions.responseMode;
+                    kc.responseMode = initOptions.responseMode;
                 } else {
                     throw 'Invalid value for responseMode';
                 }
@@ -229,47 +81,47 @@ var Keycloak = exports.Keycloak = function () {
             if (initOptions.flow) {
                 switch (initOptions.flow) {
                     case 'standard':
-                        this.responseType = 'code';
+                        kc.responseType = 'code';
                         break;
                     case 'implicit':
-                        this.responseType = 'id_token token';
+                        kc.responseType = 'id_token token';
                         break;
                     case 'hybrid':
-                        this.responseType = 'code id_token token';
+                        kc.responseType = 'code id_token token';
                         break;
                     default:
                         throw 'Invalid value for flow';
                 }
-                this.flow = initOptions.flow;
+                kc.flow = initOptions.flow;
             }
         }
 
-        if (!this.responseMode) {
-            this.responseMode = 'fragment';
+        if (!kc.responseMode) {
+            kc.responseMode = 'fragment';
         }
-        if (!this.responseType) {
-            this.responseType = 'code';
-            this.flow = 'standard';
+        if (!kc.responseType) {
+            kc.responseType = 'code';
+            kc.flow = 'standard';
         }
 
-        var promise = this.createPromise();
+        var promise = createPromise();
 
-        var initPromise = this.createPromise();
+        var initPromise = createPromise();
         initPromise.promise.success(function () {
-            this.onReady && this.onReady(this.authenticated);
-            promise.setSuccess(this.authenticated);
+            kc.onReady && kc.onReady(kc.authenticated);
+            promise.setSuccess(kc.authenticated);
         }).error(function () {
             promise.setError();
         });
 
-        var configPromise = this.loadConfig(this.config);
+        var configPromise = loadConfig(config);
 
         function onLoad() {
             var doLogin = function doLogin(prompt) {
                 if (!prompt) {
                     options.prompt = 'none';
                 }
-                this.login(options).success(function () {
+                kc.login(options).success(function () {
                     initPromise.setSuccess();
                 }).error(function () {
                     initPromise.setError();
@@ -279,9 +131,9 @@ var Keycloak = exports.Keycloak = function () {
             var options = {};
             switch (initOptions.onLoad) {
                 case 'check-sso':
-                    if (this.loginIframe.enable) {
-                        this.setupCheckLoginIframe().success(function () {
-                            this.checkLoginIframe().success(function () {
+                    if (loginIframe.enable) {
+                        setupCheckLoginIframe().success(function () {
+                            checkLoginIframe().success(function () {
                                 doLogin(false);
                             }).error(function () {
                                 initPromise.setSuccess();
@@ -303,18 +155,18 @@ var Keycloak = exports.Keycloak = function () {
             var callback = parseCallback(window.location.href);
 
             if (callback) {
-                this.setupCheckLoginIframe();
+                setupCheckLoginIframe();
                 window.history.replaceState({}, null, callback.newUrl);
-                this.processCallback(callback, initPromise);
+                processCallback(callback, initPromise);
                 return;
             } else if (initOptions) {
                 if (initOptions.token || initOptions.refreshToken) {
-                    this.setToken(initOptions.token, initOptions.refreshToken, initOptions.idToken, false);
-                    this.timeSkew = initOptions.timeSkew || 0;
+                    setToken(initOptions.token, initOptions.refreshToken, initOptions.idToken, false);
+                    kc.timeSkew = initOptions.timeSkew || 0;
 
-                    if (this.loginIframe.enable) {
-                        this.setupCheckLoginIframe().success(function () {
-                            this.checkLoginIframe().success(function () {
+                    if (loginIframe.enable) {
+                        setupCheckLoginIframe().success(function () {
+                            checkLoginIframe().success(function () {
                                 initPromise.setSuccess();
                             }).error(function () {
                                 if (initOptions.onLoad) {
@@ -343,27 +195,27 @@ var Keycloak = exports.Keycloak = function () {
         return promise.promise;
     };
 
-    Keycloak.prototype.login = function login(options) {
-        return this.adapter.login(options);
+    kc.login = function (options) {
+        return adapter.login(options);
     };
 
-    Keycloak.prototype.createLoginUrl = function createLoginUrl(options) {
+    kc.createLoginUrl = function (options) {
         var state = createUUID();
         var nonce = createUUID();
 
-        var redirectUri = this.adapter.redirectUri(options);
+        var redirectUri = adapter.redirectUri(options);
         if (options && options.prompt) {
             redirectUri += (redirectUri.indexOf('?') == -1 ? '?' : '&') + 'prompt=' + options.prompt;
         }
 
-        this.storage.setItem('oauthState', JSON.stringify({ state: state, nonce: nonce, redirectUri: encodeURIComponent(redirectUri) }));
+        storage.setItem('oauthState', JSON.stringify({ state: state, nonce: nonce, redirectUri: encodeURIComponent(redirectUri) }));
 
         var action = 'auth';
         if (options && options.action == 'register') {
             action = 'registrations';
         }
 
-        var url = getRealmUrl() + '/protocol/openid-connect/' + action + '?client_id=' + encodeURIComponent(this.clientId) + '&redirect_uri=' + encodeURIComponent(redirectUri) + '&state=' + encodeURIComponent(state) + '&nonce=' + encodeURIComponent(nonce) + '&response_mode=' + encodeURIComponent(this.responseMode) + '&response_type=' + encodeURIComponent(this.responseType);
+        var url = getRealmUrl() + '/protocol/openid-connect/' + action + '?client_id=' + encodeURIComponent(kc.clientId) + '&redirect_uri=' + encodeURIComponent(redirectUri) + '&state=' + encodeURIComponent(state) + '&nonce=' + encodeURIComponent(nonce) + '&response_mode=' + encodeURIComponent(kc.responseMode) + '&response_type=' + encodeURIComponent(kc.responseType);
 
         if (options && options.prompt) {
             url += '&prompt=' + encodeURIComponent(options.prompt);
@@ -388,66 +240,66 @@ var Keycloak = exports.Keycloak = function () {
         return url;
     };
 
-    Keycloak.prototype.logout = function logout(options) {
-        return this.adapter.logout(options);
+    kc.logout = function (options) {
+        return adapter.logout(options);
     };
 
-    Keycloak.prototype.createLogoutUrl = function createLogoutUrl(options) {
-        var url = getRealmUrl() + '/protocol/openid-connect/logout' + '?redirect_uri=' + encodeURIComponent(this.adapter.redirectUri(options, false));
+    kc.createLogoutUrl = function (options) {
+        var url = getRealmUrl() + '/protocol/openid-connect/logout' + '?redirect_uri=' + encodeURIComponent(adapter.redirectUri(options, false));
 
         return url;
     };
 
-    Keycloak.prototype.register = function register(options) {
-        return this.adapter.register(options);
+    kc.register = function (options) {
+        return adapter.register(options);
     };
 
-    Keycloak.prototype.createRegisterUrl = function createRegisterUrl(options) {
+    kc.createRegisterUrl = function (options) {
         if (!options) {
             options = {};
         }
         options.action = 'register';
-        return this.createLoginUrl(options);
+        return kc.createLoginUrl(options);
     };
 
-    Keycloak.prototype.createAccountUrl = function createAccountUrl(options) {
-        var url = getRealmUrl() + '/account' + '?referrer=' + encodeURIComponent(this.clientId) + '&referrer_uri=' + encodeURIComponent(this.adapter.redirectUri(options));
+    kc.createAccountUrl = function (options) {
+        var url = getRealmUrl() + '/account' + '?referrer=' + encodeURIComponent(kc.clientId) + '&referrer_uri=' + encodeURIComponent(adapter.redirectUri(options));
 
         return url;
     };
 
-    Keycloak.prototype.accountManagement = function accountManagement() {
-        return this.adapter.accountManagement();
+    kc.accountManagement = function () {
+        return adapter.accountManagement();
     };
 
-    Keycloak.prototype.hasRealmRole = function hasRealmRole(role) {
-        var access = this.realmAccess;
+    kc.hasRealmRole = function (role) {
+        var access = kc.realmAccess;
         return !!access && access.roles.indexOf(role) >= 0;
     };
 
-    Keycloak.prototype.hasResourceRole = function hasResourceRole(role, resource) {
-        if (!this.resourceAccess) {
+    kc.hasResourceRole = function (role, resource) {
+        if (!kc.resourceAccess) {
             return false;
         }
 
-        var access = this.resourceAccess[resource || this.clientId];
+        var access = kc.resourceAccess[resource || kc.clientId];
         return !!access && access.roles.indexOf(role) >= 0;
     };
 
-    Keycloak.prototype.loadUserProfile = function loadUserProfile() {
+    kc.loadUserProfile = function () {
         var url = getRealmUrl() + '/account';
         var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
-        req.setRequestHeader('Authorization', 'bearer ' + this.token);
+        req.setRequestHeader('Authorization', 'bearer ' + kc.token);
 
-        var promise = this.createPromise();
+        var promise = createPromise();
 
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
-                    this.profile = JSON.parse(req.responseText);
-                    promise.setSuccess(this.profile);
+                    kc.profile = JSON.parse(req.responseText);
+                    promise.setSuccess(kc.profile);
                 } else {
                     promise.setError();
                 }
@@ -459,20 +311,20 @@ var Keycloak = exports.Keycloak = function () {
         return promise.promise;
     };
 
-    Keycloak.prototype.loadUserInfo = function loadUserInfo() {
+    kc.loadUserInfo = function () {
         var url = getRealmUrl() + '/protocol/openid-connect/userinfo';
         var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
-        req.setRequestHeader('Authorization', 'bearer ' + this.token);
+        req.setRequestHeader('Authorization', 'bearer ' + kc.token);
 
-        var promise = this.createPromise();
+        var promise = createPromise();
 
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
-                    this.userInfo = JSON.parse(req.responseText);
-                    promise.setSuccess(this.userInfo);
+                    kc.userInfo = JSON.parse(req.responseText);
+                    promise.setSuccess(kc.userInfo);
                 } else {
                     promise.setError();
                 }
@@ -484,12 +336,12 @@ var Keycloak = exports.Keycloak = function () {
         return promise.promise;
     };
 
-    Keycloak.prototype.isTokenExpired = function isTokenExpired(minValidity) {
-        if (!this.tokenParsed || !this.refreshToken && this.flow != 'implicit') {
+    kc.isTokenExpired = function (minValidity) {
+        if (!kc.tokenParsed || !kc.refreshToken && kc.flow != 'implicit') {
             throw 'Not authenticated';
         }
 
-        var expiresIn = this.tokenParsed['exp'] - new Date().getTime() / 1000 + this.timeSkew;
+        var expiresIn = kc.tokenParsed['exp'] - new Date().getTime() / 1000 + kc.timeSkew;
         if (minValidity) {
             expiresIn -= minValidity;
         }
@@ -497,10 +349,10 @@ var Keycloak = exports.Keycloak = function () {
         return expiresIn < 0;
     };
 
-    Keycloak.prototype.updateToken = function updateToken(minValidity) {
-        var promise = this.createPromise();
+    kc.updateToken = function (minValidity) {
+        var promise = createPromise();
 
-        if (!this.tokenParsed || !this.refreshToken) {
+        if (!kc.tokenParsed || !kc.refreshToken) {
             promise.setError();
             return promise.promise;
         }
@@ -508,23 +360,23 @@ var Keycloak = exports.Keycloak = function () {
         minValidity = minValidity || 5;
 
         var exec = function exec() {
-            if (!this.isTokenExpired(minValidity)) {
+            if (!kc.isTokenExpired(minValidity)) {
                 promise.setSuccess(false);
             } else {
-                var params = 'grant_type=refresh_token&' + 'refresh_token=' + this.refreshToken;
+                var params = 'grant_type=refresh_token&' + 'refresh_token=' + kc.refreshToken;
                 var url = getRealmUrl() + '/protocol/openid-connect/token';
 
-                this.refreshQueue.push(promise);
+                refreshQueue.push(promise);
 
-                if (this.refreshQueue.length == 1) {
+                if (refreshQueue.length == 1) {
                     var req = new XMLHttpRequest();
                     req.open('POST', url, true);
                     req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-                    if (this.clientId && this.clientSecret) {
-                        req.setRequestHeader('Authorization', 'Basic ' + btoa(this.clientId + ':' + this.clientSecret));
+                    if (kc.clientId && kc.clientSecret) {
+                        req.setRequestHeader('Authorization', 'Basic ' + btoa(kc.clientId + ':' + kc.clientSecret));
                     } else {
-                        params += '&client_id=' + encodeURIComponent(this.clientId);
+                        params += '&client_id=' + encodeURIComponent(kc.clientId);
                     }
 
                     var timeLocal = new Date().getTime();
@@ -537,15 +389,15 @@ var Keycloak = exports.Keycloak = function () {
                                 var tokenResponse = JSON.parse(req.responseText);
                                 setToken(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], true);
 
-                                this.timeSkew = Math.floor(timeLocal / 1000) - this.tokenParsed.iat;
+                                kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
 
-                                this.onAuthRefreshSuccess && this.onAuthRefreshSuccess();
-                                for (var p = this.refreshQueue.pop(); p != null; p = this.refreshQueue.pop()) {
+                                kc.onAuthRefreshSuccess && kc.onAuthRefreshSuccess();
+                                for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
                                     p.setSuccess(true);
                                 }
                             } else {
-                                this.onAuthRefreshError && this.onAuthRefreshError();
-                                for (var p = this.refreshQueue.pop(); p != null; p = this.refreshQueue.pop()) {
+                                kc.onAuthRefreshError && kc.onAuthRefreshError();
+                                for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
                                     p.setError(true);
                                 }
                             }
@@ -557,7 +409,7 @@ var Keycloak = exports.Keycloak = function () {
             }
         };
 
-        if (this.loginIframe.enable) {
+        if (loginIframe.enable) {
             var iframePromise = checkLoginIframe();
             iframePromise.success(function () {
                 exec();
@@ -571,33 +423,33 @@ var Keycloak = exports.Keycloak = function () {
         return promise.promise;
     };
 
-    Keycloak.prototype.clearToken = function clearToken() {
-        if (this.token) {
+    kc.clearToken = function () {
+        if (kc.token) {
             setToken(null, null, null, true);
-            this.onAuthLogout && this.onAuthLogout();
-            if (this.loginRequired) {
-                this.login();
+            kc.onAuthLogout && kc.onAuthLogout();
+            if (kc.loginRequired) {
+                kc.login();
             }
         }
     };
 
-    Keycloak.prototype.getRealmUrl = function getRealmUrl() {
-        if (this.authServerUrl.charAt(this.authServerUrl.length - 1) == '/') {
-            return this.authServerUrl + 'realms/' + encodeURIComponent(this.realm);
+    function getRealmUrl() {
+        if (kc.authServerUrl.charAt(kc.authServerUrl.length - 1) == '/') {
+            return kc.authServerUrl + 'realms/' + encodeURIComponent(kc.realm);
         } else {
-            return this.authServerUrl + '/realms/' + encodeURIComponent(this.realm);
+            return kc.authServerUrl + '/realms/' + encodeURIComponent(kc.realm);
         }
-    };
+    }
 
-    Keycloak.prototype.getOrigin = function getOrigin() {
+    function getOrigin() {
         if (!window.location.origin) {
             return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
         } else {
             return window.location.origin;
         }
-    };
+    }
 
-    Keycloak.prototype.processCallback = function processCallback(oauth, promise) {
+    function processCallback(oauth, promise) {
         var code = oauth.code;
         var error = oauth.error;
         var prompt = oauth.prompt;
@@ -606,17 +458,17 @@ var Keycloak = exports.Keycloak = function () {
 
         if (error) {
             if (prompt != 'none') {
-                this.onAuthError && this.onAuthError();
+                kc.onAuthError && kc.onAuthError();
                 promise && promise.setError();
             } else {
                 promise && promise.setSuccess();
             }
             return;
-        } else if (this.flow != 'standard' && (oauth.access_token || oauth.id_token)) {
+        } else if (kc.flow != 'standard' && (oauth.access_token || oauth.id_token)) {
             authSuccess(oauth.access_token, null, oauth.id_token, true);
         }
 
-        if (this.flow != 'implicit' && code) {
+        if (kc.flow != 'implicit' && code) {
             var params = 'code=' + code + '&grant_type=authorization_code';
             var url = getRealmUrl() + '/protocol/openid-connect/token';
 
@@ -624,10 +476,10 @@ var Keycloak = exports.Keycloak = function () {
             req.open('POST', url, true);
             req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-            if (this.clientId && this.clientSecret) {
-                req.setRequestHeader('Authorization', 'Basic ' + btoa(this.clientId + ':' + this.clientSecret));
+            if (kc.clientId && kc.clientSecret) {
+                req.setRequestHeader('Authorization', 'Basic ' + btoa(kc.clientId + ':' + kc.clientSecret));
             } else {
-                params += '&client_id=' + encodeURIComponent(this.clientId);
+                params += '&client_id=' + encodeURIComponent(kc.clientId);
             }
 
             params += '&redirect_uri=' + oauth.redirectUri;
@@ -639,9 +491,9 @@ var Keycloak = exports.Keycloak = function () {
                     if (req.status == 200) {
 
                         var tokenResponse = JSON.parse(req.responseText);
-                        authSuccess(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], this.flow === 'standard');
+                        authSuccess(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], kc.flow === 'standard');
                     } else {
-                        this.onAuthError && this.onAuthError();
+                        kc.onAuthError && kc.onAuthError();
                         promise && promise.setError();
                     }
                 }
@@ -655,30 +507,30 @@ var Keycloak = exports.Keycloak = function () {
 
             setToken(accessToken, refreshToken, idToken, true);
 
-            if (this.tokenParsed && this.tokenParsed.nonce != oauth.storedNonce || this.refreshTokenParsed && this.refreshTokenParsed.nonce != oauth.storedNonce || this.idTokenParsed && this.idTokenParsed.nonce != oauth.storedNonce) {
+            if (kc.tokenParsed && kc.tokenParsed.nonce != oauth.storedNonce || kc.refreshTokenParsed && kc.refreshTokenParsed.nonce != oauth.storedNonce || kc.idTokenParsed && kc.idTokenParsed.nonce != oauth.storedNonce) {
 
                 console.log('invalid nonce!');
-                this.clearToken();
+                kc.clearToken();
                 promise && promise.setError();
             } else {
-                this.timeSkew = Math.floor(timeLocal / 1000) - this.tokenParsed.iat;
+                kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
 
                 if (fulfillPromise) {
-                    this.onAuthSuccess && this.onAuthSuccess();
+                    kc.onAuthSuccess && kc.onAuthSuccess();
                     promise && promise.setSuccess();
                 }
             }
         }
-    };
+    }
 
-    Keycloak.prototype.loadConfig = function loadConfig(url) {
-        var promise = this.createPromise();
+    function loadConfig(url) {
+        var promise = createPromise();
         var configUrl;
 
-        if (!this.config) {
+        if (!config) {
             configUrl = 'keycloak.json';
-        } else if (typeof this.config === 'string') {
-            this.configUrl = this.config;
+        } else if (typeof config === 'string') {
+            configUrl = config;
         }
 
         if (configUrl) {
@@ -689,12 +541,12 @@ var Keycloak = exports.Keycloak = function () {
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
-                        var responseConfig = JSON.parse(req.responseText);
+                        var config = JSON.parse(req.responseText);
 
-                        this.authServerUrl = responseConfig['auth-server-url'];
-                        this.realm = responseConfig['realm'];
-                        this.clientId = responseConfig['resource'];
-                        this.clientSecret = (responseConfig['credentials'] || {})['secret'];
+                        kc.authServerUrl = config['auth-server-url'];
+                        kc.realm = config['realm'];
+                        kc.clientId = config['resource'];
+                        kc.clientSecret = (config['credentials'] || {})['secret'];
 
                         promise.setSuccess();
                     } else {
@@ -705,87 +557,87 @@ var Keycloak = exports.Keycloak = function () {
 
             req.send();
         } else {
-            if (!this.config['url']) {
+            if (!config['url']) {
                 var scripts = document.getElementsByTagName('script');
                 for (var i = 0; i < scripts.length; i++) {
                     if (scripts[i].src.match(/.*keycloak\.js/)) {
-                        this.config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
+                        config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
                         break;
                     }
                 }
             }
 
-            if (!this.config.realm) {
+            if (!config.realm) {
                 throw 'realm missing';
             }
 
-            if (!this.config.clientId) {
+            if (!config.clientId) {
                 throw 'clientId missing';
             }
 
-            this.authServerUrl = this.config.url;
-            this.realm = this.config.realm;
-            this.clientId = this.config.clientId;
-            this.clientSecret = (this.config.credentials || {}).secret;
+            kc.authServerUrl = config.url;
+            kc.realm = config.realm;
+            kc.clientId = config.clientId;
+            kc.clientSecret = (config.credentials || {}).secret;
 
             promise.setSuccess();
         }
 
         return promise.promise;
-    };
+    }
 
-    Keycloak.prototype.setToken = function setToken(token, refreshToken, idToken, useTokenTime) {
-        if (this.tokenTimeoutHandle) {
-            clearTimeout(this.tokenTimeoutHandle);
-            this.tokenTimeoutHandle = null;
+    function setToken(token, refreshToken, idToken, useTokenTime) {
+        if (kc.tokenTimeoutHandle) {
+            clearTimeout(kc.tokenTimeoutHandle);
+            kc.tokenTimeoutHandle = null;
         }
 
         if (token) {
-            this.token = token;
-            this.tokenParsed = decodeToken(token);
-            var sessionId = this.realm + '/' + this.tokenParsed.sub;
-            if (this.tokenParsed.session_state) {
-                sessionId = sessionId + '/' + this.tokenParsed.session_state;
+            kc.token = token;
+            kc.tokenParsed = decodeToken(token);
+            var sessionId = kc.realm + '/' + kc.tokenParsed.sub;
+            if (kc.tokenParsed.session_state) {
+                sessionId = sessionId + '/' + kc.tokenParsed.session_state;
             }
-            this.sessionId = sessionId;
-            this.authenticated = true;
-            this.subject = this.tokenParsed.sub;
-            this.realmAccess = this.tokenParsed.realm_access;
-            this.resourceAccess = this.tokenParsed.resource_access;
+            kc.sessionId = sessionId;
+            kc.authenticated = true;
+            kc.subject = kc.tokenParsed.sub;
+            kc.realmAccess = kc.tokenParsed.realm_access;
+            kc.resourceAccess = kc.tokenParsed.resource_access;
 
-            if (this.onTokenExpired) {
-                var start = useTokenTime ? this.tokenParsed.iat : new Date().getTime() / 1000;
-                var expiresIn = this.tokenParsed.exp - start;
-                this.tokenTimeoutHandle = setTimeout(this.onTokenExpired, expiresIn * 1000);
+            if (kc.onTokenExpired) {
+                var start = useTokenTime ? kc.tokenParsed.iat : new Date().getTime() / 1000;
+                var expiresIn = kc.tokenParsed.exp - start;
+                kc.tokenTimeoutHandle = setTimeout(kc.onTokenExpired, expiresIn * 1000);
             }
         } else {
-            delete this.token;
-            delete this.tokenParsed;
-            delete this.subject;
-            delete this.realmAccess;
-            delete this.resourceAccess;
+            delete kc.token;
+            delete kc.tokenParsed;
+            delete kc.subject;
+            delete kc.realmAccess;
+            delete kc.resourceAccess;
 
-            this.authenticated = false;
+            kc.authenticated = false;
         }
 
         if (refreshToken) {
-            this.refreshToken = refreshToken;
-            this.refreshTokenParsed = decodeToken(refreshToken);
+            kc.refreshToken = refreshToken;
+            kc.refreshTokenParsed = decodeToken(refreshToken);
         } else {
-            delete this.refreshToken;
-            delete this.refreshTokenParsed;
+            delete kc.refreshToken;
+            delete kc.refreshTokenParsed;
         }
 
         if (idToken) {
-            this.idToken = idToken;
-            this.idTokenParsed = decodeToken(idToken);
+            kc.idToken = idToken;
+            kc.idTokenParsed = decodeToken(idToken);
         } else {
-            delete this.idToken;
-            delete this.idTokenParsed;
+            delete kc.idToken;
+            delete kc.idTokenParsed;
         }
-    };
+    }
 
-    Keycloak.prototype.decodeToken = function decodeToken(str) {
+    function decodeToken(str) {
         str = str.split('.')[1];
 
         str = str.replace('/-/g', '+');
@@ -810,9 +662,9 @@ var Keycloak = exports.Keycloak = function () {
 
         str = JSON.parse(str);
         return str;
-    };
+    }
 
-    Keycloak.prototype.createUUID = function createUUID() {
+    function createUUID() {
         var s = [];
         var hexDigits = '0123456789abcdef';
         for (var i = 0; i < 36; i++) {
@@ -823,21 +675,23 @@ var Keycloak = exports.Keycloak = function () {
         s[8] = s[13] = s[18] = s[23] = '-';
         var uuid = s.join('');
         return uuid;
-    };
+    }
 
-    Keycloak.prototype.createCallbackId = function createCallbackId() {
-        var id = '<id: ' + this.callback_id++ + Math.random() + '>';
+    kc.callback_id = 0;
+
+    function createCallbackId() {
+        var id = '<id: ' + kc.callback_id++ + Math.random() + '>';
         return id;
-    };
+    }
 
-    Keycloak.prototype.parseCallback = function parseCallback(url) {
-        var oauth = new CallbackParser(url, this.responseMode).parseUri();
+    function parseCallback(url) {
+        var oauth = new CallbackParser(url, kc.responseMode).parseUri();
 
-        var oauthState = this.storage.getItem('oauthState');
+        var oauthState = storage.getItem('oauthState');
         var sessionState = oauthState && JSON.parse(oauthState);
 
         if (sessionState && (oauth.code || oauth.error || oauth.access_token || oauth.id_token) && oauth.state && oauth.state == sessionState.state) {
-            this.storage.removeItem('oauthState');
+            storage.removeItem('oauthState');
 
             oauth.redirectUri = sessionState.redirectUri;
             oauth.storedNonce = sessionState.nonce;
@@ -848,9 +702,9 @@ var Keycloak = exports.Keycloak = function () {
 
             return oauth;
         }
-    };
+    }
 
-    Keycloak.prototype.createPromise = function createPromise() {
+    function createPromise() {
         var p = {
             setSuccess: function setSuccess(result) {
                 p.success = true;
@@ -888,53 +742,53 @@ var Keycloak = exports.Keycloak = function () {
             }
         };
         return p;
-    };
+    }
 
-    Keycloak.prototype.setupCheckLoginIframe = function setupCheckLoginIframe() {
-        var promise = this.createPromise();
+    function setupCheckLoginIframe() {
+        var promise = createPromise();
 
-        if (!this.loginIframe.enable) {
+        if (!loginIframe.enable) {
             promise.setSuccess();
             return promise.promise;
         }
 
-        if (this.loginIframe.iframe) {
+        if (loginIframe.iframe) {
             promise.setSuccess();
             return promise.promise;
         }
 
         var iframe = document.createElement('iframe');
-        this.loginIframe.iframe = iframe;
+        loginIframe.iframe = iframe;
 
         iframe.onload = function () {
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
-                this.loginIframe.iframeOrigin = getOrigin();
+                loginIframe.iframeOrigin = getOrigin();
             } else {
-                this.loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
+                loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
             }
             promise.setSuccess();
 
-            setTimeout(check, this.loginIframe.interval * 1000);
+            setTimeout(check, loginIframe.interval * 1000);
         };
 
-        var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(this.clientId) + '&origin=' + getOrigin();
+        var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
         iframe.setAttribute('src', src);
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
 
         var messageCallback = function messageCallback(event) {
-            if (event.origin !== this.loginIframe.iframeOrigin) {
+            if (event.origin !== loginIframe.iframeOrigin) {
                 return;
             }
             var data = JSON.parse(event.data);
-            var promise = this.loginIframe.callbackMap[data.callbackId];
-            delete this.loginIframe.callbackMap[data.callbackId];
+            var promise = loginIframe.callbackMap[data.callbackId];
+            delete loginIframe.callbackMap[data.callbackId];
 
-            if ((!this.sessionId || this.sessionId == data.session) && data.loggedIn) {
+            if ((!kc.sessionId || kc.sessionId == data.session) && data.loggedIn) {
                 promise.setSuccess();
             } else {
-                this.clearToken();
+                kc.clearToken();
                 promise.setError();
             }
         };
@@ -942,51 +796,51 @@ var Keycloak = exports.Keycloak = function () {
 
         var check = function check() {
             checkLoginIframe();
-            if (this.token) {
-                setTimeout(check, this.loginIframe.interval * 1000);
+            if (kc.token) {
+                setTimeout(check, loginIframe.interval * 1000);
             }
         };
 
         return promise.promise;
-    };
+    }
 
-    Keycloak.prototype.checkLoginIframe = function checkLoginIframe() {
-        var promise = this.createPromise();
+    function checkLoginIframe() {
+        var promise = createPromise();
 
-        if (this.loginIframe.iframe && this.loginIframe.iframeOrigin) {
+        if (loginIframe.iframe && loginIframe.iframeOrigin) {
             var msg = {};
             msg.callbackId = createCallbackId();
-            this.loginIframe.callbackMap[msg.callbackId] = promise;
-            var origin = this.loginIframe.iframeOrigin;
-            this.loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
+            loginIframe.callbackMap[msg.callbackId] = promise;
+            var origin = loginIframe.iframeOrigin;
+            loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
         } else {
             promise.setSuccess();
         }
 
         return promise.promise;
-    };
+    }
 
-    Keycloak.prototype.loadAdapter = function loadAdapter(type) {
+    function loadAdapter(type) {
         if (!type || type == 'default') {
             return {
                 login: function login(options) {
-                    window.location.href = this.createLoginUrl(options);
-                    return this.createPromise().promise;
+                    window.location.href = kc.createLoginUrl(options);
+                    return createPromise().promise;
                 },
 
                 logout: function logout(options) {
-                    window.location.href = this.createLogoutUrl(options);
-                    return this.createPromise().promise;
+                    window.location.href = kc.createLogoutUrl(options);
+                    return createPromise().promise;
                 },
 
                 register: function register(options) {
-                    window.location.href = this.createRegisterUrl(options);
-                    return this.createPromise().promise;
+                    window.location.href = kc.createRegisterUrl(options);
+                    return createPromise().promise;
                 },
 
                 accountManagement: function accountManagement() {
-                    window.location.href = this.createAccountUrl();
-                    return this.createPromise().promise;
+                    window.location.href = kc.createAccountUrl();
+                    return createPromise().promise;
                 },
 
                 redirectUri: function redirectUri(options, encodeHash) {
@@ -996,8 +850,8 @@ var Keycloak = exports.Keycloak = function () {
 
                     if (options && options.redirectUri) {
                         return options.redirectUri;
-                    } else if (this.redirectUri) {
-                        return this.redirectUri;
+                    } else if (kc.redirectUri) {
+                        return kc.redirectUri;
                     } else {
                         var redirectUri = location.href;
                         if (location.hash && encodeHash) {
@@ -1011,18 +865,18 @@ var Keycloak = exports.Keycloak = function () {
         }
 
         if (type == 'cordova') {
-            this.loginIframe.enable = false;
+            loginIframe.enable = false;
 
             return {
                 login: function login(options) {
-                    var promise = this.createPromise();
+                    var promise = createPromise();
 
                     var o = 'location=no';
                     if (options && options.prompt == 'none') {
                         o += ',hidden=yes';
                     }
 
-                    var loginUrl = this.createLoginUrl(options);
+                    var loginUrl = kc.createLoginUrl(options);
                     var ref = window.open(loginUrl, '_blank', o);
 
                     var completed = false;
@@ -1054,9 +908,9 @@ var Keycloak = exports.Keycloak = function () {
                 },
 
                 logout: function logout(options) {
-                    var promise = this.createPromise();
+                    var promise = createPromise();
 
-                    var logoutUrl = this.createLogoutUrl(options);
+                    var logoutUrl = kc.createLogoutUrl(options);
                     var ref = window.open(logoutUrl, '_blank', 'location=no,hidden=yes');
 
                     var error;
@@ -1080,7 +934,7 @@ var Keycloak = exports.Keycloak = function () {
                         if (error) {
                             promise.setError();
                         } else {
-                            this.clearToken();
+                            kc.clearToken();
                             promise.setSuccess();
                         }
                     });
@@ -1089,7 +943,7 @@ var Keycloak = exports.Keycloak = function () {
                 },
 
                 register: function register() {
-                    var registerUrl = this.createRegisterUrl();
+                    var registerUrl = kc.createRegisterUrl();
                     var ref = window.open(registerUrl, '_blank', 'location=no');
                     ref.addEventListener('loadstart', function (event) {
                         if (event.url.indexOf('http://localhost') == 0) {
@@ -1099,7 +953,7 @@ var Keycloak = exports.Keycloak = function () {
                 },
 
                 accountManagement: function accountManagement() {
-                    var accountUrl = this.createAccountUrl();
+                    var accountUrl = kc.createAccountUrl();
                     var ref = window.open(accountUrl, '_blank', 'location=no');
                     ref.addEventListener('loadstart', function (event) {
                         if (event.url.indexOf('http://localhost') == 0) {
@@ -1115,24 +969,170 @@ var Keycloak = exports.Keycloak = function () {
         }
 
         throw 'invalid adapter type: ' + type;
-    };
-
-    return Keycloak;
-}();
-
-var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
-    function AuthService() {
-        _classCallCheck(this, AuthService);
-
-        this.keycloak = {};
     }
 
-    AuthService.prototype.configure = function configure(aurelia, config) {
-        this.keycloak = new Keycloak(config.install);
-        if (typeof config.initOptions !== 'undefined') {
-            this.keycloak.init(config.initOptions);
+    var PersistentStorage = function PersistentStorage() {
+        if (!(this instanceof PersistentStorage)) {
+            return new PersistentStorage();
         }
+        var ps = this;
+        var useCookieStorage = function useCookieStorage() {
+            if (typeof localStorage === "undefined") {
+                return true;
+            }
+            try {
+                var key = '@@keycloak-session-storage/test';
+                localStorage.setItem(key, 'test');
+                localStorage.removeItem(key);
+                return false;
+            } catch (err) {
+                return true;
+            }
+        };
+
+        ps.setItem = function (key, value) {
+            if (useCookieStorage()) {
+                setCookie(key, value, cookieExpiration(5));
+            } else {
+                localStorage.setItem(key, value);
+            }
+        };
+
+        ps.getItem = function (key) {
+            if (useCookieStorage()) {
+                return getCookie(key);
+            }
+            return localStorage.getItem(key);
+        };
+
+        ps.removeItem = function (key) {
+            if (typeof localStorage !== "undefined") {
+                try {
+                    localStorage.removeItem(key);
+                } catch (err) {}
+            }
+
+            setCookie(key, '', cookieExpiration(-100));
+        };
+
+        var cookieExpiration = function cookieExpiration(minutes) {
+            var exp = new Date();
+            exp.setTime(exp.getTime() + minutes * 60 * 1000);
+            return exp;
+        };
+
+        var getCookie = function getCookie(key) {
+            var name = key + '=';
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return '';
+        };
+
+        var setCookie = function setCookie(key, value, expirationDate) {
+            var cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
+            document.cookie = cookie;
+        };
     };
 
-    return AuthService;
-}()) || _class;
+    var CallbackParser = function CallbackParser(uriToParse, responseMode) {
+        if (!(this instanceof CallbackParser)) {
+            return new CallbackParser(uriToParse, responseMode);
+        }
+        var parser = this;
+
+        var initialParse = function initialParse() {
+            var baseUri = null;
+            var queryString = null;
+            var fragmentString = null;
+
+            var questionMarkIndex = uriToParse.indexOf("?");
+            var fragmentIndex = uriToParse.indexOf("#", questionMarkIndex + 1);
+            if (questionMarkIndex == -1 && fragmentIndex == -1) {
+                baseUri = uriToParse;
+            } else if (questionMarkIndex != -1) {
+                baseUri = uriToParse.substring(0, questionMarkIndex);
+                queryString = uriToParse.substring(questionMarkIndex + 1);
+                if (fragmentIndex != -1) {
+                    fragmentIndex = queryString.indexOf("#");
+                    fragmentString = queryString.substring(fragmentIndex + 1);
+                    queryString = queryString.substring(0, fragmentIndex);
+                }
+            } else {
+                baseUri = uriToParse.substring(0, fragmentIndex);
+                fragmentString = uriToParse.substring(fragmentIndex + 1);
+            }
+
+            return { baseUri: baseUri, queryString: queryString, fragmentString: fragmentString };
+        };
+
+        var parseParams = function parseParams(paramString) {
+            var result = {};
+            var params = paramString.split('&');
+            for (var i = 0; i < params.length; i++) {
+                var p = params[i].split('=');
+                var paramName = decodeURIComponent(p[0]);
+                var paramValue = decodeURIComponent(p[1]);
+                result[paramName] = paramValue;
+            }
+            return result;
+        };
+
+        var handleQueryParam = function handleQueryParam(paramName, paramValue, oauth) {
+            var supportedOAuthParams = ['code', 'error', 'state'];
+
+            for (var i = 0; i < supportedOAuthParams.length; i++) {
+                if (paramName === supportedOAuthParams[i]) {
+                    oauth[paramName] = paramValue;
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        parser.parseUri = function () {
+            var parsedUri = initialParse();
+
+            var queryParams = {};
+            if (parsedUri.queryString) {
+                queryParams = parseParams(parsedUri.queryString);
+            }
+
+            var oauth = { newUrl: parsedUri.baseUri };
+            for (var param in queryParams) {
+                switch (param) {
+                    case 'redirect_fragment':
+                        oauth.fragment = queryParams[param];
+                        break;
+                    case 'prompt':
+                        oauth.prompt = queryParams[param];
+                        break;
+                    default:
+                        if (responseMode != 'query' || !handleQueryParam(param, queryParams[param], oauth)) {
+                            oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
+                        }
+                        break;
+                }
+            }
+
+            if (responseMode === 'fragment') {
+                var fragmentParams = {};
+                if (parsedUri.fragmentString) {
+                    fragmentParams = parseParams(parsedUri.fragmentString);
+                }
+                for (var param in fragmentParams) {
+                    oauth[param] = fragmentParams[param];
+                }
+            }
+
+            return oauth;
+        };
+    };
+};
