@@ -757,6 +757,7 @@ var Keycloak = function (config) {
         };
 
         var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
+        console.log("IFRAME SOURCE LOADING:  " + src);
         iframe.setAttribute('src', src);
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
