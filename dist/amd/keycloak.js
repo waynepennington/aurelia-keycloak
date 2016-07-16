@@ -39,7 +39,7 @@ define(['exports', './PersistentStorage', './CallbackParser'], function (exports
                 if (window.Cordova) {
                     this.adapter = loadAdapter('cordova');
                 } else {
-                    this.adapter = loadAdapter();
+                    this.adapter = this.loadAdapter();
                 }
             }
 

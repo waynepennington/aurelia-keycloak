@@ -45,7 +45,7 @@ System.register(['./PersistentStorage', './CallbackParser'], function (_export, 
                         if (window.Cordova) {
                             this.adapter = loadAdapter('cordova');
                         } else {
-                            this.adapter = loadAdapter();
+                            this.adapter = this.loadAdapter();
                         }
                     }
 

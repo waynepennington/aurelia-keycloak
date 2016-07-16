@@ -31,7 +31,7 @@ export let Keycloak = class Keycloak {
             if (window.Cordova) {
                 this.adapter = loadAdapter('cordova');
             } else {
-                this.adapter = loadAdapter();
+                this.adapter = this.loadAdapter();
             }
         }
 
