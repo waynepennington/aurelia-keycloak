@@ -1,14 +1,12 @@
 'use strict';
 
-System.register(['./authservice', '/keycloak'], function (_export, _context) {
+System.register(['./authservice'], function (_export, _context) {
     "use strict";
 
-    var AuthService, Keycloak;
+    var AuthService;
     return {
         setters: [function (_authservice) {
             AuthService = _authservice.AuthService;
-        }, function (_keycloak) {
-            Keycloak = _keycloak.Keycloak;
         }],
         execute: function () {
             function configure(aurelia, config) {
@@ -19,8 +17,6 @@ System.register(['./authservice', '/keycloak'], function (_export, _context) {
             _export('configure', configure);
 
             _export('AuthService', AuthService);
-
-            _export('Keycloak', Keycloak);
         }
     };
 });
