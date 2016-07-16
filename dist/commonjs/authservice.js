@@ -5,13 +5,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthService = undefined;
 
+var _class;
+
 var _PersistentStorage = require('./PersistentStorage');
 
 var _CallbackParser = require('./CallbackParser');
 
+var _aureliaFramework = require('aurelia-framework');
 
 
-var AuthService = exports.AuthService = function () {
+
+var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
     function AuthService() {
         
 
@@ -832,4 +836,4 @@ var AuthService = exports.AuthService = function () {
     };
 
     return AuthService;
-}();
+}()) || _class;

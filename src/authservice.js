@@ -1,6 +1,8 @@
 import {PersistentStorage} from './PersistentStorage';
 import {CallbackParser} from './CallbackParser';
+import {noView} from 'aurelia-framework';
 
+@noView
 export class AuthService {
     constructor() {
         this.authenticated = false;

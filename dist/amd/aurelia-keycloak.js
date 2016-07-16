@@ -8,6 +8,6 @@ define(['exports', './authservice'], function (exports, _authservice) {
     function configure(aurelia, config) {
         var instance = aurelia.container.get(_authservice.AuthService);
         instance.configure(aurelia, config);
-        aurelia.globalResources('./aurelia-keycloak');
+        aurelia.globalResources('authservice');
     }
 });

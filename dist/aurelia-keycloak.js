@@ -1,3 +1,4 @@
+import {noView} from 'aurelia-framework';
 
 // export class CallbackParser {
 
@@ -229,6 +230,7 @@ class PersistentStorage {
         document.cookie = cookie;
     };
 };
+@noView
 export class AuthService {
     constructor() {
         this.authenticated = false;
