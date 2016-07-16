@@ -1388,15 +1388,15 @@ class PersistentStorage {
 
     }
 
-    if ( typeof module === "object" && module && typeof module.exports === "object" ) {
-        module.exports = Keycloak;
-    } else {
+//     if ( typeof module === "object" && module && typeof module.exports === "object" ) {
+//         module.exports = Keycloak;
+//     } else {
         window.Keycloak = Keycloak;
 
-        if ( typeof define === "function" && define.amd ) {
-            define( "keycloak", [], function () { return Keycloak; } );
-        }
-    }
+//         if ( typeof define === "function" && define.amd ) {
+//             define( "keycloak", [], function () { return Keycloak; } );
+//         }
+//     }
 })( window );
 
 @noView
@@ -1406,8 +1406,8 @@ export class AuthService {
     }
     configure(aurelia,config){
         // this.kc = new Keycloak(config.install);
-        let kc = new keycloak.Keycloak(config.install);
-        // this.kc = new Keycloak(config.install);
+        // let kc = new keycloak.Keycloak(config.install);
+        this.kc = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.kc.init(config.initOptions);                                  
         }

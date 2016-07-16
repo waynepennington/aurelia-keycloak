@@ -7,8 +7,6 @@ exports.AuthService = undefined;
 
 var _class;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 var _aureliaFramework = require("aurelia-framework");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1286,17 +1284,7 @@ var PersistentStorage = function () {
         };
     };
 
-    if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && module && _typeof(module.exports) === "object") {
-        module.exports = Keycloak;
-    } else {
-        window.Keycloak = Keycloak;
-
-        if (typeof define === "function" && define.amd) {
-            define("keycloak", [], function () {
-                return Keycloak;
-            });
-        }
-    }
+    window.Keycloak = Keycloak;
 })(window);
 
 var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
@@ -1307,8 +1295,7 @@ var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = f
     }
 
     AuthService.prototype.configure = function configure(aurelia, config) {
-        var kc = new keycloak.Keycloak(config.install);
-
+        this.kc = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.kc.init(config.initOptions);
         }

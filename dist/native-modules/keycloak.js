@@ -1,4 +1,4 @@
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 
 (function (window, undefined) {
 
@@ -1115,15 +1115,5 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         };
     };
 
-    if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === "object" && module && _typeof(module.exports) === "object") {
-        module.exports = Keycloak;
-    } else {
-        window.Keycloak = Keycloak;
-
-        if (typeof define === "function" && define.amd) {
-            define("keycloak", [], function () {
-                return Keycloak;
-            });
-        }
-    }
+    window.Keycloak = Keycloak;
 })(window);

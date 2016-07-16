@@ -18,8 +18,7 @@ define(['exports', './keycloak', 'aurelia-framework'], function (exports, _keycl
         }
 
         AuthService.prototype.configure = function configure(aurelia, config) {
-            var kc = new _keycloak.keycloak.Keycloak(config.install);
-
+            this.kc = new _keycloak.Keycloak(config.install);
             if (typeof config.initOptions !== 'undefined') {
                 this.kc.init(config.initOptions);
             }
