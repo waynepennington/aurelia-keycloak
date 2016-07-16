@@ -8,7 +8,6 @@ export var AuthService = function () {
     function AuthService() {
         
 
-        kc = this;
         this.authenticated = false;
         this.config;
         this.adapter;
@@ -30,7 +29,7 @@ export var AuthService = function () {
     };
 
     AuthService.prototype.init = function init(initOptions) {
-        kc.authenticated = false;
+        this.authenticated = false;
         storage = new PersistentStorage();
         if (initOptions && initOptions.adapter === 'cordova') {
             adapter = loadAdapter('cordova');
@@ -51,11 +50,11 @@ export var AuthService = function () {
                 loginIframe.interval = initOptions.checkLoginIframeInterval;
             }
             if (initOptions.onLoad === 'login-required') {
-                kc.loginRequired = true;
+                this.loginRequired = true;
             }
             if (initOptions.responseMode) {
                 if (initOptions.responseMode === 'query' || initOptions.responseMode === 'fragment') {
-                    kc.responseMode = initOptions.responseMode;
+                    this.responseMode = initOptions.responseMode;
                 } else {
                     throw 'Invalid value for responseMode';
                 }
@@ -63,32 +62,32 @@ export var AuthService = function () {
             if (initOptions.flow) {
                 switch (initOptions.flow) {
                     case 'standard':
-                        kc.responseType = 'code';
+                        this.responseType = 'code';
                         break;
                     case 'implicit':
-                        kc.responseType = 'id_token token';
+                        this.responseType = 'id_token token';
                         break;
                     case 'hybrid':
-                        kc.responseType = 'code id_token token';
+                        this.responseType = 'code id_token token';
                         break;
                     default:
                         throw 'Invalid value for flow';
                 }
-                kc.flow = initOptions.flow;
+                this.flow = initOptions.flow;
             }
         }
-        if (!kc.responseMode) {
-            kc.responseMode = 'fragment';
+        if (!this.responseMode) {
+            this.responseMode = 'fragment';
         }
-        if (!kc.responseType) {
-            kc.responseType = 'code';
-            kc.flow = 'standard';
+        if (!this.responseType) {
+            this.responseType = 'code';
+            this.flow = 'standard';
         }
         var p_romise = createP_romise();
         var initP_romise = createP_romise();
         initP_romise.p_romise.success(function () {
-            kc.onReady && kc.onReady(kc.authenticated);
-            p_romise.setSuccess(kc.authenticated);
+            this.onReady && this.onReady(this.authenticated);
+            p_romise.setSuccess(this.authenticated);
         }).error(function () {
             p_romise.setError();
         });
@@ -98,7 +97,7 @@ export var AuthService = function () {
                 if (!prompt) {
                     options.prompt = 'none';
                 }
-                kc.login(options).success(function () {
+                this.login(options).success(function () {
                     initP_romise.setSuccess();
                 }).error(function () {
                     initP_romise.setError();
@@ -136,7 +135,7 @@ export var AuthService = function () {
             } else if (initOptions) {
                 if (initOptions.token || initOptions.refreshToken) {
                     setToken(initOptions.token, initOptions.refreshToken, initOptions.idToken, false);
-                    kc.timeSkew = initOptions.timeSkew || 0;
+                    this.timeSkew = initOptions.timeSkew || 0;
                     if (loginIframe.enable) {
                         setupCheckLoginIframe().success(function () {
                             checkLoginIframe().success(function () {
@@ -182,7 +181,7 @@ export var AuthService = function () {
         if (options && options.action == 'register') {
             action = 'registrations';
         }
-        var url = getRealmUrl() + '/protocol/openid-connect/' + action + '?client_id=' + encodeURIComponent(kc.clientId) + '&redirect_uri=' + encodeURIComponent(redirectUri) + '&state=' + encodeURIComponent(state) + '&nonce=' + encodeURIComponent(nonce) + '&response_mode=' + encodeURIComponent(kc.responseMode) + '&response_type=' + encodeURIComponent(kc.responseType);
+        var url = getRealmUrl() + '/protocol/openid-connect/' + action + '?client_id=' + encodeURIComponent(this.clientId) + '&redirect_uri=' + encodeURIComponent(redirectUri) + '&state=' + encodeURIComponent(state) + '&nonce=' + encodeURIComponent(nonce) + '&response_mode=' + encodeURIComponent(this.responseMode) + '&response_type=' + encodeURIComponent(this.responseType);
         if (options && options.prompt) {
             url += '&prompt=' + encodeURIComponent(options.prompt);
         }
@@ -219,11 +218,11 @@ export var AuthService = function () {
             options = {};
         }
         options.action = 'register';
-        return kc.createLoginUrl(options);
+        return this.createLoginUrl(options);
     };
 
     AuthService.prototype.createAccountUrl = function createAccountUrl(options) {
-        var url = getRealmUrl() + '/account' + '?referrer=' + encodeURIComponent(kc.clientId) + '&referrer_uri=' + encodeURIComponent(adapter.redirectUri(options));
+        var url = getRealmUrl() + '/account' + '?referrer=' + encodeURIComponent(this.clientId) + '&referrer_uri=' + encodeURIComponent(adapter.redirectUri(options));
         return url;
     };
 
@@ -232,15 +231,15 @@ export var AuthService = function () {
     };
 
     AuthService.prototype.hasRealmRole = function hasRealmRole(role) {
-        var access = kc.realmAccess;
+        var access = this.realmAccess;
         return !!access && access.roles.indexOf(role) >= 0;
     };
 
     AuthService.prototype.hasResourceRole = function hasResourceRole(role, resource) {
-        if (!kc.resourceAccess) {
+        if (!this.resourceAccess) {
             return false;
         }
-        var access = kc.resourceAccess[resource || kc.clientId];
+        var access = this.resourceAccess[resource || this.clientId];
         return !!access && access.roles.indexOf(role) >= 0;
     };
 
@@ -249,13 +248,13 @@ export var AuthService = function () {
         var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
-        req.setRequestHeader('Authorization', 'bearer ' + kc.token);
+        req.setRequestHeader('Authorization', 'bearer ' + this.token);
         var p_romise = createP_romise();
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
-                    kc.profile = JSON.parse(req.responseText);
-                    p_romise.setSuccess(kc.profile);
+                    this.profile = JSON.parse(req.responseText);
+                    p_romise.setSuccess(this.profile);
                 } else {
                     p_romise.setError();
                 }
@@ -270,13 +269,13 @@ export var AuthService = function () {
         var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.setRequestHeader('Accept', 'application/json');
-        req.setRequestHeader('Authorization', 'bearer ' + kc.token);
+        req.setRequestHeader('Authorization', 'bearer ' + this.token);
         var p_romise = createP_romise();
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
                 if (req.status == 200) {
-                    kc.userInfo = JSON.parse(req.responseText);
-                    p_romise.setSuccess(kc.userInfo);
+                    this.userInfo = JSON.parse(req.responseText);
+                    p_romise.setSuccess(this.userInfo);
                 } else {
                     p_romise.setError();
                 }
@@ -287,10 +286,10 @@ export var AuthService = function () {
     };
 
     AuthService.prototype.isTokenExpired = function isTokenExpired(minValidity) {
-        if (!kc.tokenParsed || !kc.refreshToken && kc.flow != 'implicit') {
+        if (!this.tokenParsed || !this.refreshToken && this.flow != 'implicit') {
             throw 'Not authenticated';
         }
-        var expiresIn = kc.tokenParsed['exp'] - new Date().getTime() / 1000 + kc.timeSkew;
+        var expiresIn = this.tokenParsed['exp'] - new Date().getTime() / 1000 + this.timeSkew;
         if (minValidity) {
             expiresIn -= minValidity;
         }
@@ -299,26 +298,26 @@ export var AuthService = function () {
 
     AuthService.prototype.updateToken = function updateToken(minValidity) {
         var p_romise = createP_romise();
-        if (!kc.tokenParsed || !kc.refreshToken) {
+        if (!this.tokenParsed || !this.refreshToken) {
             p_romise.setError();
             return p_romise.p_romise;
         }
         minValidity = minValidity || 5;
         var exec = function exec() {
-            if (!kc.isTokenExpired(minValidity)) {
+            if (!this.isTokenExpired(minValidity)) {
                 p_romise.setSuccess(false);
             } else {
-                var params = 'grant_type=refresh_token&' + 'refresh_token=' + kc.refreshToken;
+                var params = 'grant_type=refresh_token&' + 'refresh_token=' + this.refreshToken;
                 var url = getRealmUrl() + '/protocol/openid-connect/token';
                 refreshQueue.push(p_romise);
                 if (refreshQueue.length == 1) {
                     var req = new XMLHttpRequest();
                     req.open('POST', url, true);
                     req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                    if (kc.clientId && kc.clientSecret) {
-                        req.setRequestHeader('Authorization', 'Basic ' + btoa(kc.clientId + ':' + kc.clientSecret));
+                    if (this.clientId && this.clientSecret) {
+                        req.setRequestHeader('Authorization', 'Basic ' + btoa(this.clientId + ':' + this.clientSecret));
                     } else {
-                        params += '&client_id=' + encodeURIComponent(kc.clientId);
+                        params += '&client_id=' + encodeURIComponent(this.clientId);
                     }
                     var timeLocal = new Date().getTime();
                     req.onreadystatechange = function () {
@@ -327,13 +326,13 @@ export var AuthService = function () {
                                 timeLocal = (timeLocal + new Date().getTime()) / 2;
                                 var tokenResponse = JSON.parse(req.responseText);
                                 setToken(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], true);
-                                kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
-                                kc.onAuthRefreshSuccess && kc.onAuthRefreshSuccess();
+                                this.timeSkew = Math.floor(timeLocal / 1000) - this.tokenParsed.iat;
+                                this.onAuthRefreshSuccess && this.onAuthRefreshSuccess();
                                 for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
                                     p.setSuccess(true);
                                 }
                             } else {
-                                kc.onAuthRefreshError && kc.onAuthRefreshError();
+                                this.onAuthRefreshError && this.onAuthRefreshError();
                                 for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
                                     p.setError(true);
                                 }
@@ -358,20 +357,20 @@ export var AuthService = function () {
     };
 
     AuthService.prototype.clearToken = function clearToken() {
-        if (kc.token) {
+        if (this.token) {
             setToken(null, null, null, true);
-            kc.onAuthLogout && kc.onAuthLogout();
-            if (kc.loginRequired) {
-                kc.login();
+            this.onAuthLogout && this.onAuthLogout();
+            if (this.loginRequired) {
+                this.login();
             }
         }
     };
 
     AuthService.prototype.getRealmUrl = function getRealmUrl() {
-        if (kc.authServerUrl.charAt(kc.authServerUrl.length - 1) == '/') {
-            return kc.authServerUrl + 'realms/' + encodeURIComponent(kc.realm);
+        if (this.authServerUrl.charAt(this.authServerUrl.length - 1) == '/') {
+            return this.authServerUrl + 'realms/' + encodeURIComponent(this.realm);
         } else {
-            return kc.authServerUrl + '/realms/' + encodeURIComponent(kc.realm);
+            return this.authServerUrl + '/realms/' + encodeURIComponent(this.realm);
         }
     };
 
@@ -390,25 +389,25 @@ export var AuthService = function () {
         var timeLocal = new Date().getTime();
         if (error) {
             if (prompt != 'none') {
-                kc.onAuthError && kc.onAuthError();
+                this.onAuthError && this.onAuthError();
                 p_romise && p_romise.setError();
             } else {
                 p_romise && p_romise.setSuccess();
             }
             return;
-        } else if (kc.flow != 'standard' && (oauth.access_token || oauth.id_token)) {
+        } else if (this.flow != 'standard' && (oauth.access_token || oauth.id_token)) {
             authSuccess(oauth.access_token, null, oauth.id_token, true);
         }
-        if (kc.flow != 'implicit' && code) {
+        if (this.flow != 'implicit' && code) {
             var params = 'code=' + code + '&grant_type=authorization_code';
             var url = getRealmUrl() + '/protocol/openid-connect/token';
             var req = new XMLHttpRequest();
             req.open('POST', url, true);
             req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            if (kc.clientId && kc.clientSecret) {
-                req.setRequestHeader('Authorization', 'Basic ' + btoa(kc.clientId + ':' + kc.clientSecret));
+            if (this.clientId && this.clientSecret) {
+                req.setRequestHeader('Authorization', 'Basic ' + btoa(this.clientId + ':' + this.clientSecret));
             } else {
-                params += '&client_id=' + encodeURIComponent(kc.clientId);
+                params += '&client_id=' + encodeURIComponent(this.clientId);
             }
             params += '&redirect_uri=' + oauth.redirectUri;
             req.withCredentials = true;
@@ -416,9 +415,9 @@ export var AuthService = function () {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
                         var tokenResponse = JSON.parse(req.responseText);
-                        authSuccess(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], kc.flow === 'standard');
+                        authSuccess(tokenResponse['access_token'], tokenResponse['refresh_token'], tokenResponse['id_token'], this.flow === 'standard');
                     } else {
-                        kc.onAuthError && kc.onAuthError();
+                        this.onAuthError && this.onAuthError();
                         p_romise && p_romise.setError();
                     }
                 }
@@ -428,14 +427,14 @@ export var AuthService = function () {
         function authSuccess(accessToken, refreshToken, idToken, fulfillP_romise) {
             timeLocal = (timeLocal + new Date().getTime()) / 2;
             setToken(accessToken, refreshToken, idToken, true);
-            if (kc.tokenParsed && kc.tokenParsed.nonce != oauth.storedNonce || kc.refreshTokenParsed && kc.refreshTokenParsed.nonce != oauth.storedNonce || kc.idTokenParsed && kc.idTokenParsed.nonce != oauth.storedNonce) {
+            if (this.tokenParsed && this.tokenParsed.nonce != oauth.storedNonce || this.refreshTokenParsed && this.refreshTokenParsed.nonce != oauth.storedNonce || this.idTokenParsed && this.idTokenParsed.nonce != oauth.storedNonce) {
                 console.log('invalid nonce!');
-                kc.clearToken();
+                this.clearToken();
                 p_romise && p_romise.setError();
             } else {
-                kc.timeSkew = Math.floor(timeLocal / 1000) - kc.tokenParsed.iat;
+                this.timeSkew = Math.floor(timeLocal / 1000) - this.tokenParsed.iat;
                 if (fulfillP_romise) {
-                    kc.onAuthSuccess && kc.onAuthSuccess();
+                    this.onAuthSuccess && this.onAuthSuccess();
                     p_romise && p_romise.setSuccess();
                 }
             }
@@ -458,10 +457,10 @@ export var AuthService = function () {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
                         var config = JSON.parse(req.responseText);
-                        kc.authServerUrl = config['auth-server-url'];
-                        kc.realm = config['realm'];
-                        kc.clientId = config['resource'];
-                        kc.clientSecret = (config['credentials'] || {})['secret'];
+                        this.authServerUrl = config['auth-server-url'];
+                        this.realm = config['realm'];
+                        this.clientId = config['resource'];
+                        this.clientSecret = (config['credentials'] || {})['secret'];
                         p_romise.setSuccess();
                     } else {
                         p_romise.setError();
@@ -485,58 +484,58 @@ export var AuthService = function () {
             if (!config.clientId) {
                 throw 'clientId missing';
             }
-            kc.authServerUrl = config.url;
-            kc.realm = config.realm;
-            kc.clientId = config.clientId;
-            kc.clientSecret = (config.credentials || {}).secret;
+            this.authServerUrl = config.url;
+            this.realm = config.realm;
+            this.clientId = config.clientId;
+            this.clientSecret = (config.credentials || {}).secret;
             p_romise.setSuccess();
         }
         return p_romise.p_romise;
     };
 
     AuthService.prototype.setToken = function setToken(token, refreshToken, idToken, useTokenTime) {
-        if (kc.tokenTimeoutHandle) {
-            clearTimeout(kc.tokenTimeoutHandle);
-            kc.tokenTimeoutHandle = null;
+        if (this.tokenTimeoutHandle) {
+            clearTimeout(this.tokenTimeoutHandle);
+            this.tokenTimeoutHandle = null;
         }
         if (token) {
-            kc.token = token;
-            kc.tokenParsed = decodeToken(token);
-            var sessionId = kc.realm + '/' + kc.tokenParsed.sub;
-            if (kc.tokenParsed.session_state) {
-                sessionId = sessionId + '/' + kc.tokenParsed.session_state;
+            this.token = token;
+            this.tokenParsed = decodeToken(token);
+            var sessionId = this.realm + '/' + this.tokenParsed.sub;
+            if (this.tokenParsed.session_state) {
+                sessionId = sessionId + '/' + this.tokenParsed.session_state;
             }
-            kc.sessionId = sessionId;
-            kc.authenticated = true;
-            kc.subject = kc.tokenParsed.sub;
-            kc.realmAccess = kc.tokenParsed.realm_access;
-            kc.resourceAccess = kc.tokenParsed.resource_access;
-            if (kc.onTokenExpired) {
-                var start = useTokenTime ? kc.tokenParsed.iat : new Date().getTime() / 1000;
-                var expiresIn = kc.tokenParsed.exp - start;
-                kc.tokenTimeoutHandle = setTimeout(kc.onTokenExpired, expiresIn * 1000);
+            this.sessionId = sessionId;
+            this.authenticated = true;
+            this.subject = this.tokenParsed.sub;
+            this.realmAccess = this.tokenParsed.realm_access;
+            this.resourceAccess = this.tokenParsed.resource_access;
+            if (this.onTokenExpired) {
+                var start = useTokenTime ? this.tokenParsed.iat : new Date().getTime() / 1000;
+                var expiresIn = this.tokenParsed.exp - start;
+                this.tokenTimeoutHandle = setTimeout(this.onTokenExpired, expiresIn * 1000);
             }
         } else {
-            delete kc.token;
-            delete kc.tokenParsed;
-            delete kc.subject;
-            delete kc.realmAccess;
-            delete kc.resourceAccess;
-            kc.authenticated = false;
+            delete this.token;
+            delete this.tokenParsed;
+            delete this.subject;
+            delete this.realmAccess;
+            delete this.resourceAccess;
+            this.authenticated = false;
         }
         if (refreshToken) {
-            kc.refreshToken = refreshToken;
-            kc.refreshTokenParsed = decodeToken(refreshToken);
+            this.refreshToken = refreshToken;
+            this.refreshTokenParsed = decodeToken(refreshToken);
         } else {
-            delete kc.refreshToken;
-            delete kc.refreshTokenParsed;
+            delete this.refreshToken;
+            delete this.refreshTokenParsed;
         }
         if (idToken) {
-            kc.idToken = idToken;
-            kc.idTokenParsed = decodeToken(idToken);
+            this.idToken = idToken;
+            this.idTokenParsed = decodeToken(idToken);
         } else {
-            delete kc.idToken;
-            delete kc.idTokenParsed;
+            delete this.idToken;
+            delete this.idTokenParsed;
         }
     };
 
@@ -577,12 +576,12 @@ export var AuthService = function () {
     };
 
     AuthService.prototype.createCallbackId = function createCallbackId() {
-        var id = '<id: ' + kc.callback_id++ + Math.random() + '>';
+        var id = '<id: ' + this.callback_id++ + Math.random() + '>';
         return id;
     };
 
     AuthService.prototype.parseCallback = function parseCallback(url) {
-        var oauth = new CallbackParser(url, kc.responseMode).parseUri();
+        var oauth = new CallbackParser(url, this.responseMode).parseUri();
         var oauthState = storage.getItem('oauthState');
         var sessionState = oauthState && JSON.parse(oauthState);
         if (sessionState && (oauth.code || oauth.error || oauth.access_token || oauth.id_token) && oauth.state && oauth.state == sessionState.state) {
@@ -656,7 +655,7 @@ export var AuthService = function () {
             p_romise.setSuccess();
             setTimeout(check, loginIframe.interval * 1000);
         };
-        var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
+        var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(this.clientId) + '&origin=' + getOrigin();
         iframe.setAttribute('src', src);
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
@@ -667,17 +666,17 @@ export var AuthService = function () {
             var data = JSON.parse(event.data);
             var p_romise = loginIframe.callbackMap[data.callbackId];
             delete loginIframe.callbackMap[data.callbackId];
-            if ((!kc.sessionId || kc.sessionId == data.session) && data.loggedIn) {
+            if ((!this.sessionId || this.sessionId == data.session) && data.loggedIn) {
                 p_romise.setSuccess();
             } else {
-                kc.clearToken();
+                this.clearToken();
                 p_romise.setError();
             }
         };
         window.addEventListener('message', messageCallback, false);
         var check = function check() {
             checkLoginIframe();
-            if (kc.token) {
+            if (this.token) {
                 setTimeout(check, loginIframe.interval * 1000);
             }
         };
@@ -702,19 +701,19 @@ export var AuthService = function () {
         if (!type || type == 'default') {
             return {
                 login: function login(options) {
-                    window.location.href = kc.createLoginUrl(options);
+                    window.location.href = this.createLoginUrl(options);
                     return createP_romise().p_romise;
                 },
                 logout: function logout(options) {
-                    window.location.href = kc.createLogoutUrl(options);
+                    window.location.href = this.createLogoutUrl(options);
                     return createP_romise().p_romise;
                 },
                 register: function register(options) {
-                    window.location.href = kc.createRegisterUrl(options);
+                    window.location.href = this.createRegisterUrl(options);
                     return createP_romise().p_romise;
                 },
                 accountManagement: function accountManagement() {
-                    window.location.href = kc.createAccountUrl();
+                    window.location.href = this.createAccountUrl();
                     return createP_romise().p_romise;
                 },
                 redirectUri: function redirectUri(options, encodeHash) {
@@ -723,8 +722,8 @@ export var AuthService = function () {
                     }
                     if (options && options.redirectUri) {
                         return options.redirectUri;
-                    } else if (kc.redirectUri) {
-                        return kc.redirectUri;
+                    } else if (this.redirectUri) {
+                        return this.redirectUri;
                     } else {
                         var redirectUri = location.href;
                         if (location.hash && encodeHash) {
@@ -745,7 +744,7 @@ export var AuthService = function () {
                     if (options && options.prompt == 'none') {
                         o += ',hidden=yes';
                     }
-                    var loginUrl = kc.createLoginUrl(options);
+                    var loginUrl = this.createLoginUrl(options);
                     var ref = window.open(loginUrl, '_blank', o);
                     var completed = false;
                     ref.addEventListener('loadstart', function (event) {
@@ -773,7 +772,7 @@ export var AuthService = function () {
                 },
                 logout: function logout(options) {
                     var p_romise = createP_romise();
-                    var logoutUrl = kc.createLogoutUrl(options);
+                    var logoutUrl = this.createLogoutUrl(options);
                     var ref = window.open(logoutUrl, '_blank', 'location=no,hidden=yes');
                     var error;
                     ref.addEventListener('loadstart', function (event) {
@@ -793,14 +792,14 @@ export var AuthService = function () {
                         if (error) {
                             p_romise.setError();
                         } else {
-                            kc.clearToken();
+                            this.clearToken();
                             p_romise.setSuccess();
                         }
                     });
                     return p_romise.p_romise;
                 },
                 register: function register() {
-                    var registerUrl = kc.createRegisterUrl();
+                    var registerUrl = this.createRegisterUrl();
                     var ref = window.open(registerUrl, '_blank', 'location=no');
                     ref.addEventListener('loadstart', function (event) {
                         if (event.url.indexOf('http://localhost') == 0) {
@@ -809,7 +808,7 @@ export var AuthService = function () {
                     });
                 },
                 accountManagement: function accountManagement() {
-                    var accountUrl = kc.createAccountUrl();
+                    var accountUrl = this.createAccountUrl();
                     var ref = window.open(accountUrl, '_blank', 'location=no');
                     ref.addEventListener('loadstart', function (event) {
                         if (event.url.indexOf('http://localhost') == 0) {
