@@ -1,6 +1,6 @@
 var _class;
 
-import { Keycloak } from './keycloak';
+import { keycloak } from './keycloak';
 import { noView } from 'aurelia-framework';
 
 export let AuthService = noView(_class = class AuthService {
@@ -8,7 +8,7 @@ export let AuthService = noView(_class = class AuthService {
         this.kc = {};
     }
     configure(aurelia, config) {
-        this.kc = new Keycloak(config.install);
+        this.kc = keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.kc.init(config.initOptions);
         }
