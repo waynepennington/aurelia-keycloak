@@ -8,11 +8,11 @@ export var Keycloak = function () {
         
 
         this.config = config;
-        var adapter;
-        var refreshQueue = [];
-        var storage;
+        this.adapter;
+        this.refreshQueue = [];
+        this.storage;
 
-        var loginIframe = {
+        this.loginIframe = {
             enable: true,
             callbackMap: [],
             interval: 5
@@ -24,27 +24,27 @@ export var Keycloak = function () {
 
         this.authenticated = false;
 
-        storage = new PersistentStorage();
+        this.storage = new PersistentStorage();
 
         if (initOptions && initOptions.adapter === 'cordova') {
-            adapter = loadAdapter('cordova');
+            this.adapter = loadAdapter('cordova');
         } else if (initOptions && initOptions.adapter === 'default') {
-            adapter = loadAdapter();
+            this.adapter = loadAdapter();
         } else {
             if (window.Cordova) {
-                adapter = loadAdapter('cordova');
+                this.adapter = loadAdapter('cordova');
             } else {
-                adapter = loadAdapter();
+                this.adapter = loadAdapter();
             }
         }
 
         if (initOptions) {
             if (typeof initOptions.checkLoginIframe !== 'undefined') {
-                loginIframe.enable = initOptions.checkLoginIframe;
+                this.loginIframe.enable = initOptions.checkLoginIframe;
             }
 
             if (initOptions.checkLoginIframeInterval) {
-                loginIframe.interval = initOptions.checkLoginIframeInterval;
+                this.loginIframe.interval = initOptions.checkLoginIframeInterval;
             }
 
             if (initOptions.onLoad === 'login-required') {
@@ -95,7 +95,7 @@ export var Keycloak = function () {
             promise.setError();
         });
 
-        var configPromise = loadConfig(config);
+        var configPromise = loadConfig(this.config);
 
         function onLoad() {
             var doLogin = function doLogin(prompt) {
@@ -112,7 +112,7 @@ export var Keycloak = function () {
             var options = {};
             switch (initOptions.onLoad) {
                 case 'check-sso':
-                    if (loginIframe.enable) {
+                    if (this.loginIframe.enable) {
                         setupCheckLoginIframe().success(function () {
                             checkLoginIframe().success(function () {
                                 doLogin(false);
@@ -145,7 +145,7 @@ export var Keycloak = function () {
                     setToken(initOptions.token, initOptions.refreshToken, initOptions.idToken, false);
                     this.timeSkew = initOptions.timeSkew || 0;
 
-                    if (loginIframe.enable) {
+                    if (this.loginIframe.enable) {
                         setupCheckLoginIframe().success(function () {
                             checkLoginIframe().success(function () {
                                 initPromise.setSuccess();
@@ -177,19 +177,19 @@ export var Keycloak = function () {
     };
 
     Keycloak.prototype.login = function login(options) {
-        return adapter.login(options);
+        return this.adapter.login(options);
     };
 
     Keycloak.prototype.createLoginUrl = function createLoginUrl(options) {
         var state = createUUID();
         var nonce = createUUID();
 
-        var redirectUri = adapter.redirectUri(options);
+        var redirectUri = this.adapter.redirectUri(options);
         if (options && options.prompt) {
             redirectUri += (redirectUri.indexOf('?') == -1 ? '?' : '&') + 'prompt=' + options.prompt;
         }
 
-        storage.setItem('oauthState', JSON.stringify({ state: state, nonce: nonce, redirectUri: encodeURIComponent(redirectUri) }));
+        this.storage.setItem('oauthState', JSON.stringify({ state: state, nonce: nonce, redirectUri: encodeURIComponent(redirectUri) }));
 
         var action = 'auth';
         if (options && options.action == 'register') {
@@ -222,17 +222,17 @@ export var Keycloak = function () {
     };
 
     Keycloak.prototype.logout = function logout(options) {
-        return adapter.logout(options);
+        return this.adapter.logout(options);
     };
 
     Keycloak.prototype.createLogoutUrl = function createLogoutUrl(options) {
-        var url = getRealmUrl() + '/protocol/openid-connect/logout' + '?redirect_uri=' + encodeURIComponent(adapter.redirectUri(options, false));
+        var url = getRealmUrl() + '/protocol/openid-connect/logout' + '?redirect_uri=' + encodeURIComponent(this.adapter.redirectUri(options, false));
 
         return url;
     };
 
     Keycloak.prototype.register = function register(options) {
-        return adapter.register(options);
+        return this.adapter.register(options);
     };
 
     Keycloak.prototype.createRegisterUrl = function createRegisterUrl(options) {
@@ -244,13 +244,13 @@ export var Keycloak = function () {
     };
 
     Keycloak.prototype.createAccountUrl = function createAccountUrl(options) {
-        var url = getRealmUrl() + '/account' + '?referrer=' + encodeURIComponent(this.clientId) + '&referrer_uri=' + encodeURIComponent(adapter.redirectUri(options));
+        var url = getRealmUrl() + '/account' + '?referrer=' + encodeURIComponent(this.clientId) + '&referrer_uri=' + encodeURIComponent(this.adapter.redirectUri(options));
 
         return url;
     };
 
     Keycloak.prototype.accountManagement = function accountManagement() {
-        return adapter.accountManagement();
+        return this.adapter.accountManagement();
     };
 
     Keycloak.prototype.hasRealmRole = function hasRealmRole(role) {
@@ -347,9 +347,9 @@ export var Keycloak = function () {
                 var params = 'grant_type=refresh_token&' + 'refresh_token=' + this.refreshToken;
                 var url = getRealmUrl() + '/protocol/openid-connect/token';
 
-                refreshQueue.push(promise);
+                this.refreshQueue.push(promise);
 
-                if (refreshQueue.length == 1) {
+                if (this.refreshQueue.length == 1) {
                     var req = new XMLHttpRequest();
                     req.open('POST', url, true);
                     req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -373,12 +373,12 @@ export var Keycloak = function () {
                                 this.timeSkew = Math.floor(timeLocal / 1000) - this.tokenParsed.iat;
 
                                 this.onAuthRefreshSuccess && this.onAuthRefreshSuccess();
-                                for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
+                                for (var p = this.refreshQueue.pop(); p != null; p = this.refreshQueue.pop()) {
                                     p.setSuccess(true);
                                 }
                             } else {
                                 this.onAuthRefreshError && this.onAuthRefreshError();
-                                for (var p = refreshQueue.pop(); p != null; p = refreshQueue.pop()) {
+                                for (var p = this.refreshQueue.pop(); p != null; p = this.refreshQueue.pop()) {
                                     p.setError(true);
                                 }
                             }
@@ -390,7 +390,7 @@ export var Keycloak = function () {
             }
         };
 
-        if (loginIframe.enable) {
+        if (this.loginIframe.enable) {
             var iframePromise = checkLoginIframe();
             iframePromise.success(function () {
                 exec();
@@ -508,10 +508,10 @@ export var Keycloak = function () {
         var promise = createPromise();
         var configUrl;
 
-        if (!config) {
+        if (!this.config) {
             configUrl = 'keycloak.json';
-        } else if (typeof config === 'string') {
-            configUrl = config;
+        } else if (typeof this.config === 'string') {
+            this.configUrl = this.config;
         }
 
         if (configUrl) {
@@ -522,12 +522,12 @@ export var Keycloak = function () {
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
-                        var config = JSON.parse(req.responseText);
+                        var responseConfig = JSON.parse(req.responseText);
 
-                        this.authServerUrl = config['auth-server-url'];
-                        this.realm = config['realm'];
-                        this.clientId = config['resource'];
-                        this.clientSecret = (config['credentials'] || {})['secret'];
+                        this.authServerUrl = responseConfig['auth-server-url'];
+                        this.realm = responseConfig['realm'];
+                        this.clientId = responseConfig['resource'];
+                        this.clientSecret = (responseConfig['credentials'] || {})['secret'];
 
                         promise.setSuccess();
                     } else {
@@ -538,28 +538,28 @@ export var Keycloak = function () {
 
             req.send();
         } else {
-            if (!config['url']) {
+            if (!this.config['url']) {
                 var scripts = document.getElementsByTagName('script');
                 for (var i = 0; i < scripts.length; i++) {
                     if (scripts[i].src.match(/.*keycloak\.js/)) {
-                        config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
+                        this.config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
                         break;
                     }
                 }
             }
 
-            if (!config.realm) {
+            if (!this.config.realm) {
                 throw 'realm missing';
             }
 
-            if (!config.clientId) {
+            if (!this.config.clientId) {
                 throw 'clientId missing';
             }
 
-            this.authServerUrl = config.url;
-            this.realm = config.realm;
-            this.clientId = config.clientId;
-            this.clientSecret = (config.credentials || {}).secret;
+            this.authServerUrl = this.config.url;
+            this.realm = this.config.realm;
+            this.clientId = this.config.clientId;
+            this.clientSecret = (this.config.credentials || {}).secret;
 
             promise.setSuccess();
         }
@@ -666,11 +666,11 @@ export var Keycloak = function () {
     Keycloak.prototype.parseCallback = function parseCallback(url) {
         var oauth = new CallbackParser(url, this.responseMode).parseUri();
 
-        var oauthState = storage.getItem('oauthState');
+        var oauthState = this.storage.getItem('oauthState');
         var sessionState = oauthState && JSON.parse(oauthState);
 
         if (sessionState && (oauth.code || oauth.error || oauth.access_token || oauth.id_token) && oauth.state && oauth.state == sessionState.state) {
-            storage.removeItem('oauthState');
+            this.storage.removeItem('oauthState');
 
             oauth.redirectUri = sessionState.redirectUri;
             oauth.storedNonce = sessionState.nonce;
@@ -726,29 +726,29 @@ export var Keycloak = function () {
     Keycloak.prototype.setupCheckLoginIframe = function setupCheckLoginIframe() {
         var promise = createPromise();
 
-        if (!loginIframe.enable) {
+        if (!this.loginIframe.enable) {
             promise.setSuccess();
             return promise.promise;
         }
 
-        if (loginIframe.iframe) {
+        if (this.loginIframe.iframe) {
             promise.setSuccess();
             return promise.promise;
         }
 
         var iframe = document.createElement('iframe');
-        loginIframe.iframe = iframe;
+        this.loginIframe.iframe = iframe;
 
         iframe.onload = function () {
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
-                loginIframe.iframeOrigin = getOrigin();
+                this.loginIframe.iframeOrigin = getOrigin();
             } else {
-                loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
+                this.loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
             }
             promise.setSuccess();
 
-            setTimeout(check, loginIframe.interval * 1000);
+            setTimeout(check, this.loginIframe.interval * 1000);
         };
 
         var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(this.clientId) + '&origin=' + getOrigin();
@@ -757,12 +757,12 @@ export var Keycloak = function () {
         document.body.appendChild(iframe);
 
         var messageCallback = function messageCallback(event) {
-            if (event.origin !== loginIframe.iframeOrigin) {
+            if (event.origin !== this.loginIframe.iframeOrigin) {
                 return;
             }
             var data = JSON.parse(event.data);
-            var promise = loginIframe.callbackMap[data.callbackId];
-            delete loginIframe.callbackMap[data.callbackId];
+            var promise = this.loginIframe.callbackMap[data.callbackId];
+            delete this.loginIframe.callbackMap[data.callbackId];
 
             if ((!this.sessionId || this.sessionId == data.session) && data.loggedIn) {
                 promise.setSuccess();
@@ -776,7 +776,7 @@ export var Keycloak = function () {
         var check = function check() {
             checkLoginIframe();
             if (this.token) {
-                setTimeout(check, loginIframe.interval * 1000);
+                setTimeout(check, this.loginIframe.interval * 1000);
             }
         };
 
@@ -786,12 +786,12 @@ export var Keycloak = function () {
     Keycloak.prototype.checkLoginIframe = function checkLoginIframe() {
         var promise = createPromise();
 
-        if (loginIframe.iframe && loginIframe.iframeOrigin) {
+        if (this.loginIframe.iframe && this.loginIframe.iframeOrigin) {
             var msg = {};
             msg.callbackId = createCallbackId();
-            loginIframe.callbackMap[msg.callbackId] = promise;
-            var origin = loginIframe.iframeOrigin;
-            loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
+            this.loginIframe.callbackMap[msg.callbackId] = promise;
+            var origin = this.loginIframe.iframeOrigin;
+            this.loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
         } else {
             promise.setSuccess();
         }
@@ -844,7 +844,7 @@ export var Keycloak = function () {
         }
 
         if (type == 'cordova') {
-            loginIframe.enable = false;
+            this.loginIframe.enable = false;
 
             return {
                 login: function login(options) {
