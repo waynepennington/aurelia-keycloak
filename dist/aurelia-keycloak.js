@@ -230,6 +230,7 @@ class PersistentStorage {
         document.cookie = cookie;
     };
 };
+@noView
 export class AuthService {
     constructor() {
         this.authenticated = false;

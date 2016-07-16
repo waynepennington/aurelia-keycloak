@@ -8,7 +8,9 @@ define(['exports', './PersistentStorage', './CallbackParser', 'aurelia-framework
 
     
 
-    var AuthService = exports.AuthService = function () {
+    var _class;
+
+    var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
         function AuthService() {
             
 
@@ -829,5 +831,5 @@ define(['exports', './PersistentStorage', './CallbackParser', 'aurelia-framework
         };
 
         return AuthService;
-    }();
+    }()) || _class;
 });

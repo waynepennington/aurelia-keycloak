@@ -1,10 +1,12 @@
+var _class;
+
 
 
 import { PersistentStorage } from './PersistentStorage';
 import { CallbackParser } from './CallbackParser';
 import { noView } from 'aurelia-framework';
 
-export var AuthService = function () {
+export var AuthService = noView(_class = function () {
     function AuthService() {
         
 
@@ -825,4 +827,4 @@ export var AuthService = function () {
     };
 
     return AuthService;
-}();
+}()) || _class;

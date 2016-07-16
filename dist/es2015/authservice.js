@@ -1,8 +1,10 @@
+var _class;
+
 import { PersistentStorage } from './PersistentStorage';
 import { CallbackParser } from './CallbackParser';
 import { noView } from 'aurelia-framework';
 
-export let AuthService = class AuthService {
+export let AuthService = noView(_class = class AuthService {
     constructor() {
         this.authenticated = false;
         this.config;
@@ -790,4 +792,4 @@ export let AuthService = class AuthService {
         throw 'invalid adapter type: ' + type;
     }
 
-};
+}) || _class;
