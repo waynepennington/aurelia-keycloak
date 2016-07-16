@@ -3,13 +3,13 @@
 System.register(['./keycloak', 'aurelia-framework'], function (_export, _context) {
     "use strict";
 
-    var keycloak, noView, _class, AuthService;
+    var Keycloak, noView, _class, AuthService;
 
     
 
     return {
         setters: [function (_keycloak) {
-            keycloak = _keycloak.keycloak;
+            Keycloak = _keycloak.Keycloak;
         }, function (_aureliaFramework) {
             noView = _aureliaFramework.noView;
         }],

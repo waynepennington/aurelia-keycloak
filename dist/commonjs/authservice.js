@@ -21,7 +21,7 @@ var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = f
     }
 
     AuthService.prototype.configure = function configure(config) {
-        this.keycloak = new Keycloak(config.install);
+        this.keycloak = new _keycloak.Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
             this.keycloak.init(config.initOptions);
         }
