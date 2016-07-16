@@ -15,8 +15,6 @@ System.register(['aurelia-framework'], function (_export, _context) {
             _export('AuthService', AuthService = noView(_class = function () {
                 function AuthService() {
                     
-
-                    this.keycloak = null;
                 }
 
                 AuthService.prototype.configure = function configure(aurelia, config) {

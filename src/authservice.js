@@ -2,11 +2,10 @@ import {noView} from 'aurelia-framework';
 
 @noView
 export class AuthService { 
-    constructor(){
-        this.keycloak = null;
-    }
+    // constructor(){
+    //     this.keycloak = null;
+    // }
     configure(aurelia,config){
-        // this.kc = new Keycloak(config.install);
         // let kc = new keycloak.Keycloak(config.install);
         this.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {

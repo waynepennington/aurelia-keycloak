@@ -13,8 +13,6 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
     var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
         function AuthService() {
             
-
-            this.keycloak = null;
         }
 
         AuthService.prototype.configure = function configure(aurelia, config) {

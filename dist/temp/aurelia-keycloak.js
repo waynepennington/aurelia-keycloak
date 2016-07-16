@@ -14,8 +14,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = function () {
     function AuthService() {
         _classCallCheck(this, AuthService);
-
-        this.keycloak = null;
     }
 
     AuthService.prototype.configure = function configure(aurelia, config) {
