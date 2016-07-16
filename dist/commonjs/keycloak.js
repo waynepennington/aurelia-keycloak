@@ -141,7 +141,7 @@ var Keycloak = exports.Keycloak = function () {
         }
 
         function processInit() {
-            var callback = this.parseCallback(window.location.href);
+            var callback = parseCallback(window.location.href);
 
             if (callback) {
                 this.setupCheckLoginIframe();
