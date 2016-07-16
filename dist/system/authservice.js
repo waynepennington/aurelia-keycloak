@@ -32,7 +32,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
             _export('AuthService', AuthService);
 
             Keycloak = function Keycloak(config) {
-                var kc = {};
+                var kc = this;
                 var adapter;
                 var refreshQueue = [];
                 var storage;

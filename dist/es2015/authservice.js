@@ -16,7 +16,7 @@ export let AuthService = noView(_class = class AuthService {
 }) || _class;
 
 var Keycloak = function (config) {
-    var kc = {};
+    var kc = this;
     var adapter;
     var refreshQueue = [];
     var storage;

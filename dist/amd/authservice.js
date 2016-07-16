@@ -28,7 +28,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
     }()) || _class;
 
     var Keycloak = function Keycloak(config) {
-        var kc = {};
+        var kc = this;
         var adapter;
         var refreshQueue = [];
         var storage;

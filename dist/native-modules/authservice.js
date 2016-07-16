@@ -22,7 +22,7 @@ export var AuthService = noView(_class = function () {
 }()) || _class;
 
 var Keycloak = function Keycloak(config) {
-    var kc = {};
+    var kc = this;
     var adapter;
     var refreshQueue = [];
     var storage;

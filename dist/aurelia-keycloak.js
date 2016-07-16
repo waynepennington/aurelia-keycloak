@@ -17,7 +17,7 @@ export class AuthService {
 }
 
     var Keycloak = function (config) {
-        var kc = {};
+        var kc = this;
         var adapter;
         var refreshQueue = [];
         var storage;

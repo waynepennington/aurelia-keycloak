@@ -29,7 +29,7 @@ var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = f
 }()) || _class;
 
 var Keycloak = function Keycloak(config) {
-    var kc = {};
+    var kc = this;
     var adapter;
     var refreshQueue = [];
     var storage;
