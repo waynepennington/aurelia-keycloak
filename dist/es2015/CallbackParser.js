@@ -1,4 +1,5 @@
-let CallbackParser = class CallbackParser {
+
+export let CallbackParser = class CallbackParser {
     constructor(uriToParse, responseMode) {
         var parser = this;
         var initialParse = function () {

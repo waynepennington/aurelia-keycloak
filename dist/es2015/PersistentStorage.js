@@ -1,4 +1,4 @@
-let PersistentStorage = class PersistentStorage {
+export let PersistentStorage = class PersistentStorage {
     constructor() {
         this.bogusconstructor = null;
     }
@@ -66,5 +66,4 @@ let PersistentStorage = class PersistentStorage {
         cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
         document.cookie = cookie;
     }
-};
-;
+};;

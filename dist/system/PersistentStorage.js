@@ -10,7 +10,7 @@ System.register([], function (_export, _context) {
     return {
         setters: [],
         execute: function () {
-            PersistentStorage = function () {
+            _export('PersistentStorage', PersistentStorage = function () {
                 function PersistentStorage() {
                     
 
@@ -83,7 +83,9 @@ System.register([], function (_export, _context) {
                 };
 
                 return PersistentStorage;
-            }();
+            }());
+
+            _export('PersistentStorage', PersistentStorage);
 
             ;
         }

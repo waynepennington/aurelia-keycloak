@@ -10,7 +10,7 @@ System.register([], function (_export, _context) {
     return {
         setters: [],
         execute: function () {
-            CallbackParser = function CallbackParser(uriToParse, responseMode) {
+            _export("CallbackParser", CallbackParser = function CallbackParser(uriToParse, responseMode) {
                 
 
                 var parser = this;
@@ -90,7 +90,9 @@ System.register([], function (_export, _context) {
                     }
                     return oauth;
                 };
-            };
+            });
+
+            _export("CallbackParser", CallbackParser);
         }
     };
 });

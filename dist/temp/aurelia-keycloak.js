@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthService = exports.Keycloak = undefined;
+exports.AuthService = exports.Keycloak = exports.PersistentStorage = exports.CallbackParser = undefined;
 
 var _class;
 
@@ -11,7 +11,7 @@ var _aureliaFramework = require("aurelia-framework");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var CallbackParser = function CallbackParser(uriToParse, responseMode) {
+var CallbackParser = exports.CallbackParser = function CallbackParser(uriToParse, responseMode) {
     _classCallCheck(this, CallbackParser);
 
     var parser = this;
@@ -93,7 +93,7 @@ var CallbackParser = function CallbackParser(uriToParse, responseMode) {
     };
 };
 
-var PersistentStorage = function () {
+var PersistentStorage = exports.PersistentStorage = function () {
     function PersistentStorage() {
         _classCallCheck(this, PersistentStorage);
 

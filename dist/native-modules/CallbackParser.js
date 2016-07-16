@@ -1,6 +1,6 @@
 
 
-var CallbackParser = function CallbackParser(uriToParse, responseMode) {
+export var CallbackParser = function CallbackParser(uriToParse, responseMode) {
     
 
     var parser = this;

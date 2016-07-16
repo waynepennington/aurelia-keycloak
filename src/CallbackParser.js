@@ -78,7 +78,7 @@
 
 // }
 // mmmmmmmmmmmmmmmmmmmmmmmmmmmmm
-class CallbackParser {
+export class CallbackParser {
    constructor(uriToParse, responseMode) {
     var parser = this;
     var initialParse = function () {

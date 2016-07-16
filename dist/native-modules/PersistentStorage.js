@@ -1,6 +1,6 @@
 
 
-var PersistentStorage = function () {
+export var PersistentStorage = function () {
     function PersistentStorage() {
         
 
@@ -73,6 +73,4 @@ var PersistentStorage = function () {
     };
 
     return PersistentStorage;
-}();
-
-;
+}();;

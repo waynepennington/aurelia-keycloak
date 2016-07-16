@@ -1,4 +1,4 @@
-class PersistentStorage {
+export class PersistentStorage {
     constructor() {
         this.bogusconstructor=null;
     }

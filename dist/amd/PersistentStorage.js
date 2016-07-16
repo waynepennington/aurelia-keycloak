@@ -1,9 +1,13 @@
-define([], function () {
+define(['exports'], function (exports) {
     'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
 
     
 
-    var PersistentStorage = function () {
+    var PersistentStorage = exports.PersistentStorage = function () {
         function PersistentStorage() {
             
 

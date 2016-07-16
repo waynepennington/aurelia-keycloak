@@ -80,7 +80,7 @@ import {noView} from 'aurelia-framework';
 
 // }
 // mmmmmmmmmmmmmmmmmmmmmmmmmmmmm
-class CallbackParser {
+export class CallbackParser {
    constructor(uriToParse, responseMode) {
     var parser = this;
     var initialParse = function () {
@@ -161,7 +161,7 @@ class CallbackParser {
     }
 }
 }
-class PersistentStorage {
+export class PersistentStorage {
     constructor() {
         this.bogusconstructor=null;
     }

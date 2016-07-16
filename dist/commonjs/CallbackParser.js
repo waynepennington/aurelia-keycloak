@@ -1,8 +1,12 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 
-var CallbackParser = function CallbackParser(uriToParse, responseMode) {
+
+var CallbackParser = exports.CallbackParser = function CallbackParser(uriToParse, responseMode) {
     
 
     var parser = this;

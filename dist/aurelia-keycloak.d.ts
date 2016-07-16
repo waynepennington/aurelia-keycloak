@@ -2,6 +2,97 @@ import {
   noView
 } from 'aurelia-framework';
 
+// export class CallbackParser {
+//     constructor(uriToParse, responseMode) {
+//         this.parsedUri = null;
+//         this.baseUri = null;
+//         this.queryString = null;
+//         this.fragmentString = null;
+//         this.questionMarkIndex = uriToParse.indexOf("?");
+//         this.fragmentIndex = uriToParse.indexOf("#", questionMarkIndex + 1);
+//         if (questionMarkIndex == -1 && fragmentIndex == -1) {
+//             this.baseUri = uriToParse;
+//         } else if (questionMarkIndex != -1) {
+//             this.baseUri = uriToParse.substring(0, questionMarkIndex);
+//             this.queryString = uriToParse.substring(questionMarkIndex + 1);
+//             if (fragmentIndex != -1) {
+//                 fragmentIndex = this.queryString.indexOf("#");
+//                 this.fragmentString = this.queryString.substring(fragmentIndex + 1);
+//                 this.queryString = this.queryString.substring(0, fragmentIndex);
+//             }
+//         } else {
+//             this.baseUri = uriToParse.substring(0, fragmentIndex);
+//             this.fragmentString = uriToParse.substring(fragmentIndex + 1);
+//         }
+//                 this.parsedUri = initialParse();
+//         this.queryParams = {};
+//         if (this.parsedUri.queryString) {
+//             this.queryParams = parseParams(this.parsedUri.queryString);
+//         }
+//         this.oauth = { newUrl: this.parsedUri.baseUri };
+//         for (param in this.queryParams) {
+//             switch (param) {
+//                 case 'redirect_fragment':
+//                     oauth.fragment = this.queryParams[param];
+//                     break;
+//                 case 'prompt':
+//                     oauth.prompt = this.queryParams[param];
+//                     break;
+//                 default:
+//                     if (responseMode != 'query' || !handleQueryParam(param, this.queryParams[param], oauth)) {
+//                         oauth.newUrl += (oauth.newUrl.indexOf('?') == -1 ? '?' : '&') + param + '=' + queryParams[param];
+//                     }
+//                     break;
+//             }
+//         }
+//         if (responseMode === 'fragment') {
+//             this.fragmentParams = {};
+//             if (this.parsedUri.fragmentString) {
+//                 fragmentParams = parseParams(this.parsedUri.fragmentString);
+//             }
+//             for (param in fragmentParams) {
+//                 oauth[param] = fragmentParams[param];
+//             }
+//         }
+//         this.parseUri = oauth;
+//     }
+//     parseParams(paramString){
+//         result = {};
+//         params = paramString.split('&');
+//         for (i = 0; i < params.length; i++) {
+//             p = params[i].split('=');
+//             paramName = decodeURIComponent(p[0]);
+//             paramValue = decodeURIComponent(p[1]);
+//             result[paramName] = paramValue;
+//         }
+//         return result;
+//     }
+//     handleQueryParam(paramName, paramValue, oauth) {
+//         supportedOAuthParams = ['code', 'error', 'state'];
+//         for (i = 0; i < supportedOAuthParams.length; i++) {
+//             if (paramName === supportedOAuthParams[i]) {
+//                 oauth[paramName] = paramValue;
+//                 return true;
+//             }
+//         }
+//         return false;
+//     }
+// }
+// mmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+export declare class CallbackParser {
+  constructor(uriToParse?: any, responseMode?: any);
+}
+export declare class PersistentStorage {
+  constructor();
+  useCookieStorage(): any;
+  setitem(key?: any, value?: any): any;
+  getItem(key?: any): any;
+  removeItem(key?: any): any;
+  cookieExpiration(minutes?: any): any;
+  getCookie(key?: any): any;
+  setCookie(key?: any, value?: any, expirationDate?: any): any;
+}
+
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
