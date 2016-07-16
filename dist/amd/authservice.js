@@ -26,9 +26,9 @@ define(['exports', './PersistentStorage', './CallbackParser', 'aurelia-framework
         }
 
         AuthService.prototype.configure = function configure(configKC) {
-            this.config = configthis.install;
-            if (typeof configthis.initOptions !== 'undefined') {
-                this.init(configthis.initOptions);
+            this.config = configKC.install;
+            if (typeof configKC.initOptions !== 'undefined') {
+                this.init(configKC.initOptions);
             }
         };
 
