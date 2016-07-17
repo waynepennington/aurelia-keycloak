@@ -16,7 +16,6 @@ export class AuthService {
 // INCLUDING KEYCLOAK.JS IN THIS FILE TO GET AROUND SYSTEM.JS AND AURELIA PLUGIN LOADING ISSUES
 // STRIP OUTTER ANONYMOUS WINDOW Function
 // MAKE INTO A PLAIN VAR KEYCLOAK FUNCTION - GETTING RID OF THE "NEW" PIECE
-// GLOBALLY REPLACE "document" with the Aurelia "document""
 
     var Keycloak = function (config) {
         var kc = this;
@@ -786,6 +785,18 @@ console.log('iframeOrigin: ' + iframeOrigin);
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
 
+            ///TEMP FIX CHEAT
+                var realmUrl = getRealmUrl();
+                if (realmUrl.charAt(0) === '/') {
+                    loginIframe.iframeOrigin = getOrigin();
+                } else {
+                    loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
+                }
+                promise.setSuccess();
+
+                setTimeout(check, loginIframe.interval * 1000);
+            ///TEMP END
+            
             var messageCallback = function(event) {
                 if (event.origin !== loginIframe.iframeOrigin) {
                     return;

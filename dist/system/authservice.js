@@ -786,6 +786,17 @@ System.register(['aurelia-framework'], function (_export, _context) {
                     iframe.style.display = 'none';
                     document.body.appendChild(iframe);
 
+                    var realmUrl = getRealmUrl();
+                    if (realmUrl.charAt(0) === '/') {
+                        loginIframe.iframeOrigin = getOrigin();
+                    } else {
+                        loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
+                    }
+                    promise.setSuccess();
+
+                    setTimeout(check, loginIframe.interval * 1000);
+
+
                     var messageCallback = function messageCallback(event) {
                         if (event.origin !== loginIframe.iframeOrigin) {
                             return;
