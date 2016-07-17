@@ -758,9 +758,6 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
             loginIframe.iframe = iframe;
             iframe.onload = function () {
                 console.log('iframe.onload');
-                var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
-                iframe.setAttribute('src', src);
-                iframe.style.display = 'none';
                 var realmUrl = getRealmUrl();
                 if (realmUrl.charAt(0) === '/') {
                     loginIframe.iframeOrigin = getOrigin();
@@ -773,6 +770,9 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
 
                 console.log('loginIframe: ' + JSON.stringify(loginIframe));
             };
+            var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
+            iframe.setAttribute('src', src);
+            iframe.style.display = 'none';
 
             document.body.appendChild(iframe);
 
