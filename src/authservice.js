@@ -822,7 +822,7 @@ export class AuthService {
 console.log('iframe: ' +typeof loginIframe.iframe);
 console.log('contentWindow: ' +typeof loginIframe.iframe.contentWindow)
 console.log('JSON.stringify(msg): ' +  JSON.stringify(msg));
-console.log('origin: ' +typeof loginIframe.origin);
+console.log('origin: ' +typeof loginIframe.iframeOrigin);
 
                 loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
             } else {

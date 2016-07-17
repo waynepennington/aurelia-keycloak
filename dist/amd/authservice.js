@@ -818,7 +818,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
                 console.log('iframe: ' + _typeof(loginIframe.iframe));
                 console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
                 console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
-                console.log('origin: ' + _typeof(loginIframe.origin));
+                console.log('origin: ' + _typeof(loginIframe.iframeOrigin));
 
                 loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
             } else {
