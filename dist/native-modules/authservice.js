@@ -32,6 +32,7 @@ var Keycloak = function Keycloak(config) {
         callbackMap: [],
         interval: 5
     };
+    console.log('loginIframe: ' + JSON.stringify(loginIframe));
 
     kc.init = function (initOptions) {
         kc.authenticated = false;
@@ -807,7 +808,7 @@ var Keycloak = function Keycloak(config) {
             msg.callbackId = createCallbackId();
             loginIframe.callbackMap[msg.callbackId] = promise;
             var origin = loginIframe.iframeOrigin;
-            console.log('loginIframe: ' + JSON.stringify(loginIframe.iframe));
+            console.log('loginIframe: ' + JSON.stringify(loginIframe));
             console.log('loginIframe.iframe: ' + JSON.stringify(loginIframe.iframe));
             console.log('contentWindow: ' + JSON.stringify(loginIframe.iframe.contentWindow));
             console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
