@@ -757,7 +757,7 @@ var Keycloak = function Keycloak(config) {
 
         var iframe = _aureliaFramework.PLATFORM.global.document.createElement('iframe');
         loginIframe.iframe = iframe;
-
+        console.log('SETTING UP IFRAME');
         iframe.onload = function () {
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
@@ -791,8 +791,6 @@ var Keycloak = function Keycloak(config) {
             }
         };
         window.addEventListener('message', messageCallback, false);
-
-        window.name;
 
         var check = function check() {
             checkLoginIframe();

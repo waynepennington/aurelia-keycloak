@@ -766,7 +766,7 @@ export class AuthService {
 
             var iframe = PLATFORM.global.document.createElement('iframe');
             loginIframe.iframe = iframe;
-
+console.log('SETTING UP IFRAME');
             iframe.onload = function() {
                 var realmUrl = getRealmUrl();
                 if (realmUrl.charAt(0) === '/') {
@@ -800,8 +800,6 @@ export class AuthService {
                 }
             };
             window.addEventListener('message', messageCallback, false);
-
-            window.name
 
             var check = function() {
                 checkLoginIframe();

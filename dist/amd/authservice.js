@@ -756,7 +756,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
 
             var iframe = _aureliaFramework.PLATFORM.global.document.createElement('iframe');
             loginIframe.iframe = iframe;
-
+            console.log('SETTING UP IFRAME');
             iframe.onload = function () {
                 var realmUrl = getRealmUrl();
                 if (realmUrl.charAt(0) === '/') {
@@ -790,8 +790,6 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
                 }
             };
             window.addEventListener('message', messageCallback, false);
-
-            window.name;
 
             var check = function check() {
                 checkLoginIframe();
