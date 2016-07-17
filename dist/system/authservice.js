@@ -777,7 +777,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
                         }
                         promise.setSuccess();
 
-                        setTimeout(check, loginIframe.interval * 1000);
+                        setTimeout(check, loginIframe.loginIframe.interval * 1000);
                         console.log('iframeOrigin: ' + iframeOrigin);
                     };
 

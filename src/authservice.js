@@ -776,7 +776,7 @@ console.log('iframe setup: contentWindow: ' +typeof loginIframe.iframe.contentWi
                 }
                 promise.setSuccess();
 
-                setTimeout(check, loginIframe.interval * 1000);
+                setTimeout(check, loginIframe.loginIframe.interval * 1000);
 console.log('iframeOrigin: ' + iframeOrigin);                
             }
 
@@ -796,7 +796,7 @@ console.log('iframeOrigin: ' + iframeOrigin);
 
                 setTimeout(check, loginIframe.interval * 1000);
             ///TEMP END
-            
+
             var messageCallback = function(event) {
                 if (event.origin !== loginIframe.iframeOrigin) {
                     return;
