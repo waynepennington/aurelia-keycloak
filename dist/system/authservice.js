@@ -3,7 +3,7 @@
 System.register(['aurelia-framework'], function (_export, _context) {
     "use strict";
 
-    var PLATFORM, noView, _typeof, _class, AuthService, Keycloak;
+    var PLATFORM, noView, _class, AuthService, Keycloak;
 
     
 
@@ -13,12 +13,6 @@ System.register(['aurelia-framework'], function (_export, _context) {
             noView = _aureliaFramework.noView;
         }],
         execute: function () {
-            _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-                return typeof obj;
-            } : function (obj) {
-                return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-            };
-
             _export('AuthService', AuthService = noView(_class = function () {
                 function AuthService() {
                     
@@ -820,8 +814,8 @@ System.register(['aurelia-framework'], function (_export, _context) {
                         msg.callbackId = createCallbackId();
                         loginIframe.callbackMap[msg.callbackId] = promise;
                         var origin = loginIframe.iframeOrigin;
-                        console.log('iframe: ' + _typeof(loginIframe.iframe));
-                        console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
+                        console.log('iframe: ' + JSON.stringify(loginIframe.iframe));
+                        console.log('contentWindow: ' + JSON.stringify(loginIframe.iframe.contentWindow));
                         console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
                         console.log('origin: ' + loginIframe.iframeOrigin);
 
