@@ -740,6 +740,7 @@ var Keycloak = function Keycloak(config) {
     }
 
     function setupCheckLoginIframe() {
+        console.log('setupchecklogin');
         var promise = createPromise();
 
         if (!loginIframe.enable) {
@@ -754,7 +755,6 @@ var Keycloak = function Keycloak(config) {
 
         var iframe = document.createElement('iframe');
         loginIframe.iframe = iframe;
-        console.log('iframe setup: contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
         iframe.onload = function () {
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
@@ -765,25 +765,12 @@ var Keycloak = function Keycloak(config) {
             promise.setSuccess();
 
             setTimeout(check, loginIframe.interval * 1000);
-            console.log('loginIframe.iframeOrigin in onload: ' + loginIframe.iframeOrigin);
         };
 
         var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
         iframe.setAttribute('src', src);
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
-
-        var realmUrl = getRealmUrl();
-        if (realmUrl.charAt(0) === '/') {
-            loginIframe.iframeOrigin = getOrigin();
-        } else {
-            loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
-        }
-        promise.setSuccess();
-
-        setTimeout(check, loginIframe.interval * 1000);
-        console.log('loginIframe.iframeOrigin in TEMP: ' + loginIframe.iframeOrigin);
-
 
         var messageCallback = function messageCallback(event) {
             if (event.origin !== loginIframe.iframeOrigin) {
