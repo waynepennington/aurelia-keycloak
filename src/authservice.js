@@ -785,6 +785,8 @@ export class AuthService {
             iframe.setAttribute('src', src );
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
+
+            console.log('loginIframe: '+ JSON.stringify(loginIframe));
             
             var messageCallback = function(event) {
                 if (event.origin !== loginIframe.iframeOrigin) {

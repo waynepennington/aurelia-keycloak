@@ -772,6 +772,8 @@ var Keycloak = function Keycloak(config) {
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
 
+        console.log('loginIframe: ' + JSON.stringify(loginIframe));
+
         var messageCallback = function messageCallback(event) {
             if (event.origin !== loginIframe.iframeOrigin) {
                 console.log('event.origin !== loginIframe.iframeOrigin');
