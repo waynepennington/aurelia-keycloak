@@ -51,7 +51,7 @@ import {AuthService} from 'aurelia-keycloak';
 @inject(AuthService)
 export class ViewModel {
     constructor() {
-        keycloak.FUNCTION ... ;
+        this.keycloak = AuthService.keycloak;
 
             }
 }
