@@ -7,8 +7,6 @@ exports.AuthService = undefined;
 
 var _class;
 
-var _aureliaPal = require('aurelia-pal');
-
 var _aureliaFramework = require('aurelia-framework');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -558,7 +556,7 @@ var Keycloak = function Keycloak(config) {
             req.send();
         } else {
             if (!config['url']) {
-                var scripts = _aureliaPal.PLATFORM.global.document.getElementsByTagName('script');
+                var scripts = _aureliaFramework.PLATFORM.global.document.getElementsByTagName('script');
                 for (var i = 0; i < scripts.length; i++) {
                     if (scripts[i].src.match(/.*keycloak\.js/)) {
                         config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
@@ -757,7 +755,7 @@ var Keycloak = function Keycloak(config) {
             return promise.promise;
         }
 
-        var iframe = _aureliaPal.PLATFORM.global.document.createElement('iframe');
+        var iframe = _aureliaFramework.PLATFORM.global.document.createElement('iframe');
         loginIframe.iframe = iframe;
 
         iframe.onload = function () {
@@ -775,7 +773,7 @@ var Keycloak = function Keycloak(config) {
         var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
         iframe.setAttribute('src', src);
         iframe.style.display = 'none';
-        _aureliaPal.PLATFORM.global.document.body.appendChild(iframe);
+        _aureliaFramework.PLATFORM.global.document.body.appendChild(iframe);
 
         var messageCallback = function messageCallback(event) {
             if (event.origin !== loginIframe.iframeOrigin) {
@@ -1025,7 +1023,7 @@ var Keycloak = function Keycloak(config) {
 
         var getCookie = function getCookie(key) {
             var name = key + '=';
-            var ca = _aureliaPal.PLATFORM.global.document.cookie.split(';');
+            var ca = _aureliaFramework.PLATFORM.global.document.cookie.split(';');
             for (var i = 0; i < ca.length; i++) {
                 var c = ca[i];
                 while (c.charAt(0) == ' ') {
@@ -1040,7 +1038,7 @@ var Keycloak = function Keycloak(config) {
 
         var setCookie = function setCookie(key, value, expirationDate) {
             var cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
-            _aureliaPal.PLATFORM.global.document.cookie = cookie;
+            _aureliaFramework.PLATFORM.global.document.cookie = cookie;
         };
     };
 

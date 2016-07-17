@@ -1,6 +1,6 @@
 'use strict';
 
-System.register(['aurelia-pal', 'aurelia-framework'], function (_export, _context) {
+System.register(['aurelia-framework'], function (_export, _context) {
     "use strict";
 
     var PLATFORM, noView, _class, AuthService, Keycloak;
@@ -8,9 +8,8 @@ System.register(['aurelia-pal', 'aurelia-framework'], function (_export, _contex
     
 
     return {
-        setters: [function (_aureliaPal) {
-            PLATFORM = _aureliaPal.PLATFORM;
-        }, function (_aureliaFramework) {
+        setters: [function (_aureliaFramework) {
+            PLATFORM = _aureliaFramework.PLATFORM;
             noView = _aureliaFramework.noView;
         }],
         execute: function () {

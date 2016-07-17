@@ -1,4 +1,4 @@
-import{PLATFORM} from 'aurelia-pal';
+import{PLATFORM} from 'aurelia-framework';
 import {noView} from 'aurelia-framework';
 
 @noView

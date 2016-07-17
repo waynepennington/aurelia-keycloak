@@ -1,5 +1,4 @@
-import {PLATFORM} from 'aurelia-pal';
-import {noView} from 'aurelia-framework';
+import {PLATFORM,noView} from 'aurelia-framework';
 
 @noView
 export class AuthService { 

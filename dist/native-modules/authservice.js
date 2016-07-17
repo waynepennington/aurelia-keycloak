@@ -2,7 +2,7 @@ var _class;
 
 
 
-import { PLATFORM } from 'aurelia-pal';
+import { PLATFORM } from 'aurelia-framework';
 import { noView } from 'aurelia-framework';
 
 export var AuthService = noView(_class = function () {
