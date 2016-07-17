@@ -1,3 +1,5 @@
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var _class;
 
 
@@ -752,7 +754,7 @@ var Keycloak = function Keycloak(config) {
 
         var iframe = PLATFORM.global.document.createElement('iframe');
         loginIframe.iframe = iframe;
-        console.log('SETTING UP IFRAME');
+        console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
         iframe.onload = function () {
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
@@ -805,6 +807,9 @@ var Keycloak = function Keycloak(config) {
             msg.callbackId = createCallbackId();
             loginIframe.callbackMap[msg.callbackId] = promise;
             var origin = loginIframe.iframeOrigin;
+            console.log('iframe: ' + _typeof(loginIframe.iframe));
+            console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
+
             loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
         } else {
             promise.setSuccess();
