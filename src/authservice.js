@@ -779,14 +779,14 @@ export class AuthService {
                 promise.setSuccess();
 
                 setTimeout(check, loginIframe.interval * 1000);               
-            }
+
+            console.log('loginIframe: '+ JSON.stringify(loginIframe));            }
 
             var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
             iframe.setAttribute('src', src );
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
 
-            console.log('loginIframe: '+ JSON.stringify(loginIframe));
             
             var messageCallback = function(event) {
                 if (event.origin !== loginIframe.iframeOrigin) {
