@@ -36,7 +36,6 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
             callbackMap: [],
             interval: 5
         };
-        console.log('loginIframe: ' + JSON.stringify(loginIframe));
 
         kc.init = function (initOptions) {
             kc.authenticated = false;
@@ -743,7 +742,6 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
         }
 
         function setupCheckLoginIframe() {
-            console.log('setupchecklogin');
             var promise = createPromise();
 
             if (!loginIframe.enable) {
@@ -760,6 +758,9 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
             loginIframe.iframe = iframe;
             iframe.onload = function () {
                 console.log('iframe.onload');
+                var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
+                iframe.setAttribute('src', src);
+                iframe.style.display = 'none';
                 var realmUrl = getRealmUrl();
                 if (realmUrl.charAt(0) === '/') {
                     loginIframe.iframeOrigin = getOrigin();
@@ -773,14 +774,10 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
                 console.log('loginIframe: ' + JSON.stringify(loginIframe));
             };
 
-            var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
-            iframe.setAttribute('src', src);
-            iframe.style.display = 'none';
             document.body.appendChild(iframe);
 
             var messageCallback = function messageCallback(event) {
                 if (event.origin !== loginIframe.iframeOrigin) {
-                    console.log('event.origin !== loginIframe.iframeOrigin');
                     return;
                 }
                 var data = JSON.parse(event.data);
@@ -815,11 +812,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
                 loginIframe.callbackMap[msg.callbackId] = promise;
                 var origin = loginIframe.iframeOrigin;
                 console.log('loginIframe: ' + JSON.stringify(loginIframe));
-                console.log('loginIframe.iframe: ' + JSON.stringify(loginIframe.iframe));
-                console.log('contentWindow: ' + JSON.stringify(loginIframe.iframe.contentWindow));
                 console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
-                console.log('loginIframe.iframeOrigin: ' + loginIframe.iframeOrigin);
-
                 loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
             } else {
                 promise.setSuccess();
