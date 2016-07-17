@@ -754,6 +754,7 @@ var Keycloak = function Keycloak(config) {
         var iframe = document.createElement('iframe');
         loginIframe.iframe = iframe;
         iframe.onload = function () {
+            console.log('iframe.onload');
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
                 loginIframe.iframeOrigin = getOrigin();
@@ -772,6 +773,7 @@ var Keycloak = function Keycloak(config) {
 
         var messageCallback = function messageCallback(event) {
             if (event.origin !== loginIframe.iframeOrigin) {
+                console.log('event.origin !== loginIframe.iframeOrigin');
                 return;
             }
             var data = JSON.parse(event.data);
@@ -805,10 +807,11 @@ var Keycloak = function Keycloak(config) {
             msg.callbackId = createCallbackId();
             loginIframe.callbackMap[msg.callbackId] = promise;
             var origin = loginIframe.iframeOrigin;
-            console.log('iframe: ' + JSON.stringify(loginIframe.iframe));
+            console.log('loginIframe: ' + JSON.stringify(loginIframe.iframe));
+            console.log('loginIframe.iframe: ' + JSON.stringify(loginIframe.iframe));
             console.log('contentWindow: ' + JSON.stringify(loginIframe.iframe.contentWindow));
             console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
-            console.log('origin: ' + loginIframe.iframeOrigin);
+            console.log('loginIframe.iframeOrigin: ' + loginIframe.iframeOrigin);
 
             loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
         } else {
