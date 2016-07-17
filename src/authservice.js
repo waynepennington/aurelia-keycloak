@@ -767,7 +767,7 @@ export class AuthService {
 
             var iframe = PLATFORM.global.document.createElement('iframe');
             loginIframe.iframe = iframe;
-console.log('contentWindow: ' +typeof loginIframe.iframe.contentWindow);
+console.log('iframe setup: contentWindow: ' +typeof loginIframe.iframe.contentWindow);
             iframe.onload = function() {
                 var realmUrl = getRealmUrl();
                 if (realmUrl.charAt(0) === '/') {
