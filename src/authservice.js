@@ -822,9 +822,9 @@ console.log('iframe setup: contentWindow: ' +typeof loginIframe.iframe.contentWi
                 var origin = loginIframe.iframeOrigin;
 console.log('iframe: ' +typeof loginIframe.iframe);
 console.log('contentWindow: ' +typeof loginIframe.iframe.contentWindow)
-console.log('postMessage: ' +typeof loginIframe.iframe.contentWindow.postMessage);
 console.log('JSON.stringify(msg): ' +  JSON.stringify(msg));
 console.log('origin: ' +typeof loginIframe.origin);
+console.log('postMessage: ' +typeof loginIframe.iframe.contentWindow.postMessage);
 
                 loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
             } else {
