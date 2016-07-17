@@ -801,7 +801,7 @@ var Keycloak = function (config) {
             console.log('iframe: ' + typeof loginIframe.iframe);
             console.log('contentWindow: ' + typeof loginIframe.iframe.contentWindow);
             console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
-            console.log('origin: ' + typeof loginIframe.iframeOrigin);
+            console.log('origin: ' + loginIframe.iframeOrigin);
 
             loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
         } else {
