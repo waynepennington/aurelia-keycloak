@@ -777,8 +777,8 @@ System.register(['aurelia-framework'], function (_export, _context) {
                         }
                         promise.setSuccess();
 
-                        setTimeout(check, loginIframe.loginIframe.interval * 1000);
-                        console.log('iframeOrigin: ' + iframeOrigin);
+                        setTimeout(check, loginIframe.interval * 1000);
+                        console.log('loginIframe.iframeOrigin in onload: ' + loginIframe.iframeOrigin);
                     };
 
                     var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
@@ -795,6 +795,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
                     promise.setSuccess();
 
                     setTimeout(check, loginIframe.interval * 1000);
+                    console.log('loginIframe.iframeOrigin in TEMP: ' + loginIframe.iframeOrigin);
 
 
                     var messageCallback = function messageCallback(event) {
