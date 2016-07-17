@@ -544,7 +544,7 @@ var Keycloak = function (config) {
             req.send();
         } else {
             if (!config['url']) {
-                var scripts = PLATFORM.global.document.getElementsByTagName('script');
+                var scripts = document.getElementsByTagName('script');
                 for (var i = 0; i < scripts.length; i++) {
                     if (scripts[i].src.match(/.*keycloak\.js/)) {
                         config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
@@ -743,7 +743,7 @@ var Keycloak = function (config) {
             return promise.promise;
         }
 
-        var iframe = PLATFORM.global.document.createElement('iframe');
+        var iframe = document.createElement('iframe');
         loginIframe.iframe = iframe;
         console.log('iframe setup: contentWindow: ' + typeof loginIframe.iframe.contentWindow);
         iframe.onload = function () {
@@ -762,7 +762,7 @@ var Keycloak = function (config) {
         var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
         iframe.setAttribute('src', src);
         iframe.style.display = 'none';
-        PLATFORM.global.document.body.appendChild(iframe);
+        document.body.appendChild(iframe);
 
         var messageCallback = function (event) {
             if (event.origin !== loginIframe.iframeOrigin) {
@@ -1015,7 +1015,7 @@ var Keycloak = function (config) {
 
         var getCookie = function (key) {
             var name = key + '=';
-            var ca = PLATFORM.global.document.cookie.split(';');
+            var ca = document.cookie.split(';');
             for (var i = 0; i < ca.length; i++) {
                 var c = ca[i];
                 while (c.charAt(0) == ' ') {
@@ -1030,7 +1030,7 @@ var Keycloak = function (config) {
 
         var setCookie = function (key, value, expirationDate) {
             var cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
-            PLATFORM.global.document.cookie = cookie;
+            document.cookie = cookie;
         };
     };
 

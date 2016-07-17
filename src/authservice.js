@@ -16,7 +16,7 @@ export class AuthService {
 // INCLUDING KEYCLOAK.JS IN THIS FILE TO GET AROUND SYSTEM.JS AND AURELIA PLUGIN LOADING ISSUES
 // STRIP OUTTER ANONYMOUS WINDOW Function
 // MAKE INTO A PLAIN VAR KEYCLOAK FUNCTION - GETTING RID OF THE "NEW" PIECE
-// GLOBALLY REPLACE "document" with the Aurelia "PLATFORM.global.document""
+// GLOBALLY REPLACE "document" with the Aurelia "document""
 
     var Keycloak = function (config) {
         var kc = this;
@@ -563,7 +563,7 @@ export class AuthService {
                 req.send();
             } else {
                 if (!config['url']) {
-                    var scripts = PLATFORM.global.document.getElementsByTagName('script');
+                    var scripts = document.getElementsByTagName('script');
                     for (var i = 0; i < scripts.length; i++) {
                         if (scripts[i].src.match(/.*keycloak\.js/)) {
                             config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
@@ -765,7 +765,7 @@ export class AuthService {
                 return promise.promise;
             }
 
-            var iframe = PLATFORM.global.document.createElement('iframe');
+            var iframe = document.createElement('iframe');
             loginIframe.iframe = iframe;
 console.log('iframe setup: contentWindow: ' +typeof loginIframe.iframe.contentWindow);
             iframe.onload = function() {
@@ -784,7 +784,7 @@ console.log('iframeOrigin: ' + iframeOrigin);
             var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
             iframe.setAttribute('src', src );
             iframe.style.display = 'none';
-            PLATFORM.global.document.body.appendChild(iframe);
+            document.body.appendChild(iframe);
 
             var messageCallback = function(event) {
                 if (event.origin !== loginIframe.iframeOrigin) {
@@ -1042,7 +1042,7 @@ console.log('origin: ' +typeof loginIframe.origin);
 
             var getCookie = function (key) {
                 var name = key + '=';
-                var ca = PLATFORM.global.document.cookie.split(';');
+                var ca = document.cookie.split(';');
                 for (var i = 0; i < ca.length; i++) {
                     var c = ca[i];
                     while (c.charAt(0) == ' ') {
@@ -1058,7 +1058,7 @@ console.log('origin: ' +typeof loginIframe.origin);
             var setCookie = function (key, value, expirationDate) {
                 var cookie = key + '=' + value + '; '
                     + 'expires=' + expirationDate.toUTCString() + '; ';
-                PLATFORM.global.document.cookie = cookie;
+                document.cookie = cookie;
             }
         }
 
