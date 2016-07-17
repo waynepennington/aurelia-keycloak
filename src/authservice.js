@@ -778,6 +778,7 @@ console.log('iframe setup: contentWindow: ' +typeof loginIframe.iframe.contentWi
                 promise.setSuccess();
 
                 setTimeout(check, loginIframe.interval * 1000);
+console.log('iframeOrigin: ' + iframeOrigin);                
             }
 
             var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
@@ -824,7 +825,6 @@ console.log('iframe: ' +typeof loginIframe.iframe);
 console.log('contentWindow: ' +typeof loginIframe.iframe.contentWindow)
 console.log('JSON.stringify(msg): ' +  JSON.stringify(msg));
 console.log('origin: ' +typeof loginIframe.origin);
-console.log('postMessage: ' +typeof loginIframe.iframe.contentWindow.postMessage);
 
                 loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
             } else {

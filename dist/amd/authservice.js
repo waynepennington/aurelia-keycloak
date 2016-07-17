@@ -773,6 +773,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
                 promise.setSuccess();
 
                 setTimeout(check, loginIframe.interval * 1000);
+                console.log('iframeOrigin: ' + iframeOrigin);
             };
 
             var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
@@ -819,7 +820,6 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
                 console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
                 console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
                 console.log('origin: ' + _typeof(loginIframe.origin));
-                console.log('postMessage: ' + _typeof(loginIframe.iframe.contentWindow.postMessage));
 
                 loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
             } else {
