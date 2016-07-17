@@ -822,6 +822,9 @@ console.log('contentWindow: ' +typeof loginIframe.iframe.contentWindow);
                 var origin = loginIframe.iframeOrigin;
 console.log('iframe: ' +typeof loginIframe.iframe);
 console.log('contentWindow: ' +typeof loginIframe.iframe.contentWindow)
+console.log('postMessage: ' +typeof loginIframe.iframe.contentWindow.postMessage);
+console.log('JSON.stringify(msg): ' +  JSON.stringify(msg));
+console.log('origin: ' +typeof loginIframe.origin);
 
                 loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
             } else {
