@@ -82,7 +82,7 @@ export class ViewModel {
 See keycloak API and the example js-console for the many examples using its functionality.
 
 ## Example API Usage with Aurelia
-** Model**
+**Model**
 ```javascript
 import {AuthService} from 'aurelia-keycloak';
 
@@ -168,7 +168,7 @@ export class Welcome {
     }
 }
 ```
-** View**
+**View**
 ```html
 <template>
   <section class="au-animate">
