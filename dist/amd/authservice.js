@@ -763,8 +763,6 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
             var iframe = _aureliaFramework.PLATFORM.global.document.createElement('iframe');
             loginIframe.iframe = iframe;
             iframe.onload = function () {
-                console.log('iframe.onload');
-                console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
                 AuthService.keycloakIframe = loginIframe.iframe;
                 var realmUrl = getRealmUrl();
                 if (realmUrl.charAt(0) === '/') {
@@ -817,6 +815,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
                 msg.callbackId = createCallbackId();
                 loginIframe.callbackMap[msg.callbackId] = promise;
                 var origin = loginIframe.iframeOrigin;
+                loginIframe.iframe = AuthService.keycloakIframe;
                 console.log('keycloakIframe: ' + _typeof(AuthService.keycloakIframe));
                 console.log('loginIframe.iframe: ' + _typeof(loginIframe.iframe));
                 console.log('loginIframe.iframe.contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));

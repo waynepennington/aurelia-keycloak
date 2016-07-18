@@ -746,8 +746,6 @@ var Keycloak = function (config) {
         var iframe = PLATFORM.global.document.createElement('iframe');
         loginIframe.iframe = iframe;
         iframe.onload = function () {
-            console.log('iframe.onload');
-            console.log('contentWindow: ' + typeof loginIframe.iframe.contentWindow);
             AuthService.keycloakIframe = loginIframe.iframe;
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
@@ -800,6 +798,7 @@ var Keycloak = function (config) {
             msg.callbackId = createCallbackId();
             loginIframe.callbackMap[msg.callbackId] = promise;
             var origin = loginIframe.iframeOrigin;
+            loginIframe.iframe = AuthService.keycloakIframe;
             console.log('keycloakIframe: ' + typeof AuthService.keycloakIframe);
             console.log('loginIframe.iframe: ' + typeof loginIframe.iframe);
             console.log('loginIframe.iframe.contentWindow: ' + typeof loginIframe.iframe.contentWindow);
