@@ -1,8 +1,6 @@
-var _class, _temp;
-
 import { PLATFORM } from 'aurelia-framework';
 
-export let AuthService = (_temp = _class = class AuthService {
+export let AuthService = class AuthService {
     configure(aurelia, config) {
         AuthService.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
@@ -10,7 +8,7 @@ export let AuthService = (_temp = _class = class AuthService {
         }
     }
 
-}, _class.keycloakIframe = {}, _temp);
+};
 
 
 var Keycloak = function (config) {

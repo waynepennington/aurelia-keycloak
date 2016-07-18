@@ -3,7 +3,6 @@ import {PLATFORM,noView} from 'aurelia-framework';
 // // @noView
 export class AuthService {
     static keycloak;
-    static keycloakIframe = {};
     configure(aurelia, config) {
         AuthService.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {

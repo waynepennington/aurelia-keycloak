@@ -8,9 +8,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
 
     
 
-    var _class, _temp;
-
-    var AuthService = exports.AuthService = (_temp = _class = function () {
+    var AuthService = exports.AuthService = function () {
         function AuthService() {
             
         }
@@ -23,8 +21,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
         };
 
         return AuthService;
-    }(), _class.keycloakIframe = {}, _temp);
-
+    }();
 
     var Keycloak = function Keycloak(config) {
         var kc = this;
