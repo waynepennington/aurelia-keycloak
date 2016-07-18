@@ -563,7 +563,7 @@ var Keycloak = function (config) {
             req.send();
         } else {
             if (!config['url']) {
-                var scripts = document.getElementsByTagName('script');
+                var scripts = PLATFORM.global.document.getElementsByTagName('script');
                 for (var i = 0; i < scripts.length; i++) {
                     if (scripts[i].src.match(/.*keycloak\.js/)) {
                         config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
@@ -764,7 +764,7 @@ var Keycloak = function (config) {
             return promise.promise;
         }
 
-        var iframe = document.createElement('iframe');
+        var iframe = PLATFORM.global.document.createElement('iframe');
         loginIframe.iframe = iframe;
         iframe.onload = function () {
             console.log('iframe.onload');
@@ -784,7 +784,7 @@ var Keycloak = function (config) {
         iframe.setAttribute('src', src);
         iframe.style.display = 'none';
 
-        document.body.appendChild(iframe);
+        PLATFORM.global.document.body.appendChild(iframe);
 
 
         var messageCallback = function (event) {
@@ -1043,7 +1043,7 @@ var Keycloak = function (config) {
 
         var getCookie = function (key) {
             var name = key + '=';
-            var ca = document.cookie.split(';');
+            var ca = PLATFORM.global.document.cookie.split(';');
             for (var i = 0; i < ca.length; i++) {
                 var c = ca[i];
                 while (c.charAt(0) == ' ') {
@@ -1059,7 +1059,7 @@ var Keycloak = function (config) {
         var setCookie = function (key, value, expirationDate) {
             var cookie = key + '=' + value + '; '
                 + 'expires=' + expirationDate.toUTCString() + '; ';
-            document.cookie = cookie;
+            PLATFORM.global.document.cookie = cookie;
         }
     }
 
