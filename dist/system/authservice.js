@@ -3,7 +3,7 @@
 System.register(['aurelia-framework'], function (_export, _context) {
     "use strict";
 
-    var PLATFORM, noView, _typeof, _class, AuthService, Keycloak;
+    var PLATFORM, noView, _typeof, _class, _class2, _temp, AuthService, Keycloak;
 
     
 
@@ -19,7 +19,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
                 return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
             };
 
-            _export('AuthService', AuthService = noView(_class = function () {
+            _export('AuthService', AuthService = noView(_class = (_temp = _class2 = function () {
                 function AuthService() {
                     
                 }
@@ -32,7 +32,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
                 };
 
                 return AuthService;
-            }()) || _class);
+            }(), _class2.keycloakIframe = null, _temp)) || _class);
 
             _export('AuthService', AuthService);
 
@@ -770,6 +770,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
                     iframe.onload = function () {
                         console.log('iframe.onload');
                         console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
+                        this.keycloakIframe = loginIframe.iframe;
                         var realmUrl = getRealmUrl();
                         if (realmUrl.charAt(0) === '/') {
                             loginIframe.iframeOrigin = getOrigin();
@@ -823,6 +824,9 @@ System.register(['aurelia-framework'], function (_export, _context) {
                         msg.callbackId = createCallbackId();
                         loginIframe.callbackMap[msg.callbackId] = promise;
                         var origin = loginIframe.iframeOrigin;
+                        console.log('keycloakIframe: ' + _typeof(this.keycloakIframe));
+                        console.log('loginIframe.iframe: ' + _typeof(loginIframe.iframe));
+                        console.log('loginIframe.iframe.contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
                         console.log('loginIframe: ' + JSON.stringify(loginIframe));
                         console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
                         loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);

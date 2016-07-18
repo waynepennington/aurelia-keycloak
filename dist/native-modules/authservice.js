@@ -1,13 +1,13 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var _class;
+var _class, _class2, _temp;
 
 
 
 import { PLATFORM } from 'aurelia-framework';
 import { noView } from 'aurelia-framework';
 
-export var AuthService = noView(_class = function () {
+export var AuthService = noView(_class = (_temp = _class2 = function () {
     function AuthService() {
         
     }
@@ -20,7 +20,7 @@ export var AuthService = noView(_class = function () {
     };
 
     return AuthService;
-}()) || _class;
+}(), _class2.keycloakIframe = null, _temp)) || _class;
 
 
 var Keycloak = function Keycloak(config) {
@@ -757,6 +757,7 @@ var Keycloak = function Keycloak(config) {
         iframe.onload = function () {
             console.log('iframe.onload');
             console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
+            this.keycloakIframe = loginIframe.iframe;
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
                 loginIframe.iframeOrigin = getOrigin();
@@ -810,6 +811,9 @@ var Keycloak = function Keycloak(config) {
             msg.callbackId = createCallbackId();
             loginIframe.callbackMap[msg.callbackId] = promise;
             var origin = loginIframe.iframeOrigin;
+            console.log('keycloakIframe: ' + _typeof(this.keycloakIframe));
+            console.log('loginIframe.iframe: ' + _typeof(loginIframe.iframe));
+            console.log('loginIframe.iframe.contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
             console.log('loginIframe: ' + JSON.stringify(loginIframe));
             console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
             loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);

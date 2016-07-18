@@ -1,9 +1,9 @@
-var _class;
+var _class, _class2, _temp;
 
 import { PLATFORM } from 'aurelia-framework';
 import { noView } from 'aurelia-framework';
 
-export let AuthService = noView(_class = class AuthService {
+export let AuthService = noView(_class = (_temp = _class2 = class AuthService {
     configure(aurelia, config) {
         AuthService.keycloak = new Keycloak(config.install);
         if (typeof config.initOptions !== 'undefined') {
@@ -11,7 +11,7 @@ export let AuthService = noView(_class = class AuthService {
         }
     }
 
-}) || _class;
+}, _class2.keycloakIframe = null, _temp)) || _class;
 
 
 var Keycloak = function (config) {
@@ -748,6 +748,7 @@ var Keycloak = function (config) {
         iframe.onload = function () {
             console.log('iframe.onload');
             console.log('contentWindow: ' + typeof loginIframe.iframe.contentWindow);
+            this.keycloakIframe = loginIframe.iframe;
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
                 loginIframe.iframeOrigin = getOrigin();
@@ -801,6 +802,9 @@ var Keycloak = function (config) {
             msg.callbackId = createCallbackId();
             loginIframe.callbackMap[msg.callbackId] = promise;
             var origin = loginIframe.iframeOrigin;
+            console.log('keycloakIframe: ' + typeof this.keycloakIframe);
+            console.log('loginIframe.iframe: ' + typeof loginIframe.iframe);
+            console.log('loginIframe.iframe.contentWindow: ' + typeof loginIframe.iframe.contentWindow);
             console.log('loginIframe: ' + JSON.stringify(loginIframe));
             console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
             loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
