@@ -11,7 +11,7 @@ export let AuthService = noView(_class = (_temp = _class2 = class AuthService {
         }
     }
 
-}, _class2.keycloakIframe = null, _temp)) || _class;
+}, _class2.keycloakIframe = {}, _temp)) || _class;
 
 
 var Keycloak = function (config) {
@@ -419,6 +419,65 @@ var Keycloak = function (config) {
         }
     };
 
+    kc.newIframe = function () {
+        var promise = createPromise();
+
+        if (!loginIframe.enable) {
+            promise.setSuccess();
+            return promise.promise;
+        }
+
+        if (loginIframe.iframe) {
+            promise.setSuccess();
+            return promise.promise;
+        }
+
+        var iframe = document.createElement('iframe');
+        loginIframe.iframe = iframe;
+        iframe.onload = function () {
+            var realmUrl = getRealmUrl();
+            if (realmUrl.charAt(0) === '/') {
+                loginIframe.iframeOrigin = getOrigin();
+            } else {
+                loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
+            }
+            promise.setSuccess();
+
+            setTimeout(check, loginIframe.interval * 1000);
+        };
+        var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
+        iframe.setAttribute('src', src);
+        iframe.style.display = 'none';
+
+        document.body.appendChild(iframe);
+
+        var messageCallback = function (event) {
+            if (event.origin !== loginIframe.iframeOrigin) {
+                return;
+            }
+            var data = JSON.parse(event.data);
+            var promise = loginIframe.callbackMap[data.callbackId];
+            delete loginIframe.callbackMap[data.callbackId];
+
+            if ((!kc.sessionId || kc.sessionId == data.session) && data.loggedIn) {
+                promise.setSuccess();
+            } else {
+                kc.clearToken();
+                promise.setError();
+            }
+        };
+        window.addEventListener('message', messageCallback, false);
+
+        var check = function () {
+            checkLoginIframe();
+            if (kc.token) {
+                setTimeout(check, loginIframe.interval * 1000);
+            }
+        };
+
+        return promise.promise;
+    };
+
     function getRealmUrl() {
         if (kc.authServerUrl.charAt(kc.authServerUrl.length - 1) == '/') {
             return kc.authServerUrl + 'realms/' + encodeURIComponent(kc.realm);
@@ -544,7 +603,7 @@ var Keycloak = function (config) {
             req.send();
         } else {
             if (!config['url']) {
-                var scripts = PLATFORM.global.document.getElementsByTagName('script');
+                var scripts = document.getElementsByTagName('script');
                 for (var i = 0; i < scripts.length; i++) {
                     if (scripts[i].src.match(/.*keycloak\.js/)) {
                         config.url = scripts[i].src.substr(0, scripts[i].src.indexOf('/js/keycloak.js'));
@@ -743,10 +802,9 @@ var Keycloak = function (config) {
             return promise.promise;
         }
 
-        var iframe = PLATFORM.global.document.createElement('iframe');
+        var iframe = document.createElement('iframe');
         loginIframe.iframe = iframe;
         iframe.onload = function () {
-            AuthService.keycloakIframe = loginIframe.iframe;
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
                 loginIframe.iframeOrigin = getOrigin();
@@ -761,7 +819,7 @@ var Keycloak = function (config) {
         iframe.setAttribute('src', src);
         iframe.style.display = 'none';
 
-        PLATFORM.global.document.body.appendChild(iframe);
+        document.body.appendChild(iframe);
 
         var messageCallback = function (event) {
             if (event.origin !== loginIframe.iframeOrigin) {
@@ -798,12 +856,6 @@ var Keycloak = function (config) {
             msg.callbackId = createCallbackId();
             loginIframe.callbackMap[msg.callbackId] = promise;
             var origin = loginIframe.iframeOrigin;
-            loginIframe.iframe = AuthService.keycloakIframe;
-            console.log('keycloakIframe: ' + typeof AuthService.keycloakIframe);
-            console.log('loginIframe.iframe: ' + typeof loginIframe.iframe);
-            console.log('loginIframe.iframe.contentWindow: ' + typeof loginIframe.iframe.contentWindow);
-            console.log('loginIframe: ' + JSON.stringify(loginIframe));
-            console.log('JSON.stringify(msg): ' + JSON.stringify(msg));
             loginIframe.iframe.contentWindow.postMessage(JSON.stringify(msg), origin);
         } else {
             promise.setSuccess();
@@ -1015,7 +1067,7 @@ var Keycloak = function (config) {
 
         var getCookie = function (key) {
             var name = key + '=';
-            var ca = PLATFORM.global.document.cookie.split(';');
+            var ca = document.cookie.split(';');
             for (var i = 0; i < ca.length; i++) {
                 var c = ca[i];
                 while (c.charAt(0) == ' ') {
@@ -1030,7 +1082,7 @@ var Keycloak = function (config) {
 
         var setCookie = function (key, value, expirationDate) {
             var cookie = key + '=' + value + '; ' + 'expires=' + expirationDate.toUTCString() + '; ';
-            PLATFORM.global.document.cookie = cookie;
+            document.cookie = cookie;
         };
     };
 
