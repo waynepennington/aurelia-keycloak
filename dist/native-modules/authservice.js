@@ -1,11 +1,10 @@
-var _class, _class2, _temp;
+var _class, _temp;
 
 
 
 import { PLATFORM } from 'aurelia-framework';
-import { noView } from 'aurelia-framework';
 
-export var AuthService = noView(_class = (_temp = _class2 = function () {
+export var AuthService = (_temp = _class = function () {
     function AuthService() {
         
     }
@@ -18,7 +17,7 @@ export var AuthService = noView(_class = (_temp = _class2 = function () {
     };
 
     return AuthService;
-}(), _class2.keycloakIframe = {}, _temp)) || _class;
+}(), _class.keycloakIframe = {}, _temp);
 
 
 var Keycloak = function Keycloak(config) {

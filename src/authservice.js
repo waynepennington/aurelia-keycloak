@@ -1,7 +1,7 @@
 import {PLATFORM} from 'aurelia-framework';
-import {noView} from 'aurelia-framework';
+// import {noView} from 'aurelia-framework';
 
-@noView
+// @noView
 export class AuthService {
     static keycloak;
     static keycloakIframe = {};

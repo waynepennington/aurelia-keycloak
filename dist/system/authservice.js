@@ -3,17 +3,16 @@
 System.register(['aurelia-framework'], function (_export, _context) {
     "use strict";
 
-    var PLATFORM, noView, _class, _class2, _temp, AuthService, Keycloak;
+    var PLATFORM, _class, _temp, AuthService, Keycloak;
 
     
 
     return {
         setters: [function (_aureliaFramework) {
             PLATFORM = _aureliaFramework.PLATFORM;
-            noView = _aureliaFramework.noView;
         }],
         execute: function () {
-            _export('AuthService', AuthService = noView(_class = (_temp = _class2 = function () {
+            _export('AuthService', AuthService = (_temp = _class = function () {
                 function AuthService() {
                     
                 }
@@ -26,7 +25,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
                 };
 
                 return AuthService;
-            }(), _class2.keycloakIframe = {}, _temp)) || _class);
+            }(), _class.keycloakIframe = {}, _temp));
 
             _export('AuthService', AuthService);
 

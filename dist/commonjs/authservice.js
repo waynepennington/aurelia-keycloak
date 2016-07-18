@@ -5,13 +5,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AuthService = undefined;
 
-var _class, _class2, _temp;
+var _class, _temp;
 
 var _aureliaFramework = require('aurelia-framework');
 
 
 
-var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = (_temp = _class2 = function () {
+var AuthService = exports.AuthService = (_temp = _class = function () {
     function AuthService() {
         
     }
@@ -24,7 +24,8 @@ var AuthService = exports.AuthService = (0, _aureliaFramework.noView)(_class = (
     };
 
     return AuthService;
-}(), _class2.keycloakIframe = {}, _temp)) || _class;
+}(), _class.keycloakIframe = {}, _temp);
+
 
 var Keycloak = function Keycloak(config) {
     var kc = this;
