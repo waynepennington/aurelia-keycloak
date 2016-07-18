@@ -36,7 +36,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
                 var storage;
 
                 var loginIframe = {
-                    enable: true,
+                    enable: false,
                     callbackMap: [],
                     interval: 5
                 };

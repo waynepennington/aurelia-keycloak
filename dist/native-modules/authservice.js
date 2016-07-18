@@ -27,7 +27,7 @@ var Keycloak = function Keycloak(config) {
     var storage;
 
     var loginIframe = {
-        enable: true,
+        enable: false,
         callbackMap: [],
         interval: 5
     };

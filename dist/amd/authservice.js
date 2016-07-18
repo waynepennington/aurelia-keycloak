@@ -33,7 +33,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
         var storage;
 
         var loginIframe = {
-            enable: true,
+            enable: false,
             callbackMap: [],
             interval: 5
         };
