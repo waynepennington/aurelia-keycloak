@@ -770,7 +770,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
                     iframe.onload = function () {
                         console.log('iframe.onload');
                         console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
-                        this.keycloakIframe = loginIframe.iframe;
+                        AuthService.keycloakIframe = loginIframe.iframe;
                         var realmUrl = getRealmUrl();
                         if (realmUrl.charAt(0) === '/') {
                             loginIframe.iframeOrigin = getOrigin();
@@ -780,8 +780,6 @@ System.register(['aurelia-framework'], function (_export, _context) {
                         promise.setSuccess();
 
                         setTimeout(check, loginIframe.interval * 1000);
-
-                        console.log('loginIframe: ' + JSON.stringify(loginIframe));
                     };
                     var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
                     iframe.setAttribute('src', src);
@@ -824,7 +822,7 @@ System.register(['aurelia-framework'], function (_export, _context) {
                         msg.callbackId = createCallbackId();
                         loginIframe.callbackMap[msg.callbackId] = promise;
                         var origin = loginIframe.iframeOrigin;
-                        console.log('keycloakIframe: ' + _typeof(this.keycloakIframe));
+                        console.log('keycloakIframe: ' + _typeof(AuthService.keycloakIframe));
                         console.log('loginIframe.iframe: ' + _typeof(loginIframe.iframe));
                         console.log('loginIframe.iframe.contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
                         console.log('loginIframe: ' + JSON.stringify(loginIframe));
