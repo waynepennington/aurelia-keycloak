@@ -747,6 +747,7 @@ var Keycloak = function (config) {
         loginIframe.iframe = iframe;
         iframe.onload = function () {
             console.log('iframe.onload');
+            console.log('contentWindow: ' + typeof loginIframe.iframe.contentWindow);
             var realmUrl = getRealmUrl();
             if (realmUrl.charAt(0) === '/') {
                 loginIframe.iframeOrigin = getOrigin();

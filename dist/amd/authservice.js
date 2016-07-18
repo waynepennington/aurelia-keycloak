@@ -6,6 +6,12 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
     });
     exports.AuthService = undefined;
 
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+        return typeof obj;
+    } : function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+    };
+
     
 
     var _class;
@@ -758,6 +764,7 @@ define(['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
             loginIframe.iframe = iframe;
             iframe.onload = function () {
                 console.log('iframe.onload');
+                console.log('contentWindow: ' + _typeof(loginIframe.iframe.contentWindow));
                 var realmUrl = getRealmUrl();
                 if (realmUrl.charAt(0) === '/') {
                     loginIframe.iframeOrigin = getOrigin();
