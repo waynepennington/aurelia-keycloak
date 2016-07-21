@@ -434,65 +434,6 @@ System.register(['aurelia-framework'], function (_export, _context) {
                     }
                 };
 
-                kc.newIframe = function () {
-                    var promise = createPromise();
-
-                    if (!loginIframe.enable) {
-                        promise.setSuccess();
-                        return promise.promise;
-                    }
-
-                    if (loginIframe.iframe) {
-                        promise.setSuccess();
-                        return promise.promise;
-                    }
-
-                    var iframe = document.createElement('iframe');
-                    loginIframe.iframe = iframe;
-                    iframe.onload = function () {
-                        var realmUrl = getRealmUrl();
-                        if (realmUrl.charAt(0) === '/') {
-                            loginIframe.iframeOrigin = getOrigin();
-                        } else {
-                            loginIframe.iframeOrigin = realmUrl.substring(0, realmUrl.indexOf('/', 8));
-                        }
-                        promise.setSuccess();
-
-                        setTimeout(check, loginIframe.interval * 1000);
-                    };
-                    var src = getRealmUrl() + '/protocol/openid-connect/login-status-iframe.html?client_id=' + encodeURIComponent(kc.clientId) + '&origin=' + getOrigin();
-                    iframe.setAttribute('src', src);
-                    iframe.style.display = 'none';
-
-                    document.body.appendChild(iframe);
-
-                    var messageCallback = function messageCallback(event) {
-                        if (event.origin !== loginIframe.iframeOrigin) {
-                            return;
-                        }
-                        var data = JSON.parse(event.data);
-                        var promise = loginIframe.callbackMap[data.callbackId];
-                        delete loginIframe.callbackMap[data.callbackId];
-
-                        if ((!kc.sessionId || kc.sessionId == data.session) && data.loggedIn) {
-                            promise.setSuccess();
-                        } else {
-                            kc.clearToken();
-                            promise.setError();
-                        }
-                    };
-                    window.addEventListener('message', messageCallback, false);
-
-                    var check = function check() {
-                        checkLoginIframe();
-                        if (kc.token) {
-                            setTimeout(check, loginIframe.interval * 1000);
-                        }
-                    };
-
-                    return promise.promise;
-                };
-
                 function getRealmUrl() {
                     if (kc.authServerUrl.charAt(kc.authServerUrl.length - 1) == '/') {
                         return kc.authServerUrl + 'realms/' + encodeURIComponent(kc.realm);
