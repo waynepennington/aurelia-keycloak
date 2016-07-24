@@ -62,7 +62,7 @@ Then, construct a login button within your code to call the keycloak login funct
 ```javascript
     .plugin('aurelia-keycloak',
     {
-        install: "c:/mydirectory/keycloak.jason",
+        install: "c:/mydirectory/keycloak.json",
         initOptions:{ onLoad: 'login-required' }
     }
 ```
