@@ -5,7 +5,7 @@ Alpha version.
 >An authentication plugin based on [KeyCloak] (http://keycloak.org) for [Aurelia] (http://www.aurelia.io/) applications.
 
 ## Important Note
-The hidden Keycloak `iframe` that is used to check token update status is turned off by default in this plugin: `checkLoginIframe: false`.  This is to get around a limitation within Aurelia.  This setting requires your code to manually check and/or refresh the token when making API calls.  That is problemmatic.  A solution is being worked.  In addition, built-in REST API fetch functionality using simple configuration settings will be added within the next week.  So stay tuned by subscribing to changes to this site.  If you are interested in other features or wish to contribute, please leave a note.
+The hidden Keycloak `iframe` that is used to check token update status is turned off by default in this plugin: `checkLoginIframe: false`.  This is to get around a limitation within Aurelia.  This setting requires your code to manually check and/or refresh the token when making API calls.  That is problemmatic. Since the plug-in can be made to operate without an Iframe a simple singleton can be used.  If you have an interest in CORS, REST behaviors, and interoperability with Keycloak, let me know via the issues board.  Kind regards and happy coding.
 ## Get Started
 
 * Install Aurelia-Keycloak:
