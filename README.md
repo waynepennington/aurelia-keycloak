@@ -8,10 +8,29 @@ Alpha version.
 The hidden Keycloak `iframe` that is used to check token update status is turned off by default in this plugin: `checkLoginIframe: false`.  This is to get around a limitation within Aurelia.  This setting requires your code to manually check and/or refresh the token when making API calls.  That is problemmatic. Since the plug-in can be made to operate without an Iframe a simple singleton can be used.  If you have an interest in CORS, REST behaviors, and interoperability with Keycloak, let me know via the issues board.  Kind regards and happy coding.
 ## Get Started
 
-* Install Aurelia-Keycloak:
+* Install Aurelia-Keycloak using jspm:
 ```bash
 jspm install aurelia-keycloak
 ```
+
+* Install Aurelia-Keycloak using Aurelia CLI:
+```bash
+# Create new Aurelia project
+au new
+
+# npm install aurelia-keycloak and add to package.json
+npm install git+https://git@github.com/waynepennington/aurelia-keycloak --save
+```
+
+Add following to aurelia_project/aurelia.json in the bundles.dependencies section
+```json
+{
+    "name": "aurelia-keycloak",
+    "path": "../node_modules/aurelia-keycloak/dist/amd",
+    "main": "index"
+}
+```
+Now you can replace the app.js and app.html in the new Aurelia CLI project with the Example model and view below (making sure you change the `export class Welcome` in the model to `export class App`.
 
 * Add keycloak configuration and initialization settings:
 Follow Keycloak directions for creating a keycloak.json configuration file.  Put this file in the same directory as your application's index.html file. Refer to the keycloak javascript adapter [documentation] (https://keycloak.gitbooks.io) for its initialization options and API.
